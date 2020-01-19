@@ -120,7 +120,7 @@ public class Player extends Character {
         System.out.println("                   휴식 및 미니 게임                    ");
         System.out.println();
         System.out.println();
-        if (player.restCK == true) {
+        if (player.restCK) {
             System.out.println("                   1. 🚫 휴식 끝내기                         ");
         } else {
             System.out.println("                1. 🛌 휴식 취하기 (" + Math.abs(restCount - 5) + "/5)");
@@ -492,9 +492,8 @@ public class Player extends Character {
                 restCount--;
 
                 scanner.nextLine();
-            } else {
-                return;
             }
+
         } else {
             System.out.println();
             System.out.println("휴식 모드를 종료합니다.");
