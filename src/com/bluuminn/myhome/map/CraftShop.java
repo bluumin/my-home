@@ -5,7 +5,7 @@ import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.MadeItem;
 import com.bluuminn.myhome.item.RequiredItem;
 
-public class CraftShop extends Map {
+public class CraftShop extends Area {
 
     String tmpItemName; // 만들 아이템 이름 임시 저장
     String tmpRequired;     // 만들 아이템의 재료 아이템 이름을 임시 저장

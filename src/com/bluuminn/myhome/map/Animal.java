@@ -9,7 +9,7 @@ import com.bluuminn.myhome.timer.AnimalTimer;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 
-public class Animal extends Map {
+public class Animal extends Area {
 
     public ArrayList<String> animalList = new ArrayList<String>();
 

@@ -6,7 +6,7 @@ import com.bluuminn.myhome.item.GrowthItem;
 
 import java.util.InputMismatchException;
 
-public class Farm extends Map {
+public class Farm extends Area {
 
     // 밀
     GrowthItem meal = new GrowthItem("밀", "밭", 90);

@@ -8,7 +8,7 @@ import com.bluuminn.myhome.item.Potion;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Store extends Map {
+public class Store extends Area {
     boolean[] event;
     int rand;
 

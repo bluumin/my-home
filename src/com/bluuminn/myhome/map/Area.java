@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Map {
+public class Area {
     ProgressBar progressBar = new ProgressBar();
 
     Scanner scanner = new Scanner(System.in);
@@ -25,25 +25,6 @@ public class Map {
 
     // 수확할 수 있는 아이템 목록 출력
     public ArrayList<GrowthItem> listOfItems = new ArrayList<GrowthItem>();
-
-    Music harvest = new Music("harvest.mp3", false);
-
-    //    public void test() {
-//        try {
-//            AudioInputStream ais = AudioSystem.getAudioInputStream(new File("./harvest.mp3"));
-//
-//            Clip clip = AudioSystem.getClip();
-//
-//            clip.stop();
-//
-//            clip.open(ais);
-//
-//            clip.start();
-//
-//        } catch (Exception ex) {
-//
-//        }
-//    }
     public void soundPlay() {
         Music harvest = new Music("harvest.mp3", false);
         harvest.start();

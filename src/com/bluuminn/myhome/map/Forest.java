@@ -9,7 +9,7 @@ import com.bluuminn.myhome.timer.ForestTimer;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 
-public class Forest extends Map {
+public class Forest extends Area {
     ArrayList<String> treeList = new ArrayList<String>();
 
     // 전나무 목재
