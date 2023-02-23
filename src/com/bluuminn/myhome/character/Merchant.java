@@ -1,6 +1,6 @@
 package com.bluuminn.myhome.character;
 
-import com.bluuminn.myhome.map.Store;
+import com.bluuminn.myhome.area.Store;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -22,11 +22,6 @@ public class Merchant extends NPC {
 
     public void lines(Store store, Player player) {
         boolean exit = true;
-//        boolean[] event = new boolean[store.storeItem.size()];
-//        for(int i = 0; i < event.length; i++){
-//            event[i] = new Random().nextBoolean();
-//        }
-//        int rand = new Random().nextInt(store.storeItem.size());
         while (exit) {
             try {
                 for (int i = 0; i < 100; i++) {

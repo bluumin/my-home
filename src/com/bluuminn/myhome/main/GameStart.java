@@ -3,10 +3,12 @@ package com.bluuminn.myhome.main;
 import com.bluuminn.myhome.character.Merchant;
 import com.bluuminn.myhome.character.NPC;
 import com.bluuminn.myhome.character.Player;
+import com.bluuminn.myhome.etc.MyHomeConstants;
+import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.etc.ProgressBar;
 import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.Title;
-import com.bluuminn.myhome.map.*;
+import com.bluuminn.myhome.area.*;
 import com.bluuminn.myhome.quest.Needs;
 import com.bluuminn.myhome.quest.Quest;
 
@@ -15,38 +17,22 @@ import java.util.Scanner;
 
 public class GameStart {
 
-
     public void startPoint() {
-
-        System.out.println();
-        System.out.println();
-        System.out.println();
-
-        ProgressBar progressBar = new ProgressBar();
-        Scanner scanner = new Scanner(System.in);
         int inputVal;      // 유저 입력값 처리
-        System.out.println();
+        MyHomeUtils.printLineAsCount(11);
 
-        Player player = new Player();
-        // ===================== 로딩 시나리오 ======================
-        System.out.println("\n\n\n\n\n\n");
-        progressBar.loading();
+        ProgressBar.loading();
 
         System.out.print("\r달님이 수호해주는 마을…\n");
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        MyHomeUtils.sleepAsMillis(2000);
 
-        System.out.println("\n\n그 마을의 가장 유명한 공방에\n" +
-                "스승님 아래서 열심히 일하던 아이가 있었어요.");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        MyHomeUtils.printLineAsCount(2);
+
+        System.out.println("그 마을의 가장 유명한 공방에");
+        System.out.println("스승님 아래서 열심히 일하던 아이가 있었어요.");
+
+        MyHomeUtils.sleepAsMillis(200);
 
         try {
             System.out.println("\n");
@@ -54,31 +40,29 @@ public class GameStart {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        ProgressBar.loading();
 
-
-        progressBar.loading();
-        // ============ 로딩 시나리오 끝===================
+        Scanner scanner = new Scanner(System.in);
+        String playerName;
 
         do {
             System.out.println("당신의 이름을 알려주세요. (2 ~ 8 글자)");
             System.out.print("입력 >> ");              // 게임 플레이어 이름 입력
+            playerName = scanner.nextLine();
 
-            player.name = scanner.nextLine();
-
-            if (player.name.length() < 2) {
+            if (playerName == null || playerName.length() < 2) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("            이름이 너무 짧아요. 다시 입력해주세요.        ");
                 System.out.println("└──────────────────────────────────────────────────┘");
-
-            } else if (player.name.length() > 8) {
+            } else if (playerName.length() > 8) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("            이름이 너무 짧아요. 다시 입력해주세요.        ");
+                System.out.println("            이름이 너무 길어요. 다시 입력해주세요.        ");
                 System.out.println("└──────────────────────────────────────────────────┘");
             }
-
-        } while (player.name.length() < 2 || player.name.length() > 8);
+        } while (playerName == null || playerName.length() < 2 || playerName.length() > 8);
 
         System.out.println();
+        Player player = new Player();
         System.out.println("[ " + player.name + " ] 반가워요");
 
         // =================== 로딩 시나리오 ========================
@@ -107,43 +91,28 @@ public class GameStart {
         }
 
         System.out.println("\n\n하지만..");
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        MyHomeUtils.sleepAsMillis(1500);
 
         System.out.println("\n공방의 주인으로 인정받기 위해서는\n" +
                 "한가지 해야 할 일이 있었어요.");
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+        MyHomeUtils.sleepAsMillis(3000);
 
         System.out.println("\n마을의 가장 커다란 축제인 감사제를\n" +
                 "마을 사람들을 도와 무사히 열릴 수 있게 해야 한대요!");
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        MyHomeUtils.sleepAsMillis(3000);
 
         System.out.println("\n스승님 없이 혼자서 공방을 잘 운영해 나갈 수 있을까요?\n");
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        MyHomeUtils.sleepAsMillis(3000);
 
         //  ================== 로딩 시나리오 끝================
 
 
         System.out.println("┌──────────────────────────────────────────────────┐");
         System.out.println("                공방 운영에 도움이 될만한                  ");
-        System.out.println("             초기 지원 자금 " + player.gold + "골드를 드릴게요.      ");
+        System.out.println("             초기 지원 자금 " + MyHomeConstants.INITIAL_SUPPORT_GOLD + "골드를 드릴게요.      ");
         System.out.println("└──────────────────────────────────────────────────┘");
 
         scanner.nextLine();
@@ -151,10 +120,10 @@ public class GameStart {
 
         // ============================= 클래스 선언 ==================================
         Farm farm = new Farm();         // 밭 객체 추가
-        Animal animal = new Animal();   // 동물 농장 객체 추가
+        AnimalFarm animalFarm = new AnimalFarm();   // 동물 농장 객체 추가
         Forest forest = new Forest();   // 숲 객체 추가
         Store store = new Store();  // 상점 객체 추가
-        CraftShop craftShop = new CraftShop("공방", player, store, farm, animal);
+        CraftShop craftShop = new CraftShop("공방", player, store, farm, animalFarm);
         Merchant merchant = new Merchant("로빈");     // 상인 NPC 추가
         NPC mimi = new NPC("미미");       // NPC 미미 추가
         NPC tomson = new NPC("톰슨");     // NPC 촌장 톰슨
@@ -162,18 +131,18 @@ public class GameStart {
         // ============================= 업적 타이틀 추가 ==============================
         Title title0 = new Title("공방의 새 주인");
         player.title.add(title0);
-        title0.업적달성조건 = "퀘스트 3회 완료 시";
+        title0.achievementConditions = "퀘스트 3회 완료 시";
 
         Title title1 = new Title("원목 공예 장인");
         player.title.add(title1);
-        title1.업적달성조건 = "아이템 제작 10회 이상";
+        title1.achievementConditions = "아이템 제작 10회 이상";
 
         // ============================= 퀘스트 생성 =============================
         Quest quest1 = new Quest("밀짚을 이용한 끈!", "미미", false);
         quest1.questContent = ("수확한 밀로 끈을 만들어봐요!").toCharArray();
         quest1.payForGold = 1000;
         quest1.payExp = 40;
-        quest1.payItem = new ItemEntry(animal.milk, 0);
+        quest1.payItem = new ItemEntry(animalFarm.milk, 0);
         quest1.payItemCount = 1;
         quest1.needs.add(new Needs("밀짚끈", 4));
         quest1.questEnding = ("생각보다 튼튼해 보여요. 처음이라 걱정했는데 잘하고 계시는데요?\n앞으로도 이렇게만 해주세요!").toCharArray();
@@ -230,7 +199,6 @@ public class GameStart {
                     scanner.nextLine();
 
 
-
                     switch (inputVal) {
                         case 0:
                             System.exit(0);
@@ -241,12 +209,12 @@ public class GameStart {
                             break;
 
                         case 2:     // 재료 수확하러 하기
-                            progressBar.loading();
-                            player.viewMapList(player, animal, farm, forest);
+                            ProgressBar.loading();
+                            player.viewMapList(player, animalFarm, farm, forest);
                             break;
 
                         case 3:     // 아이템 제작
-                            progressBar.loading();
+                            ProgressBar.loading();
                             player.goToCraftShop(craftShop, player);
                             break;
 
@@ -259,12 +227,12 @@ public class GameStart {
                             break;
 
                         case 6:     // 상점
-                            progressBar.loading();
+                            ProgressBar.loading();
                             player.goToStore(player, merchant, store);
                             break;
 
                         case 7:     // 미니게임
-                            progressBar.loading();
+                            ProgressBar.loading();
                             player.miniGame(player);
                             break;
 
@@ -326,12 +294,12 @@ public class GameStart {
                             break;
 
                         case 6:     // 상점
-                            progressBar.loading();
+                            ProgressBar.loading();
                             player.goToStore(player, merchant, store);
                             break;
 
                         case 7:     // 미니게임
-                            progressBar.loading();
+                            ProgressBar.loading();
                             player.miniGame(player);
                             break;
 

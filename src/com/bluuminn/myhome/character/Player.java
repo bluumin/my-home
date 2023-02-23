@@ -1,10 +1,11 @@
 package com.bluuminn.myhome.character;
 
+import com.bluuminn.myhome.etc.MyHomeConstants;
 import com.bluuminn.myhome.inventory.Inventory;
 import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.MadeItem;
 import com.bluuminn.myhome.item.Title;
-import com.bluuminn.myhome.map.*;
+import com.bluuminn.myhome.area.*;
 import com.bluuminn.myhome.quest.Quest;
 
 import java.util.ArrayList;
@@ -14,64 +15,69 @@ import java.util.Scanner;
 
 public class Player extends Character {
 
-    int restCount = 5;
+    private int restCount = 5;
 
-    Quest tmpQuest = null;
+    private Quest tmpQuest = null;
 
     // 퀘스트 완료 횟수 체크 = 업적 달성용
-    int questComplete;
+    private int questCompletedCount;
 
     // 아이템 제작 완료 횟수 체크 = 업적 달성용
-    int makeComplete;
+    private int craftingCount;
 
     // 퀘스트 리스트 체크 용
-    boolean ckck;
+    private boolean ckck;
 
-    // 플레이어가 휴식 중인지 체크
-    public boolean restCK;
+    private boolean isResting;
 
     // 칭호 리스트
-    public ArrayList<Title> title = new ArrayList<Title>();
+    private ArrayList<Title> title = new ArrayList<>();
 
     // 제작 아이템 목록 리스트
-    public ArrayList<MadeItem> madeItemList = new ArrayList<MadeItem>();
+    private ArrayList<MadeItem> madeItemList = new ArrayList<>();
 
     // 퀘스트 리스트
-    ArrayList<Quest> playerQuestList = new ArrayList<Quest>();
+    private ArrayList<Quest> playerQuestList = new ArrayList<>();
 
     // 아이템 한개당 단가를 임시 저장할 변수
-    int singlePrice;
+    private int singlePrice;
 
     // 구매할 아이템의 총 가격을 임시 저장할 변수
-    int totalPrice;
+    private int totalPrice;
 
     // 구매할 아이템의 이름을 임시 저장할 변수
-    String selItem;
+    private String selItem;
 
-    public int exp;                // 경험치
-    int maxEXP;             // 레벨당 최대 경험치
-    public byte level;             // 플레이어 레벨
-    public byte fatigability;      // 피로도
-    public int gold;               // 돈(마이홈의 화폐 단위)
-    public boolean woodenCK;       // 원목 작업대 구입 여부
-    public boolean ovenCK;         // 요리용 화덕 구입 여부
+    private int exp;                // 경험치
+    private int maxEXP;             // 레벨당 최대 경험치
+    private int level;             // 플레이어 레벨
+    private int fatigability;      // 피로도
+    private int gold;               // 돈(마이홈의 화폐 단위)
+    private boolean hasWoodenWorkbench;       // 원목 작업대 구입 여부
+    private boolean hasCookingStove;         // 요리용 화덕 구입 여부
+    private Inventory inventory = new Inventory();
 
-
-    public Inventory inventory = new Inventory();
-
-    public Player() {
-        level = 1;
-        exp = 0;
-        maxEXP = 25;
-        gold = 3000;
-        fatigability = 0;   // 피로도
-        woodenCK = false;
-        ovenCK = false;
-        restCK = false;
-        questComplete = 0;
-        makeComplete = 0;
+    private Player(String name) {
+        super(name);
+        this.level = 1;
+        this.exp = 0;
+        this.maxEXP = 25;
+        this.gold = MyHomeConstants.INITIAL_SUPPORT_GOLD;
+        this.fatigability = 0;   // 피로도
+        this.hasWoodenWorkbench = false;
+        this.hasCookingStove = false;
+        this.isResting = false;
+        this.questCompletedCount = 0;
+        this.craftingCount = 0;
     }
 
+    public static Player createPlayer(String name) {
+        return new Player(name);
+    }
+
+    public int getFatigability() {
+        return fatigability;
+    }
 
     public class LevUP extends Thread {
         public void run() {
@@ -120,7 +126,7 @@ public class Player extends Character {
         System.out.println("                   휴식 및 미니 게임                    ");
         System.out.println();
         System.out.println();
-        if (player.restCK) {
+        if (player.isResting) {
             System.out.println("                   1. 🚫 휴식 끝내기                         ");
         } else {
             System.out.println("                1. 🛌 휴식 취하기 (" + Math.abs(restCount - 5) + "/5)");
@@ -475,7 +481,7 @@ public class Player extends Character {
     public void takeARest(Player player) {
 
         // 휴식중이 아닐 때
-        if (!player.restCK) {
+        if (!player.isResting) {
             System.out.println(player.name + " ! 피로가 많이 쌓이셨나보군요.");
             System.out.println("휴식 모드로 전환할까요? (1회 - 1000골드)");
             System.out.println();
@@ -487,7 +493,7 @@ public class Player extends Character {
             if (select == 1) {
                 System.out.println("휴식 모드로 전환합니다.");
 
-                player.restCK = true;
+                player.isResting = true;
                 player.gold -= 1000;
                 restCount--;
 
@@ -498,7 +504,7 @@ public class Player extends Character {
             System.out.println();
             System.out.println("휴식 모드를 종료합니다.");
             System.out.println();
-            player.restCK = false;
+            player.isResting = false;
             player.fatigability -= 10;
             if (player.fatigability <= 0) {
                 player.fatigability = 0;
@@ -689,7 +695,7 @@ public class Player extends Character {
                 System.out.println();
                 System.out.println();
                 System.out.println("퀘스트 완료!");
-                player.questComplete++;
+                player.questCompletedCount++;
                 mimi.tmpPlayer.playerQuestList.remove(inputVal - 1);
                 playerQuestList.remove(inputVal - 1);
                 scanner.nextLine();
@@ -766,7 +772,7 @@ public class Player extends Character {
             System.out.println("피로도가 너무 높아서 아무 것도 할 수 없어요.");
             scanner.nextLine();
         } else {
-            if (!player.woodenCK) {
+            if (!player.hasWoodenWorkbench) {
                 System.out.println("감사제를 준비하려면 원목 작업대가 필요해요.");
                 System.out.println("상점에서 원목 작업대를 구입하세요.");
                 System.out.println();
@@ -791,7 +797,7 @@ public class Player extends Character {
                     System.out.println();
                     player.gold -= 100;
                     System.out.println("원목 작업대를 구입했어요!");
-                    player.woodenCK = true;
+                    player.hasWoodenWorkbench = true;
                     scanner.nextLine();
                 } else {
                     return;
@@ -838,7 +844,7 @@ public class Player extends Character {
             }
         }
 
-        player.makeComplete++;
+        player.craftingCount++;
         player.fatigability += 7;
         if (player.fatigability >= 100) {
             player.fatigability = 100;
@@ -857,7 +863,7 @@ public class Player extends Character {
             System.out.println();
             System.out.println("    레벨 : " + player.level);
             System.out.println("    경험치 : " + player.exp + " / " + player.maxEXP);
-            if (restCK == true) {
+            if (isResting == true) {
                 System.out.println("    피로도 : 회복 중..");
             } else {
                 System.out.println("    피로도 : " + player.fatigability);
@@ -913,8 +919,8 @@ public class Player extends Character {
                         System.out.println();
                         System.out.println(tmptmp + ". " + player.title.get(tmptmp - 1).titleName);
                         System.out.println();
-                        System.out.println("업적달성조건 : " + player.title.get(tmptmp - 1).업적달성조건);
-                        if (player.questComplete >= 3) {
+                        System.out.println("업적달성조건 : " + player.title.get(tmptmp - 1).achievementConditions);
+                        if (player.questCompletedCount >= 3) {
                             System.out.println();
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("                   업적을 달성했어요!");
@@ -927,8 +933,8 @@ public class Player extends Character {
                         System.out.println();
                         System.out.println(tmptmp + ". " + player.title.get(tmptmp - 1).titleName);
                         System.out.println();
-                        System.out.println("업적달성조건 : " + player.title.get(tmptmp - 1).업적달성조건);
-                        if (player.makeComplete >= 10) {
+                        System.out.println("업적달성조건 : " + player.title.get(tmptmp - 1).achievementConditions);
+                        if (player.craftingCount >= 10) {
                             System.out.println();
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("                   업적을 달성했어요!");
@@ -1222,7 +1228,7 @@ public class Player extends Character {
 
     }
 
-    public void viewMapList(Player player, Animal animal, Farm farm, Forest forest) {
+    public void viewMapList(Player player, AnimalFarm animalFarm, Farm farm, Forest forest) {
         boolean exit = true;
         if (player.fatigability >= 100) {
             System.out.println("피로도가 너무 높아서 아무 것도 할 수 없어요.");
@@ -1248,7 +1254,7 @@ public class Player extends Character {
                         farm.getFarmItem(player, farm);
                         break;
                     case 2: // 동물농장으로 이동
-                        animal.getAnimalFarmItem(player, animal);
+                        animalFarm.getAnimalFarmItem(player, animalFarm);
                         break;
                     case 3: // 숲으로 이동
                         forest.getForestItem(player, forest);

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Inventory {
 
     // 인벤토리가 담을 수 있는 총 개수
-    public static final int MAX_ITEMS = 10;
+    private static final int MAX_ITEMS = 10;
 
 
     // 인벤토리에 들어있는 아이템 목록
@@ -16,17 +16,14 @@ public class Inventory {
     private int items;
 
     public Inventory() {
-        itemList = new ArrayList<ItemEntry>(MAX_ITEMS);
+        itemList = new ArrayList<>(MAX_ITEMS);
         for (int i = 0; i < MAX_ITEMS; i++) {
             itemList.add(null);
         }
         items = 0;
     }
 
-    // ==================================== 아이템 추가 ===========================================
     public boolean addItem(ItemEntry entry, int cnt) {
-
-
         // 해당 아이템이 있는지 검사
         int index = findItem(entry);
         if (index < 0) { // 아이템이 없다면
@@ -131,30 +128,11 @@ public class Inventory {
         return false;
     }
 
-
-    //================================== 아이템 찾기 =====================================
     public int findItem(ItemEntry item) {
         for (int i = 0; i < MAX_ITEMS; i++) {
-//            if (itemList.get(i) != null && itemList.get(i).equals(item));
-//            return i;
             if (itemList.get(i) != null && itemList.get(i).entryName.equals(item.entryName)) {
                 return i;
             }
-//            if (item.entryType.equals("일반")) {
-//                if (itemList.get(i) != null && itemList.get(i).equals(item))
-//                    return i;
-//            } else if (item.entryType.equals("생산")) {
-//                if (itemList.get(i) != null && itemList.get(i).equals(item))
-//                    return i;
-//            } else if (item.entryType.equals("제작")) {
-//                if (itemList.get(i) != null && itemList.get(i).equals(item))
-//                    return i;
-//            } else if (item.entryType.equals("포션")) {
-//                if (itemList.get(i) != null && itemList.get(i).equals(item))
-//                    return i;
-//            } else {
-//                return -1;
-//            }
         }
         return -1;
     }

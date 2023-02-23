@@ -1,14 +1,18 @@
 package com.bluuminn.myhome.character;
 
-import com.bluuminn.myhome.etc.ProgressBar;
-
-import java.util.Scanner;
-
 public class Character {
-    Scanner scanner = new Scanner(System.in);
+    private int inputVal;
+    private String name;
 
-    ProgressBar progressBar = new ProgressBar();
+    public int getInputVal() {
+        return inputVal;
+    }
 
-    int inputVal;
-    public String name;
+    public String getName() {
+        return this.name;
+    }
+
+    protected Character(String name) {
+        this.name = name;
+    }
 }

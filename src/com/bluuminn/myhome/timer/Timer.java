@@ -1,6 +1,6 @@
 package com.bluuminn.myhome.timer;
 
-import com.bluuminn.myhome.map.Farm;
+import com.bluuminn.myhome.area.Farm;
 
 public class Timer implements Runnable {
     int n;

@@ -8,28 +8,28 @@ import com.bluuminn.myhome.item.Potion;
 public class ItemEntry {
 
     // 아이템 객체
-    public Item item;
-    public Potion potion;
-    public GrowthItem growthItem;
-    public MadeItem madeItem;
+    private Item item;
+    private Potion potion;
+    private GrowthItem growthItem;
+    private MadeItem madeItem;
 
     // 아이템 레벨
-    public int entryLevel;
+    private int entryLevel;
 
     // 아이템 살수 있는지 없는지 체크
-    public boolean entryLevelCK;
+    private boolean entryLevelCK;
 
     // 아이템 객체 하나당 갖고 있는 개수
-    public int count;
+    private int count;
 
     // 아이템 타입
-    public String entryType;
+    private String entryType;
 
     // 아이템 이름
-    public String entryName;
+    private String entryName;
 
     // 아이템 가격
-    public int entryPrice;
+    private int entryPrice;
 
     public ItemEntry(Item item, int count) {
         this.item = item;
@@ -61,7 +61,6 @@ public class ItemEntry {
         this.entryType = madeItem.type;
         this.entryName = madeItem.itemName;
         this.entryPrice = madeItem.itemPrice;
-
     }
 
 }

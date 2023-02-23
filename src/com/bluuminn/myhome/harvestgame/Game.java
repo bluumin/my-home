@@ -1,8 +1,8 @@
 package com.bluuminn.myhome.harvestgame;
 
-import com.bluuminn.myhome.map.Animal;
-import com.bluuminn.myhome.map.Farm;
-import com.bluuminn.myhome.map.Forest;
+import com.bluuminn.myhome.area.AnimalFarm;
+import com.bluuminn.myhome.area.Farm;
+import com.bluuminn.myhome.area.Forest;
 
 import java.util.Random;
 
@@ -83,7 +83,7 @@ public class Game { // 전체적인 게임 진행
         }
         return result;
     }
-    public boolean Run(Animal animal, int inputVal) {
+    public boolean Run(AnimalFarm animalFarm, int inputVal) {
         Set();
         boolean result = false;
         boolean exit = true;
@@ -92,7 +92,7 @@ public class Game { // 전체적인 게임 진행
                 System.out.println();
             }
             System.out.println("= = = = = = = = = = = = = = = = = = = = = = = = =");
-            System.out.println(animal.listOfItems.get(inputVal - 1).itemName + " 수확 중 . . .");
+            System.out.println(animalFarm.listOfItems.get(inputVal - 1).itemName + " 수확 중 . . .");
             System.out.println();
             ShowArray();
             exit = bear.move();
@@ -101,7 +101,7 @@ public class Game { // 전체적인 게임 진행
                     System.out.println();
                 }
                 System.out.println("= = = = = = = = = = = = = = = = = = = = = = = = =");
-                System.out.println(animal.listOfItems.get(inputVal - 1).itemName + " 수확 중 . . .");
+                System.out.println(animalFarm.listOfItems.get(inputVal - 1).itemName + " 수확 중 . . .");
                 System.out.println();
                 WinArray();
 //                System.out.println("아이템 수확");

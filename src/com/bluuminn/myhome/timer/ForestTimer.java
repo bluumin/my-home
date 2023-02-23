@@ -1,6 +1,6 @@
 package com.bluuminn.myhome.timer;
 
-import com.bluuminn.myhome.map.Forest;
+import com.bluuminn.myhome.area.Forest;
 
 public class ForestTimer implements Runnable {
     int n;
