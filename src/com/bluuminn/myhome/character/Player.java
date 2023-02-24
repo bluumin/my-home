@@ -1,12 +1,14 @@
 package com.bluuminn.myhome.character;
 
+import com.bluuminn.myhome.area.CraftShop;
+import com.bluuminn.myhome.area.Store;
 import com.bluuminn.myhome.etc.MyHomeConstants;
+import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.inventory.Inventory;
 import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.MadeItem;
-import com.bluuminn.myhome.item.Title;
-import com.bluuminn.myhome.area.*;
 import com.bluuminn.myhome.quest.Quest;
+import com.bluuminn.myhome.quest.Title;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -14,6 +16,11 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Player extends Character {
+    /**
+     * 수확하기
+     * 재배하기
+     * 아이템 제작하기
+     */
 
     private int restCount = 5;
 
@@ -31,7 +38,7 @@ public class Player extends Character {
     private boolean isResting;
 
     // 칭호 리스트
-    private ArrayList<Title> title = new ArrayList<>();
+    private ArrayList<Title> titles = new ArrayList<>();
 
     // 제작 아이템 목록 리스트
     private ArrayList<MadeItem> madeItemList = new ArrayList<>();
@@ -49,7 +56,7 @@ public class Player extends Character {
     private String selItem;
 
     private int exp;                // 경험치
-    private int maxEXP;             // 레벨당 최대 경험치
+    private int maxExp;             // 레벨당 최대 경험치
     private int level;             // 플레이어 레벨
     private int fatigability;      // 피로도
     private int gold;               // 돈(마이홈의 화폐 단위)
@@ -61,7 +68,7 @@ public class Player extends Character {
         super(name);
         this.level = 1;
         this.exp = 0;
-        this.maxEXP = 25;
+        this.maxExp = 25;
         this.gold = MyHomeConstants.INITIAL_SUPPORT_GOLD;
         this.fatigability = 0;   // 피로도
         this.hasWoodenWorkbench = false;
@@ -79,44 +86,77 @@ public class Player extends Character {
         return fatigability;
     }
 
-    public class LevUP extends Thread {
-        public void run() {
-            while (true) {
-                levelUP();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+    public int getExp() {
+        return exp;
+    }
+
+    public int getMaxExp() {
+        return maxExp;
+    }
+
+    public int getRestCount() {
+        return restCount;
+    }
+
+    public boolean isResting() {
+        return isResting;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getGold() {
+        return gold;
+    }
+
+    public void levelUp() {
+        if (this.exp < this.maxExp) {
+            return;
+        }
+
+        this.exp -= this.maxExp;
+        this.level += 1;
+        payGold();
+        increaseMaxExp();
+        System.out.println("\n" +
+                "\t\t    __    _______    __________       __  ______     __\n" +
+                "\t\t   / /   / ____/ |  / / ____/ /      / / / / __ \\   / /\n" +
+                "\t\t  / /   / __/  | | / / __/ / /      / / / / /_/ /  / / \n" +
+                "\t\t / /___/ /___  | |/ / /___/ /___   / /_/ / ____/  /_/  \n" +
+                "\t\t/_____/_____/  |___/_____/_____/   \\____/_/      (_)   \n" +
+                "\t\t                                                       \n");
+
+    }
+
+    private void payGold() {
+        if (this.level <= 5) {
+            this.updateGold(3000);
         }
     }
 
-    private void levelUP() {
-        if (exp >= maxEXP) {
-            this.exp = exp - maxEXP;
-            this.level += 1;
-            if (this.level <= 5) {
-                this.gold += 3000;
-            }
-            System.out.println("\n" +
-                    "\t\t    __    _______    __________       __  ______     __\n" +
-                    "\t\t   / /   / ____/ |  / / ____/ /      / / / / __ \\   / /\n" +
-                    "\t\t  / /   / __/  | | / / __/ / /      / / / / /_/ /  / / \n" +
-                    "\t\t / /___/ /___  | |/ / /___/ /___   / /_/ / ____/  /_/  \n" +
-                    "\t\t/_____/_____/  |___/_____/_____/   \\____/_/      (_)   \n" +
-                    "\t\t                                                       \n");
-            if (this.level == 2) {
-                this.maxEXP += 25;
-            } else {
-                this.maxEXP += 50;
-            }
-        }
+    private void increaseMaxExp() {
+        this.maxExp *= this.level < 3 ? 1.1 : 1.3;
     }
 
-    public void playerLvUp() {
-        LevUP levUP = new LevUP();
-        levUP.start();
+    public void updateGold(int gold) {
+        this.gold += gold;
+    }
+
+    public void achieveTitle() {
+        if (this.questCompletedCount >= 3) {
+            System.out.println();
+            System.out.println("┌──────────────────────────────────────────────────┐");
+            System.out.println("                   업적을 달성했어요!");
+            this.titles.get(0).achieved();
+        }
+
+        if (this.craftingCount >= 10) {
+            System.out.println();
+            System.out.println("┌──────────────────────────────────────────────────┐");
+            System.out.println("                   업적을 달성했어요!");
+            this.titles.get(1).achieved();
+        }
     }
 
     // ============================= 미니 게임 ==============================
@@ -695,7 +735,7 @@ public class Player extends Character {
                 System.out.println();
                 System.out.println();
                 System.out.println("퀘스트 완료!");
-                player.questCompletedCount++;
+                player.questCompletedCount += 1;
                 mimi.tmpPlayer.playerQuestList.remove(inputVal - 1);
                 playerQuestList.remove(inputVal - 1);
                 scanner.nextLine();
@@ -855,99 +895,104 @@ public class Player extends Character {
     }
 
     // ========================== 플레이어 정보 확인 ============================
-    public void playerInfoPrint(Player player) {
+    public void showInfo(Scanner scanner) {
         boolean outerExit = true;
         while (outerExit) {
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("            플레이어 [ " + player.name + " ] 정보");
+            System.out.println("            플레이어 [ " + getName() + " ] 정보");
             System.out.println();
-            System.out.println("    레벨 : " + player.level);
-            System.out.println("    경험치 : " + player.exp + " / " + player.maxEXP);
-            if (isResting == true) {
-                System.out.println("    피로도 : 회복 중..");
-            } else {
-                System.out.println("    피로도 : " + player.fatigability);
-            }
+            System.out.println("    레벨: " + getLevel());
+            System.out.println("    경험치: " + getExp() + " / " + getMaxExp());
+            System.out.println("    피로도: " + (isResting ? "회복 중.." : getFatigability()));
             System.out.println();
-            System.out.println("    골드 : " + player.gold);
+            System.out.println("    골드 : " + getGold());
             System.out.println();
             System.out.println("1. 업적 확인하기     else. 메인 메뉴로");
             System.out.print("입력 >> ");
-            inputVal = scanner.nextInt();
-            scanner.nextLine();
-
-            // 업적 보기
-            // =============================== 업적 달성 조건 추가하기
-            if (inputVal == 1) {
-                boolean exit = true;
-                while (exit) {
-                    System.out.println("┌──────────────────────────────────────────────────┐");
-                    System.out.println("                    업적 리스트");
-                    System.out.println();
-                    for (int i = 0; i < player.title.size(); i++) {
-                        String obtain;
-                        if (player.title.get(i).obtainCK) {
-                            obtain = "달성";
-                        } else {
-                            obtain = "미달성";
-                        }
-
-                        System.out.print("    " + (i + 1) + ". ");
-                        System.out.printf("%-12s", player.title.get(i).titleName);
-
-                        System.out.println("          " + obtain);
-                    }
-                    System.out.println();
-                    System.out.print("업적 달성 조건 보기 (0. 돌아가기) >> ");
-
-                    int tmptmp = scanner.nextInt();
-                    scanner.nextLine();
-
-                    if (tmptmp > player.title.size()) {
-                        System.out.println();
-                        System.out.println("다시 입력해 주세요.");
-                        scanner.nextLine();
-                        continue;
-                    } else if (tmptmp == 0) {
-                        System.out.println();
-                        System.out.println("플레이어 정보로 돌아갑니다.");
-                        scanner.nextLine();
-                        exit = false;
-                        continue;
-                    } else if (tmptmp == 1) {
-//                        title0.업적달성조건 = "퀘스트 3회 완료 시";
-                        System.out.println();
-                        System.out.println(tmptmp + ". " + player.title.get(tmptmp - 1).titleName);
-                        System.out.println();
-                        System.out.println("업적달성조건 : " + player.title.get(tmptmp - 1).achievementConditions);
-                        if (player.questCompletedCount >= 3) {
-                            System.out.println();
-                            System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("                   업적을 달성했어요!");
-                            player.title.get(tmptmp - 1).obtainCK = true;
-                        }
-                        System.out.println();
-                        scanner.nextLine();
-                    } else if (tmptmp == 2) {
-//                        title1.업적달성조건 = "아이템 제작 10회 이상";
-                        System.out.println();
-                        System.out.println(tmptmp + ". " + player.title.get(tmptmp - 1).titleName);
-                        System.out.println();
-                        System.out.println("업적달성조건 : " + player.title.get(tmptmp - 1).achievementConditions);
-                        if (player.craftingCount >= 10) {
-                            System.out.println();
-                            System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("                   업적을 달성했어요!");
-                            player.title.get(tmptmp - 1).obtainCK = true;
-                        }
-                        System.out.println();
-                        scanner.nextLine();
-                    }
-                }
-            } else {
+            String inputValue = scanner.next();
+            if (!MyHomeUtils.isInteger(inputValue) || Integer.parseInt(inputValue) != 1) {
                 return;
             }
+
+            // 업적 보기
+            int titleQty = this.titles.size();
+            boolean exit = true;
+            while (exit) {
+                System.out.println("┌──────────────────────────────────────────────────┐");
+                System.out.println("                    업적 리스트");
+                System.out.println();
+                for (int i = 0; i < titleQty; i++) {
+                    String hasTitle = this.titles.get(i).isAchieved() ? "달성" : "미달성";
+
+                    System.out.print("    " + (i + 1) + ". ");
+                    System.out.printf("%-12s", this.titles.get(i).getName());
+                    System.out.println("\t\t" + hasTitle);
+                }
+
+                System.out.println();
+                System.out.println("┌──────────────────────────────────────────────────┐");
+                System.out.println("                  업적 달성 조건 보기.");
+                System.out.println("       조건을 확인하고 싶은 업적의 번호를 입력해주세요.");
+                System.out.print("입력 (0. 돌아가기) >> ");
+
+                inputValue = scanner.next();
+                scanner.nextLine();
+                if (!MyHomeUtils.isInteger(inputValue)) {
+                    reEnter();
+                    scanner.nextLine();
+                    continue;
+                }
+
+                int inputVal = Integer.parseInt(inputValue);
+                if (inputVal < 0 || inputVal > titleQty) {
+                    reEnter();
+                    scanner.nextLine();
+                    continue;
+                }
+
+                if (inputVal == 0) {
+                    System.out.println();
+                    System.out.println("플레이어 정보로 돌아갑니다.");
+                    scanner.nextLine();
+                    break;
+                }
+
+                System.out.println();
+                System.out.println(inputVal + ". " + this.titles.get(inputVal - 1).getName());
+                System.out.println();
+                System.out.println("업적달성조건 : " + this.titles.get(inputVal - 1).getCondition());
+
+                if (inputVal == 1) {
+//                        title0.업적달성조건 = "퀘스트 3회 완료 시";
+                    System.out.println();
+                    System.out.println(inputVal + ". " + this.titles.get(inputVal - 1).getName());
+                    System.out.println();
+                    System.out.println("업적달성조건 : " + this.titles.get(tmptmp - 1).achievementConditions);
+                    System.out.println();
+                    scanner.nextLine();
+                } else if (tmptmp == 2) {
+//                        title1.업적달성조건 = "아이템 제작 10회 이상";
+                    System.out.println();
+                    System.out.println(tmptmp + ". " + player.title.get(tmptmp - 1).titleName);
+                    System.out.println();
+                    System.out.println("업적달성조건 : " + player.title.get(tmptmp - 1).achievementConditions);
+                    if (player.craftingCount >= 10) {
+                        System.out.println();
+                        System.out.println("┌──────────────────────────────────────────────────┐");
+                        System.out.println("                   업적을 달성했어요!");
+                        player.title.get(tmptmp - 1).obtainCK = true;
+                    }
+                    System.out.println();
+                    scanner.nextLine();
+                }
+            }
         }
+    }
+
+    private static void reEnter() {
+        System.out.println();
+        System.out.println("┌──────────────────────────────────────────────────┐");
+        System.out.println("                  다시 입력해 주세요.");
     }
 
     public void goToStore(Player player, Merchant merchant, Store store) {
@@ -1157,7 +1202,7 @@ public class Player extends Character {
                                 try {
                                     System.out.println();
                                     System.out.println("┌──────────────────────────────────────────────────┐");
-                                    System.out.print("[ " + inventory.getItem(inputVal - 1).potion.itemName + " ] 을(를) ");
+                                    System.out.print("[ " + inventory.getItem(inputVal - 1).potion.name + " ] 을(를) ");
                                     System.out.println("사용하시겠습니까?");
                                     System.out.println();
                                     System.out.println("1. 사용       2. 돌아가기(인벤토리 리스트 보기)");
@@ -1189,15 +1234,15 @@ public class Player extends Character {
                         } else {
                             if (inventory.getItem(inputVal - 1).entryType.equals("생산")) {
                                 System.out.print(inventory.getItem(inputVal - 1).growthItem.type + " 아이템 : ");
-                                System.out.println(inventory.getItem(inputVal - 1).growthItem.itemName);
+                                System.out.println(inventory.getItem(inputVal - 1).growthItem.name);
 
                             } else if (inventory.getItem(inputVal - 1).entryType.equals("일반")) {
                                 System.out.print(inventory.getItem(inputVal - 1).item.type + " 아이템 : ");
-                                System.out.println(inventory.getItem(inputVal - 1).item.itemName);
+                                System.out.println(inventory.getItem(inputVal - 1).item.name);
 
                             } else if (inventory.getItem(inputVal - 1).entryType.equals("제작")) {
                                 System.out.print(inventory.getItem(inputVal - 1).madeItem.type + " 아이템 : ");
-                                System.out.println(inventory.getItem(inputVal - 1).madeItem.itemName);
+                                System.out.println(inventory.getItem(inputVal - 1).madeItem.name);
                             }
                         }
 
@@ -1220,48 +1265,7 @@ public class Player extends Character {
 
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("            잘못 입력했어요. 다시 입력해주세요.");
-
-                    continue;
                 }
-            }
-        }
-
-    }
-
-    public void viewMapList(Player player, AnimalFarm animalFarm, Farm farm, Forest forest) {
-        boolean exit = true;
-        if (player.fatigability >= 100) {
-            System.out.println("피로도가 너무 높아서 아무 것도 할 수 없어요.");
-            scanner.nextLine();
-        } else {
-            while (exit) {
-                for (int i = 0; i < 100; i++) {
-                    System.out.println();
-                }
-                System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("           재료를 수확하러 왔다. 어디로 갈까?");
-                System.out.println();
-                System.out.println("   1. 밭     2. 동물농장     3. 숲     else. 이전으로");
-                System.out.println("└──────────────────────────────────────────────────┘");
-                System.out.println();
-                System.out.print("입력 >> ");
-                Scanner scanner = new Scanner(System.in);
-                inputVal = scanner.nextInt();
-                scanner.nextLine();
-
-                switch (inputVal) {
-                    case 1: // 밭으로 이동
-                        farm.getFarmItem(player, farm);
-                        break;
-                    case 2: // 동물농장으로 이동
-                        animalFarm.getAnimalFarmItem(player, animalFarm);
-                        break;
-                    case 3: // 숲으로 이동
-                        forest.getForestItem(player, forest);
-                        break;
-                    default:
-                        return;
-                }   // switch 종료
             }
         }
     }

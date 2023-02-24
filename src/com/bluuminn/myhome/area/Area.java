@@ -1,6 +1,5 @@
 package com.bluuminn.myhome.area;
 
-import com.bluuminn.myhome.audio.Music;
 import com.bluuminn.myhome.character.Player;
 import com.bluuminn.myhome.etc.ProgressBar;
 import com.bluuminn.myhome.harvestgame.Game;
@@ -10,23 +9,22 @@ import com.bluuminn.myhome.timer.Timer;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.Scanner;
 
-public class Area {
-    Scanner scanner = new Scanner(System.in);
-
-    int input, inputSel;
-
-    byte count;
-
-    String name;
+public abstract class Area {
+    private int input;
+    private int inputSel;
+    private int count;
+    private String name;
 
     // 수확할 수 있는 아이템 목록 출력
-    public ArrayList<GrowthItem> listOfItems = new ArrayList<GrowthItem>();
+    public ArrayList<GrowthItem> listOfItems = new ArrayList<>();
+
+    protected abstract void welcome();
 
     public void soundPlay() {
-        Music harvest = new Music("harvest.mp3", false);
-        harvest.start();
+        // TODO: 사운드 출력
+//        Music harvest = new Music("harvest.mp3", false);
+//        harvest.start();
     }
 
     public boolean print(Player player) {
@@ -47,7 +45,7 @@ public class Area {
                     listOfItems.get(i).levelCK = true;
                 }
                 if (listOfItems.get(i).levelCK) {
-                    System.out.print(listOfItems.get(i).itemName);
+                    System.out.print(listOfItems.get(i).name);
                     if (!listOfItems.get(i).harvestCK) {
                         if (!listOfItems.get(i).plantCK) {
                             System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 / ");
@@ -61,7 +59,7 @@ public class Area {
                         System.out.print(" (수확 가능)");
                     }
                 } else {
-                    System.out.print(listOfItems.get(i).itemName);
+                    System.out.print(listOfItems.get(i).name);
                     if (!listOfItems.get(i).harvestCK) {
                         if (!listOfItems.get(i).plantCK) {
                             System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 /");
@@ -103,7 +101,7 @@ public class Area {
                 // 아이템의 수확가능한 횟수가 남았으면 실행
                 if (listOfItems.get(input - 1).harvestCnt > 0) {
                     Game game = new Game();
-                    result = game.Run(farm, input);
+                    result = game.run(farm, input);
 //                    System.out.println(result);
                     if (result) {
 //                        System.out.println("result == 참 결과 실행");
@@ -120,7 +118,7 @@ public class Area {
                             System.out.println();
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("           수확할 수 있는 양을 모두 수확했어요.");
-                            System.out.println("          " + listOfItems.get(input - 1).itemName + " 획득량 : " + (count));
+                            System.out.println("          " + listOfItems.get(input - 1).name + " 획득량 : " + (count));
                             System.out.println();
                             System.out.println("               이전 메뉴로 돌아갑니다.");
 
@@ -156,7 +154,7 @@ public class Area {
                             listOfItems.get(input - 1).harvestCnt -= count;
 //                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
                             System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println(listOfItems.get(input - 1).itemName + " 획득량 : " + count);
+                            System.out.println(listOfItems.get(input - 1).name + " 획득량 : " + count);
                             player.inventory.addItem(itemEntry, count);
                             if (listOfItems.get(input - 1).harvestCnt <= 0) {
                                 listOfItems.get(input - 1).harvestCK = false;
@@ -206,7 +204,7 @@ public class Area {
                     } else {
                         System.out.println();
                         System.out.println("┌──────────────────────────────────────────────────┐");
-                        System.out.println("               아직 " + listOfItems.get(input - 1).itemName + " 을(를) 재배 중이에요.");
+                        System.out.println("               아직 " + listOfItems.get(input - 1).name + " 을(를) 재배 중이에요.");
                         System.out.println("                재배가 완료되면 알려드릴게요!");
                         System.out.println("└──────────────────────────────────────────────────┘");
                         scanner.nextLine();
@@ -225,7 +223,7 @@ public class Area {
                             harvestFlag = 1;
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("        재배 중이거나 수확 가능한 아이템이 없습니다.\n");
-                            System.out.println(listOfItems.get(input - 1).itemName + " 을(를) 재배할까요?");
+                            System.out.println(listOfItems.get(input - 1).name + " 을(를) 재배할까요?");
                             System.out.println();
                             System.out.println("1. 재배 하기        2. 이전 메뉴로 가기");
                             System.out.print("입력 >> ");
@@ -239,7 +237,7 @@ public class Area {
                                 case 1:
                                     System.out.println();
                                     System.out.println("┌──────────────────────────────────────────────────┐");
-                                    System.out.println("                  " + listOfItems.get(input - 1).itemName + " 을(를) 재배합니다.");
+                                    System.out.println("                  " + listOfItems.get(input - 1).name + " 을(를) 재배합니다.");
                                     System.out.println("                재배가 완료되면 알려드릴게요!");
                                     System.out.println("└──────────────────────────────────────────────────┘");
 

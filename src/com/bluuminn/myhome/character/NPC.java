@@ -12,7 +12,11 @@ public class NPC extends Character {
 
     public QuestEvent questEvent = new QuestEvent();
 
-    private NPC(String name) {
+    protected NPC(String name) {
         super(name);
+    }
+
+    public static NPC createNPC(String name) {
+        return new NPC(name);
     }
 }

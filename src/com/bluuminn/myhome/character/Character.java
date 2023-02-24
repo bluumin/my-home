@@ -1,12 +1,7 @@
 package com.bluuminn.myhome.character;
 
-public class Character {
-    private int inputVal;
+public abstract class Character {
     private String name;
-
-    public int getInputVal() {
-        return inputVal;
-    }
 
     public String getName() {
         return this.name;

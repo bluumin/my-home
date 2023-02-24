@@ -28,7 +28,7 @@ public class ForestTimer implements Runnable {
         if (timerTemp <= 0) {
             System.out.println();
             System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t =====================================");
-            System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + forest.listOfItems.get(input - 1).itemName + " 기르기 완료!");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + forest.listOfItems.get(input - 1).name + " 기르기 완료!");
             System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t =====================================");
         }
         forest.listOfItems.get(input - 1).growingTime = 0;

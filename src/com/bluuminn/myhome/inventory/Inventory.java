@@ -171,13 +171,13 @@ public class Inventory {
     // 해당하는 아이템의 이름을 반환한다
     public String getItemName(ItemEntry item) {
         if (item.entryType.equals("일반")) {
-            return item.item.itemName;
+            return item.item.name;
         } else if (item.entryType.equals("생산")) {
-            return item.growthItem.itemName;
+            return item.growthItem.name;
         } else if (item.entryType.equals("제작")) {
-            return item.madeItem.itemName;
+            return item.madeItem.name;
         } else if (item.entryType.equals("포션")) {
-            return item.potion.itemName;
+            return item.potion.name;
         } else {
             return null;
         }
@@ -188,13 +188,13 @@ public class Inventory {
     public int getItemPrice(ItemEntry item) {
 
         if (item.entryType.equals("일반")) {
-            return item.item.itemPrice;
+            return item.item.price;
         } else if (item.entryType.equals("생산")) {
-            return item.growthItem.itemPrice;
+            return item.growthItem.price;
         } else if (item.entryType.equals("제작")) {
-            return item.madeItem.itemPrice;
+            return item.madeItem.price;
         } else if (item.entryType.equals("포션")) {
-            return item.potion.itemPrice;
+            return item.potion.price;
         } else {
             return -1;
         }

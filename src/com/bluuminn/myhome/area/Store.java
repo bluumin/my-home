@@ -97,35 +97,35 @@ public class Store extends Area {
 
         // 양가죽
         storeItem.add(sheepskinE);
-        sheepskin.itemPrice = 400;
+        sheepskin.price = 400;
 
         // 소고기
         storeItem.add(beefE);
-        beef.itemPrice = 400;
+        beef.price = 400;
 
         // 아스파라거스
         storeItem.add(asparagusE);
-        asparagus.itemPrice = 300;
+        asparagus.price = 300;
 
         // 소가죽
         storeItem.add(cowhideE);
-        cowhide.itemPrice = 500;
+        cowhide.price = 500;
 
         // 말가죽
         storeItem.add(horsehideE);
-        horsehide.itemPrice = 500;
+        horsehide.price = 500;
 
         // 피로도 30 회복
         storeItem.add(recovery30E);
-        recovery30.itemPrice = 2000;
+        recovery30.price = 2000;
 
         // 피로도 70 회복
         storeItem.add(recovery70E);
-        recovery70.itemPrice = 5500;
+        recovery70.price = 5500;
 
         // 피로도 100 회복
         storeItem.add(recovery100E);
-        recovery100.itemPrice = 10000;
+        recovery100.price = 10000;
 
     }
 

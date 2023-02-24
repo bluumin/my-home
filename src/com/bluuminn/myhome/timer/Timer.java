@@ -27,7 +27,7 @@ public class Timer implements Runnable {
         if (timerTemp <= 0) {
             System.out.println();
             System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t =====================================");
-            System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + farm.listOfItems.get(input - 1).itemName + " 재배 완료!");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + farm.listOfItems.get(input - 1).name + " 재배 완료!");
             System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t =====================================");
         }
 

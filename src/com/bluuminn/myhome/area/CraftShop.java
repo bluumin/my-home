@@ -88,7 +88,7 @@ public class CraftShop extends Area {
                 if (player.madeItemList.get(i).level <= player.level) {
                     player.madeItemList.get(i).levelCK = true;
                 }
-                tmpItemName = player.madeItemList.get(i).itemName;
+                tmpItemName = player.madeItemList.get(i).name;
                 System.out.print(i + 1 + ". ");
                 if (player.madeItemList.get(i).levelCK) {
                     System.out.println(tmpItemName);
@@ -118,7 +118,7 @@ public class CraftShop extends Area {
                 boolean ckck = true;
                 while (ckck) {
 
-                    tmpItemName = player.madeItemList.get(value - 1).itemName;
+                    tmpItemName = player.madeItemList.get(value - 1).name;
 
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("              " + tmpItemName + " 제작");

@@ -35,32 +35,32 @@ public class ItemEntry {
         this.item = item;
         this.count = count;
         this.entryType = item.type;
-        this.entryName = item.itemName;
-        this.entryPrice = item.itemPrice;
+        this.entryName = item.name;
+        this.entryPrice = item.price;
     }
 
     public ItemEntry(Potion potion, int count) {
         this.potion = potion;
         this.count = count;
         this.entryType = potion.type;
-        this.entryName = potion.itemName;
-        this.entryPrice = potion.itemPrice;
+        this.entryName = potion.name;
+        this.entryPrice = potion.price;
     }
 
     public ItemEntry(GrowthItem growthItem, int count) {
         this.growthItem = growthItem;
         this.count = count;
         this.entryType = growthItem.type;
-        this.entryName = growthItem.itemName;
-        this.entryPrice = growthItem.itemPrice;
+        this.entryName = growthItem.name;
+        this.entryPrice = growthItem.price;
     }
 
     public ItemEntry(MadeItem madeItem, int count) {
         this.madeItem = madeItem;
         this.count = count;
         this.entryType = madeItem.type;
-        this.entryName = madeItem.itemName;
-        this.entryPrice = madeItem.itemPrice;
+        this.entryName = madeItem.name;
+        this.entryPrice = madeItem.price;
     }
 
 }

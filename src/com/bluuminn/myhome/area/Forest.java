@@ -109,7 +109,7 @@ public class Forest extends Area {
             if (listOfItems.get(input - 1).harvestCK) {
                 if (count == 0) {
                     System.out.print("아무키나 입력하면 ");
-                    System.out.println(listOfItems.get(input - 1).itemName + " 을(를) 수확하러 이동해요");
+                    System.out.println(listOfItems.get(input - 1).name + " 을(를) 수확하러 이동해요");
 
                     scanner.nextLine();
                 }
@@ -117,7 +117,7 @@ public class Forest extends Area {
                 // 아이템의 수확가능한 횟수가 남았으면 실행
                 if (listOfItems.get(input - 1).harvestCnt > 0) {
                     Game game = new Game();
-                    result = game.Run(forest, input);
+                    result = game.run(forest, input);
 //                    System.out.println(result);
                     if (result) {
 //                        System.out.println("result == 참 결과 실행");
@@ -131,7 +131,7 @@ public class Forest extends Area {
                             System.out.println("    " + count + "개 획득");
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("         수확할 수 있는 양을 모두 수확했어요.");
-                            System.out.println(listOfItems.get(input - 1).itemName + " 획득량 : " + (count));
+                            System.out.println(listOfItems.get(input - 1).name + " 획득량 : " + (count));
                             System.out.println();
                             System.out.println("이전 메뉴로 돌아갑니다.");
 
@@ -163,7 +163,7 @@ public class Forest extends Area {
                             listOfItems.get(input - 1).harvestCnt -= count;
 //                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
                             System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("        " + listOfItems.get(input - 1).itemName + " 획득량 : " + count);
+                            System.out.println("        " + listOfItems.get(input - 1).name + " 획득량 : " + count);
                             player.inventory.addItem(itemEntry, count);
                             if (listOfItems.get(input - 1).harvestCnt <= 0) {
                                 listOfItems.get(input - 1).harvestCK = false;
@@ -233,7 +233,7 @@ public class Forest extends Area {
                             harvestFlag = 1;
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("       자라고 있는 나무나 수확 가능한 아이템이 없습니다.\n");
-                            System.out.println(treeList.get(input - 1) + " 를 기르면 " + listOfItems.get(input - 1).itemName + "을 얻을 수 있습니다.");
+                            System.out.println(treeList.get(input - 1) + " 를 기르면 " + listOfItems.get(input - 1).name + "을 얻을 수 있습니다.");
                             System.out.println(treeList.get(input - 1) + " 를 기를까요?");
                             System.out.println();
                             System.out.println("1." + treeList.get(input - 1) + " 기르기        else. 이전 메뉴로 가기");
@@ -342,7 +342,7 @@ public class Forest extends Area {
                 if (listOfItems.get(i).levelCK) {
 
                     // 동물이름 - 수확아이템 출력
-                    System.out.print(treeList.get(i) + " - " + listOfItems.get(i).itemName);
+                    System.out.print(treeList.get(i) + " - " + listOfItems.get(i).name);
 
                     // 수확가능 여부가 false 라면 => 수확 불가능 상태라면
                     if (listOfItems.get(i).harvestCK == false) {
@@ -372,7 +372,7 @@ public class Forest extends Area {
 
                     // 레벨이 충족되지 않았다면
                 } else {
-                    System.out.print(treeList.get(i) + " - " + listOfItems.get(i).itemName);
+                    System.out.print(treeList.get(i) + " - " + listOfItems.get(i).name);
                     System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 /");
                     System.out.print(" HOLD - LV." + listOfItems.get(i).level + " 이상)");
                     // 수확가능 여부 체크

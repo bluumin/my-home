@@ -2,27 +2,32 @@ package com.bluuminn.myhome.item;
 
 public class Item {
     // 아이템 이름
-    public String itemName;
+    private String name;
+
+    private ItemType type;
+
     // 아이템 획득지
-    String areaOfProduction;
+    private String productionArea;
+
     // 아이템 레벨. (플레이어 레벨이 아이템 레벨이 되어야 획득 가능)
-    public byte level;
+    private int level;
+
     // 아이템 가격 (상점 가격)
-    public int itemPrice;
+    private int price;
+
     // 아이템 심거나 만들 때 비용
-    public int cost;
+    private int cost;
+
     // 아이템을 수확하거나 제작하면 얻는 경험치
-    public int exp;
+    private int exp;
+
     // 아이템을 수확하거나 제작할수 있는지 여부
-    public boolean levelCK;
-    // 아이템의 타입. 일반아이템인지, 소비아이템인지
-    public String type;
+    private boolean levelCK;
 
 
-    public Item(String name, String areaOfProduction, int price) {
-        this.itemName = name;
-        this.areaOfProduction = areaOfProduction;
-        this.type = "일반";
-        this.itemPrice = price;
+    public Item(String name, String productionArea, int price) {
+        this.name = name;
+        this.productionArea = productionArea;
+        this.price = price;
     }
 }

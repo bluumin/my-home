@@ -6,19 +6,24 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Merchant extends NPC {
-    public Merchant(String merName) {
-        super(merName);
+    private Merchant(String name) {
+        super(name);
     }
 
-    boolean goldCk = false;
+    public static Merchant createMerchant(String name) {
+        return new Merchant(name);
+    }
+
+    private boolean goldCk = false;
+
     // 아이템 한개당 단가를 임시 저장할 변수
-    int singlePrice;
+    private int price;
 
     // 구매할 아이템의 총 가격을 임시 저장할 변수
-    int totalPrice;
+    private int totalPrice;
 
     // 구매할 아이템의 이름을 임시 저장할 변
-    String selItem;
+    private String selItem;
 
     public void lines(Store store, Player player) {
         boolean exit = true;
@@ -76,29 +81,29 @@ public class Merchant extends NPC {
     public void storeProcedure(Store store, Player player, int itemNum, int itemQuantity) {
         // 선택한 아이템 이름을 저장
         if (store.storeItem.get(itemNum - 1).entryType.equals("일반")) {
-            selItem = store.storeItem.get(itemNum - 1).item.itemName;
+            selItem = store.storeItem.get(itemNum - 1).item.name;
         } else if (store.storeItem.get(itemNum - 1).entryType.equals("생산")) {
-            selItem = store.storeItem.get(itemNum - 1).growthItem.itemName;
+            selItem = store.storeItem.get(itemNum - 1).growthItem.name;
         } else if (store.storeItem.get(itemNum - 1).entryType.equals("제작")) {
-            selItem = store.storeItem.get(itemNum - 1).madeItem.itemName;
+            selItem = store.storeItem.get(itemNum - 1).madeItem.name;
         } else if (store.storeItem.get(itemNum - 1).entryType.equals("포션")) {
-            selItem = store.storeItem.get(itemNum - 1).potion.itemName;
+            selItem = store.storeItem.get(itemNum - 1).potion.name;
         }
 
         // 한개당 가격을 저장
         if (store.storeItem.get(itemNum - 1).entryType.equals("일반")) {
-            singlePrice = store.storeItem.get(itemNum - 1).item.itemPrice;
+            price = store.storeItem.get(itemNum - 1).item.price;
         } else if (store.storeItem.get(itemNum - 1).entryType.equals("생산")) {
-            singlePrice = store.storeItem.get(itemNum - 1).growthItem.itemPrice;
+            price = store.storeItem.get(itemNum - 1).growthItem.price;
         } else if (store.storeItem.get(itemNum - 1).entryType.equals("제작")) {
-            singlePrice = store.storeItem.get(itemNum - 1).madeItem.itemPrice;
+            price = store.storeItem.get(itemNum - 1).madeItem.price;
         } else if (store.storeItem.get(itemNum - 1).entryType.equals("포션")) {
-            singlePrice = store.storeItem.get(itemNum - 1).potion.itemPrice;
+            price = store.storeItem.get(itemNum - 1).potion.price;
         }
 //        singlePrice = store.storeItem.get(itemNum - 1).itemPrice;
 
         // 총 가격을 저장
-        totalPrice = singlePrice * itemQuantity;
+        totalPrice = price * itemQuantity;
 
         System.out.println("┌──────────────────────────────────────────────────┐");
         System.out.println(selItem + " " + itemQuantity + " 개를 " + totalPrice + "골드에 구매 하시겠습니까?");
@@ -309,16 +314,16 @@ public class Merchant extends NPC {
                         if (itemNum <= store.storeItem.size() && itemNum > 0) {
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             if (store.storeItem.get(itemNum - 1).entryType.equals("일반")) {
-                                System.out.print(store.storeItem.get(itemNum - 1).item.itemName);
+                                System.out.print(store.storeItem.get(itemNum - 1).item.name);
 
                             } else if (store.storeItem.get(itemNum - 1).entryType.equals("생산")) {
-                                System.out.print(store.storeItem.get(itemNum - 1).growthItem.itemName);
+                                System.out.print(store.storeItem.get(itemNum - 1).growthItem.name);
 
                             } else if (store.storeItem.get(itemNum - 1).entryType.equals("제작")) {
-                                System.out.print(store.storeItem.get(itemNum - 1).madeItem.itemName);
+                                System.out.print(store.storeItem.get(itemNum - 1).madeItem.name);
 
                             } else if (store.storeItem.get(itemNum - 1).entryType.equals("포션")) {
-                                System.out.print(store.storeItem.get(itemNum - 1).potion.itemName);
+                                System.out.print(store.storeItem.get(itemNum - 1).potion.name);
                             }
                             System.out.println(" 을(를) 몇 개 구매하시겠습니까? (0. 판매 아이템 목록 보기)");
                             System.out.print("입력 >> ");

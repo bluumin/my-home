@@ -7,11 +7,14 @@ public class MyHomeUtils {
         }
     }
 
-    public static void sleepAsMillis(long millis) {
+    public static void delayAsMillis(long millis) {
         try {
             Thread.sleep(millis);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (InterruptedException ignore) {
         }
+    }
+
+    public static boolean isInteger(String str) {
+        return str != null && str.matches("^\\d+$");
     }
 }
