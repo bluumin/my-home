@@ -9,14 +9,16 @@ import com.bluuminn.myhome.etc.MyHomeConstants;
 import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.etc.ProgressBar;
 import com.bluuminn.myhome.inventory.ItemEntry;
-import com.bluuminn.myhome.quest.Title;
 import com.bluuminn.myhome.quest.Needs;
 import com.bluuminn.myhome.quest.Quest;
+import com.bluuminn.myhome.quest.Title;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.util.Scanner;
+
+import static com.bluuminn.myhome.etc.MyHomeConstants.FATIGUE_IS_TOO_HIGH;
 
 public class MyHome {
 
@@ -28,6 +30,8 @@ public class MyHome {
     private final Merchant merchant;
     private final NPC mimi;
     private final NPC tomson;
+    SoundPlayerUsingClip player = new SoundPlayerUsingClip();
+    Scanner scanner = new Scanner(System.in);
 
     public MyHome() {
         farm = new Farm();         // 밭 객체 추가
@@ -39,9 +43,6 @@ public class MyHome {
         mimi = NPC.createNPC("미미");
         tomson = NPC.createNPC("톰슨");
     }
-
-    SoundPlayerUsingClip player = new SoundPlayerUsingClip();
-    Scanner scanner = new Scanner(System.in);
 
     public void start() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         ProgressBar.loading();
@@ -178,17 +179,6 @@ public class MyHome {
 
         //  ================== 로딩 시나리오 끝================
 
-
-        // ============================= 클래스 선언 ==================================
-        Farm farm = new Farm();         // 밭 객체 추가
-        AnimalFarm animalFarm = new AnimalFarm();   // 동물 농장 객체 추가
-        Forest forest = new Forest();   // 숲 객체 추가
-        Store store = new Store();  // 상점 객체 추가
-        CraftShop craftShop = new CraftShop("공방", player, store, farm, animalFarm);
-        Merchant merchant = Merchant.createMerchant("로빈");
-        NPC mimi = NPC.createNPC("미미");
-        NPC tomson = NPC.createNPC("톰슨");
-
         // ============================= 업적 타이틀 추가 ==============================
         Title title0 = new Title("공방의 새 주인");
         player.title.add(title0);
@@ -241,59 +231,70 @@ public class MyHome {
                 enterAgain();
                 continue;
             }
-            switch (Integer.parseInt(inputValue)) {
+
+            // TODO: inputValue enum으로 바꾸기. 각 case가 뭘 의미하는지 한눈에 알기 어려움
+            switch (stringToInt(inputValue)) {
                 case 0:
                     System.exit(0);
                     break;
 
                 case 1:     // 플레이어 정보 보기
-                    player.showInfo();
+                    player.showInfo(scanner);
                     break;
-
                 case 2:     // 재료 수확하러 하기
-                    if (!isResting) {
-                        ProgressBar.loading();
-                        showAreas(player, animalFarm, farm, forest);
-                    } else {
+                    if (isResting) {
                         printToRest();
+                        continue;
                     }
+                    if (player.needToRest()) {
+                        System.out.println(FATIGUE_IS_TOO_HIGH);
+                        continue;
+                    }
+                    ProgressBar.loading();
+                    showAreas(player);
                     break;
-
                 case 3:     // 아이템 제작
-                    if (!isResting) {
-                        ProgressBar.loading();
-                        player.goToCraftShop(craftShop, player);
-                    } else {
+                    if (isResting) {
                         printToRest();
+                        continue;
                     }
+                    if (player.needToRest()) {
+                        System.out.println(FATIGUE_IS_TOO_HIGH);
+                        continue;
+                    }
+                    ProgressBar.loading();
+                    player.goToCraftShop(craftShop, player);
                     break;
-
                 case 4:     // 퀘스트 리스트 확인
-                    if (!isResting) {
-                        player.viewQuestList(player, mimi);
-                    } else {
+                    if (isResting) {
                         printToRest();
+                        continue;
                     }
+                    if (player.needToRest()) {
+                        System.out.println(FATIGUE_IS_TOO_HIGH);
+                        continue;
+                    }
+                    player.viewQuestList(player, mimi);
                     break;
-
                 case 5:     // 인벤토리 확인
                     player.viewInventory(player);
                     break;
-
                 case 6:     // 상점
                     ProgressBar.loading();
                     player.goToStore(player, merchant, store);
                     break;
-
                 case 7:     // 미니게임
                     ProgressBar.loading();
                     player.miniGame(player);
                     break;
-
                 default:
                     enterAgain();
             }
         }
+    }
+
+    private static int stringToInt(String stringNumber) {
+        return Integer.parseInt(stringNumber);
     }
 
     private static void enterAgain() {
@@ -335,41 +336,44 @@ public class MyHome {
         scanner.nextLine(); // enter 눌러야 다음 진행
     }
 
-    private void showAreas(Player player, AnimalFarm animalFarm, Farm farm, Forest forest) {
-        boolean exit = true;
-        if (player.fatigability >= 100) {
-            System.out.println("피로도가 너무 높아서 아무 것도 할 수 없어요.");
-            scanner.nextLine();
-        } else {
-            while (exit) {
-                for (int i = 0; i < 100; i++) {
-                    System.out.println();
-                }
-                System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("           재료를 수확하러 왔다. 어디로 갈까?");
-                System.out.println();
-                System.out.println("   1. 밭     2. 동물농장     3. 숲     else. 이전으로");
-                System.out.println("└──────────────────────────────────────────────────┘");
-                System.out.println();
-                System.out.print("입력 >> ");
-                Scanner scanner = new Scanner(System.in);
-                inputVal = scanner.nextInt();
-                scanner.nextLine();
+    private void showAreas(Player player) {
+        while (true) {
+            MyHomeUtils.printLineAsCount(100);
+            System.out.println("┌──────────────────────────────────────────────────┐");
+            System.out.println("           재료를 수확하러 왔다. 어디로 갈까?");
+            System.out.println();
+            System.out.println("   1. 밭     2. 동물농장     3. 숲        0. 이전으로");
+            System.out.println("└──────────────────────────────────────────────────┘");
+            System.out.println();
+            System.out.print("입력 >> ");
 
-                switch (inputVal) {
-                    case 1: // 밭으로 이동
-                        farm.getFarmItem(player, farm);
-                        break;
-                    case 2: // 동물농장으로 이동
-                        animalFarm.getAnimalFarmItem(player, animalFarm);
-                        break;
-                    case 3: // 숲으로 이동
-                        forest.getForestItem(player, forest);
-                        break;
-                    default:
-                        return;
-                }   // switch 종료
+            String inputVal = input();
+            if (!MyHomeUtils.isInteger(inputVal)) {
+                enterAgain();
+                scanner.nextLine();
+                continue;
+            }
+
+            // TODO: inputVal enum 으로 변경하기. 각 case가 뭘 의미하는지 한눈에 파악하기 어려움.
+            switch (stringToInt(inputVal)) {
+                case 1: // 밭으로 이동
+                    farm.getFarmItem(player);
+                    break;
+                case 2: // 동물농장으로 이동
+                    animalFarm.getAnimalFarmItem(player, animalFarm);
+                    break;
+                case 3: // 숲으로 이동
+                    forest.getForestItem(player);
+                    break;
+                default:
+                    return;
             }
         }
+    }
+
+    private String input() {
+        String input = scanner.next();
+        scanner.nextLine();
+        return input;
     }
 }

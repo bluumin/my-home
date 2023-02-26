@@ -122,7 +122,7 @@ public class Merchant extends NPC {
             if (totalPrice <= player.gold) {
                 boolean ckInven = false;
 
-                ckInven = player.inventory.addItem(store.storeItem.get(itemNum - 1), itemQuantity);
+                ckInven = player.inventory.add(store.storeItem.get(itemNum - 1), itemQuantity);
 
 //                if (store.storeItem.get(itemNum - 1).entryType.equals("일반")){
 //                    ckInven = player.inventory.addItem(store.storeItem.get(itemNum - 1), itemQuantity);

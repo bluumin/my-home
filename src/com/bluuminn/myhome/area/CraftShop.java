@@ -2,7 +2,7 @@ package com.bluuminn.myhome.area;
 
 import com.bluuminn.myhome.character.Player;
 import com.bluuminn.myhome.inventory.ItemEntry;
-import com.bluuminn.myhome.item.MadeItem;
+import com.bluuminn.myhome.item.CraftItem;
 import com.bluuminn.myhome.item.RequiredItem;
 
 public class CraftShop extends Area {
@@ -19,23 +19,23 @@ public class CraftShop extends Area {
     Boolean makingCK = false;  // 아이템 만들수 있는지 여부
 
     // 밀짚끈
-    MadeItem strawRope = new MadeItem("밀짚끈", "원목 작업대", 100, 20);
+    CraftItem strawRope = new CraftItem("밀짚끈", "원목 작업대", 100, 20);
     ItemEntry strawRopeE = new ItemEntry(strawRope, 0);
 
     // 네이쳐 오가닉 소파
-    MadeItem natureOrganicSofa = new MadeItem("네이쳐 오가닉 소파", "원목 작업대", 600, 40);
+    CraftItem natureOrganicSofa = new CraftItem("네이쳐 오가닉 소파", "원목 작업대", 600, 40);
     ItemEntry natureOrganicSofaE = new ItemEntry(natureOrganicSofa, 0);
 
     // 네이쳐 오가닉 테이블
-    MadeItem natureOrganicTable = new MadeItem("네이쳐 오가닉 테이블", "원목 작업대", 600, 50);
+    CraftItem natureOrganicTable = new CraftItem("네이쳐 오가닉 테이블", "원목 작업대", 600, 50);
     ItemEntry natureOrganicTableE = new ItemEntry(natureOrganicTable, 0);
 
     // 에코 바구니
-    MadeItem ecoBasket = new MadeItem("에코 바구니", "원목 작업대", 400, 80);
+    CraftItem ecoBasket = new CraftItem("에코 바구니", "원목 작업대", 400, 80);
     ItemEntry ecoBasketE = new ItemEntry(ecoBasket, 0);
 
     // 딸기 향초
-    MadeItem candle = new MadeItem("딸기 향초", "원목 작업대", 1000, 160);
+    CraftItem candle = new CraftItem("딸기 향초", "원목 작업대", 1000, 160);
     ItemEntry candleE = new ItemEntry(candle, 0);
 
     public CraftShop(String name, Player player, Store store, Farm farm, AnimalFarm animalFarm) {
@@ -44,29 +44,29 @@ public class CraftShop extends Area {
 
         // 밀짚끈
         player.madeItemList.add(strawRope);
-        strawRope.requiredItem.add(new RequiredItem(farm.mealE, 1));
+        strawRope.requiredItems.add(new RequiredItem(farm.mealE, 1));
         strawRope.level = 1;
 
         // 네이쳐 오가닉 소파
         player.madeItemList.add(natureOrganicSofa);
-        natureOrganicSofa.requiredItem.add(new RequiredItem(strawRopeE, 2));
+        natureOrganicSofa.requiredItems.add(new RequiredItem(strawRopeE, 2));
         natureOrganicSofa.level = 2;
 
         // 네이쳐 오가닉 테이블
         player.madeItemList.add(natureOrganicTable);
-        natureOrganicTable.requiredItem.add(new RequiredItem(strawRopeE, 3));
+        natureOrganicTable.requiredItems.add(new RequiredItem(strawRopeE, 3));
         natureOrganicTable.level = 2;
 
         // 에코 바구니
         player.madeItemList.add(ecoBasket);
-        ecoBasket.requiredItem.add(new RequiredItem(farm.mealE, 1));
-        ecoBasket.requiredItem.add(new RequiredItem(strawRopeE, 1));
+        ecoBasket.requiredItems.add(new RequiredItem(farm.mealE, 1));
+        ecoBasket.requiredItems.add(new RequiredItem(strawRopeE, 1));
         ecoBasket.level = 3;
 
         // 딸기 향초
         player.madeItemList.add(candle);
-        candle.requiredItem.add(new RequiredItem(strawRopeE, 1));
-        candle.requiredItem.add(new RequiredItem(farm.strawberryE, 1));
+        candle.requiredItems.add(new RequiredItem(strawRopeE, 1));
+        candle.requiredItems.add(new RequiredItem(farm.strawberryE, 1));
         candle.level = 3;
 
     }

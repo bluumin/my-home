@@ -23,7 +23,6 @@ public class AnimalTimer implements Runnable {
             } catch (InterruptedException e) {
                 System.out.println("Error: " + e);
             }
-//            System.out.println(i);    // 몇초 남았는지 출력
         }
         if (timerTemp <= 0) {
             System.out.println();
@@ -32,6 +31,6 @@ public class AnimalTimer implements Runnable {
             System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t =====================================");
         }
 //        farm.listOfItems.get(input - 1).harvestCK = true;
-        animalFarm.listOfItems.get(input - 1).growingTime = 0;
+        animalFarm.listOfItems.get(input - 1).growingPeriod = 0;
     }
 }

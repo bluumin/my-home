@@ -3,23 +3,21 @@ package com.bluuminn.myhome.item;
 import com.bluuminn.myhome.character.Player;
 
 public class Potion extends Item {
-    int recovery;   // 회복량
+    private final int recovery;   // 회복량
 
-    public Potion(String name, String areaOfProduction, int price, int recov) {
-        super(name, areaOfProduction, price);
-        this.type = "포션";
-        this.recovery = recov;
+    public Potion(String name, String areaOfProduction, int salePrice, int recovery) {
+        super(name, ItemType.CONSUMPTION, areaOfProduction, salePrice);
+        this.recovery = recovery;
     }
 
-    // 피로도 회복
-    public void recoveryFat(Player player) {
+    public void calculateRecoveryAmount(Player player) {
+        int fatigability = player.getFatigability();
+        fatigability -= recovery;
 
-        player.fatigability -= recovery;
-
-        if (player.fatigability < 0) {
-            player.fatigability = 0;
+        if (fatigability < 0) {
+            fatigability = 0;
         }
-
-        System.out.println("아이템을 사용했어요.");
+        player.updateFatigability(fatigability);
+        System.out.println(getName() + " 아이템을 사용했어요.");
     }
 }

@@ -41,7 +41,7 @@ public class Farm extends Area {
         meal.level = 1;
         meal.exp = 30;
         meal.cost = 50;
-        meal.growingTime = 10;
+        meal.growingPeriod = 10;
         meal.defaultTime = 10;
 
 
@@ -50,7 +50,7 @@ public class Farm extends Area {
         strawberry.level = 3;
         strawberry.exp = 6;
         strawberry.cost = 140;
-        strawberry.growingTime = 15;
+        strawberry.growingPeriod = 15;
         strawberry.defaultTime = 15;
 
 
@@ -59,7 +59,7 @@ public class Farm extends Area {
         tomato.level = 6;
         tomato.exp = 31;
         tomato.cost = 300;
-        tomato.growingTime = 10;
+        tomato.growingPeriod = 10;
         tomato.defaultTime = 10;
 
 
@@ -68,7 +68,7 @@ public class Farm extends Area {
         cotton.level = 10;
         cotton.exp = 99;
         cotton.cost = 540;
-        cotton.growingTime = 15;
+        cotton.growingPeriod = 15;
         cotton.defaultTime = 15;
 
 
@@ -77,7 +77,7 @@ public class Farm extends Area {
         potato.level = 16;
         potato.exp = 339;
         potato.cost = 940;
-        potato.growingTime = 10;
+        potato.growingPeriod = 10;
         potato.defaultTime = 10;
 
 
@@ -86,119 +86,117 @@ public class Farm extends Area {
         corn.level = 20;
         corn.exp = 756;
         corn.cost = 1240;
-        corn.growingTime = 15;
+        corn.growingPeriod = 15;
         corn.defaultTime = 15;
 
     }
 
-    public void getFarmItem(Player player, Farm farm) {
-        boolean exit = true;
-
-        while (exit) {
-
+    public void getFarmItem(Player player) {
+        while (true) {
             boolean printCK = print(player);
+            if (!printCK) {
+                return;
+            }
+            System.out.println("\n\n수확하고 싶은 작물의 번호를 입력하세요. (0. 이전 단계로)");
+            System.out.print("입력 >> ");
 
-            if (printCK) {
-                System.out.println("\n\n수확하고 싶은 작물의 번호를 입력하세요. (0. 이전 단계로)");
-                System.out.print("입력 >> ");
+            try {
+                input = scanner.nextInt();
+                scanner.nextLine();
 
-                try {
+                if (input == 0) {
+                    return;
+                }
 
-                    input = scanner.nextInt();
-                    scanner.nextLine();
+                if (input > 0 && listOfItems.size() >= input) {
 
-                    if (input == 0) {
-                        exit = false;
+                    switch (input) {
+                        case 1:
+                            // 밀
+                            if (listOfItems.get(input - 1).levelCK) {
+                                addInventory(player, mealE, farm);
+                            } else {
+                                System.out.println("┌──────────────────────────────────────────────────┐");
+                                System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
+                                scanner.nextLine();
+                            }
+                            break;
 
-                    } else if (input > 0 && listOfItems.size() >= input) {
+                        case 2:
+                            // 딸기
+                            if (listOfItems.get(input - 1).levelCK) {
+                                addInventory(player, strawberryE, farm);
+                            } else {
+                                System.out.println("┌──────────────────────────────────────────────────┐");
+                                System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
+                                scanner.nextLine();
+                            }
+                            break;
 
-                        switch (input) {
-                            case 1:
-                                // 밀
-                                if (listOfItems.get(input - 1).levelCK) {
-                                    addInventory(player, mealE, farm);
-                                } else {
-                                    System.out.println("┌──────────────────────────────────────────────────┐");
-                                    System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
-                                    scanner.nextLine();
-                                }
-                                break;
+                        case 3:
+                            // 토마토
+                            if (listOfItems.get(input - 1).levelCK) {
+                                addInventory(player, tomatoE, farm);
+                            } else {
+                                System.out.println("┌──────────────────────────────────────────────────┐");
+                                System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
+                                scanner.nextLine();
+                            }
+                            break;
 
-                            case 2:
-                                // 딸기
-                                if (listOfItems.get(input - 1).levelCK) {
-                                    addInventory(player, strawberryE, farm);
-                                } else {
-                                    System.out.println("┌──────────────────────────────────────────────────┐");
-                                    System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
-                                    scanner.nextLine();
-                                }
-                                break;
+                        case 4:
+                            // 솜
+                            if (listOfItems.get(input - 1).levelCK) {
+                                addInventory(player, cottonE, farm);
+                            } else {
+                                System.out.println("┌──────────────────────────────────────────────────┐");
+                                System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
+                                scanner.nextLine();
+                            }
+                            break;
 
-                            case 3:
-                                // 토마토
-                                if (listOfItems.get(input - 1).levelCK) {
-                                    addInventory(player, tomatoE, farm);
-                                } else {
-                                    System.out.println("┌──────────────────────────────────────────────────┐");
-                                    System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
-                                    scanner.nextLine();
-                                }
-                                break;
+                        case 5:
+                            // 감자
+                            if (listOfItems.get(input - 1).levelCK) {
+                                addInventory(player, potatoE, farm);
+                            } else {
+                                System.out.println("┌──────────────────────────────────────────────────┐");
+                                System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
+                                scanner.nextLine();
+                            }
+                            break;
 
-                            case 4:
-                                // 솜
-                                if (listOfItems.get(input - 1).levelCK) {
-                                    addInventory(player, cottonE, farm);
-                                } else {
-                                    System.out.println("┌──────────────────────────────────────────────────┐");
-                                    System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
-                                    scanner.nextLine();
-                                }
-                                break;
-
-                            case 5:
-                                // 감자
-                                if (listOfItems.get(input - 1).levelCK) {
-                                    addInventory(player, potatoE, farm);
-                                } else {
-                                    System.out.println("┌──────────────────────────────────────────────────┐");
-                                    System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
-                                    scanner.nextLine();
-                                }
-                                break;
-
-                            case 6:
-                                // 옥수수
-                                if (listOfItems.get(input - 1).levelCK) {
-                                    addInventory(player, cornE, farm);
-                                } else {
-                                    System.out.println("┌──────────────────────────────────────────────────┐");
-                                    System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
-                                    scanner.nextLine();
-                                }
-                                break;
-                        }
-
-                    } else {
-                        System.out.println("┌──────────────────────────────────────────────────┐");
-                        System.out.println("            잘못 입력했어요. 다시 입력해주세요.");
-                        scanner.nextLine();
+                        case 6:
+                            // 옥수수
+                            if (listOfItems.get(input - 1).levelCK) {
+                                addInventory(player, cornE, farm);
+                            } else {
+                                System.out.println("┌──────────────────────────────────────────────────┐");
+                                System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
+                                scanner.nextLine();
+                            }
+                            break;
                     }
 
-                } catch (InputMismatchException e) {
-
-//                scanner.nextLine();
-
+                } else {
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("            잘못 입력했어요. 다시 입력해주세요.");
                     scanner.nextLine();
-
-                    continue;
                 }
-            } else {
-                exit = false;
+
+            } catch (InputMismatchException e) {
+
+//                scanner.nextLine();
+
+                System.out.println("┌──────────────────────────────────────────────────┐");
+                System.out.println("            잘못 입력했어요. 다시 입력해주세요.");
+                scanner.nextLine();
             }
         }
+    }
+
+    @Override
+    protected void welcome() {
+
     }
 }

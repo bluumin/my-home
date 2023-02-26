@@ -67,11 +67,11 @@ public class AnimalFarm extends Area {
         honey.cost = 120;
         rabbitFur.cost = 200;
 
-        milk.growingTime = 10;
-        wool.growingTime = 15;
-        egg.growingTime = 10;
-        honey.growingTime = 15;
-        rabbitFur.growingTime = 10;
+        milk.growingPeriod = 10;
+        wool.growingPeriod = 15;
+        egg.growingPeriod = 10;
+        honey.growingPeriod = 15;
+        rabbitFur.growingPeriod = 10;
 
         milk.defaultTime = 10;
         wool.defaultTime = 15;
@@ -92,7 +92,7 @@ public class AnimalFarm extends Area {
 
     // 서브 메뉴 출력
     public int animalSubMenu() {
-        if (listOfItems.get(input - 1).harvestCK) {
+        if (listOfItems.get(input - 1).isHarvestable) {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("    " + animalList.get(input - 1) + " 로(으로)부터 " + listOfItems.get(input - 1).name + " 얻기");
             System.out.println();
@@ -117,7 +117,7 @@ public class AnimalFarm extends Area {
 
             // 아이템 수확할 때 수확 가능한지 여부 체크
             // harvestCK 가 true면
-            if (listOfItems.get(input - 1).harvestCK) {
+            if (listOfItems.get(input - 1).isHarvestable) {
                 if (count == 0) {
                     System.out.print("아무키나 입력하면 ");
                     System.out.println(listOfItems.get(input - 1).name + " 을(를) 수확하러 이동해요");
@@ -126,7 +126,7 @@ public class AnimalFarm extends Area {
                 }
 
                 // 아이템의 수확가능한 횟수가 남았으면 실행
-                if (listOfItems.get(input - 1).harvestCnt > 0) {
+                if (listOfItems.get(input - 1).harvestCount > 0) {
                     Game game = new Game();
                     result = game.run(animalFarm, input);
 //                    System.out.println(result);
@@ -134,7 +134,7 @@ public class AnimalFarm extends Area {
 //                        System.out.println("result == 참 결과 실행");
                         soundPlay();
                         count++;
-                        if (count == listOfItems.get(input - 1).harvestCnt) {
+                        if (count == listOfItems.get(input - 1).harvestCount) {
                             // 수확할 아이템 이름과 수확 가능한 횟수 출력
 //                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
                             System.out.println();
@@ -146,12 +146,12 @@ public class AnimalFarm extends Area {
                             System.out.println();
                             System.out.println("이전 메뉴로 돌아갑니다.");
 
-                            player.inventory.addItem(itemEntry, count);
+                            player.inventory.add(itemEntry, count);
 
                             player.exp += listOfItems.get(input - 1).exp;
 
-                            listOfItems.get(input - 1).harvestCK = false;
-                            listOfItems.get(input - 1).plantCK = false;
+                            listOfItems.get(input - 1).isHarvestable = false;
+                            listOfItems.get(input - 1).isPlanted = false;
 
                             exit = false;
 
@@ -171,13 +171,13 @@ public class AnimalFarm extends Area {
                             break;
 
                         } else {
-                            listOfItems.get(input - 1).harvestCnt -= count;
+                            listOfItems.get(input - 1).harvestCount -= count;
 //                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("        " + listOfItems.get(input - 1).name + " 획득량 : " + count);
-                            player.inventory.addItem(itemEntry, count);
-                            if (listOfItems.get(input - 1).harvestCnt <= 0) {
-                                listOfItems.get(input - 1).harvestCK = false;
+                            player.inventory.add(itemEntry, count);
+                            if (listOfItems.get(input - 1).harvestCount <= 0) {
+                                listOfItems.get(input - 1).isHarvestable = false;
                             }
                             exit = false;
                             break;
@@ -187,7 +187,7 @@ public class AnimalFarm extends Area {
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("             수확할 수 있는 양을 모두 수확했어요.");
 
-                    listOfItems.get(input - 1).harvestCK = false;
+                    listOfItems.get(input - 1).isHarvestable = false;
                     scanner.nextLine();
                     exit = false;
                 }
@@ -202,7 +202,7 @@ public class AnimalFarm extends Area {
                 //  남은 재배 시간 기다리기
                 //  추가 할 수 있으면 남은 시간 카운트를 gui로 보여주기
 
-                if (listOfItems.get(input - 1).plantCK) {
+                if (listOfItems.get(input - 1).isPlanted) {
 
                     System.out.println();
 //                    System.out.println("시간 기능 구현 해야 함");
@@ -210,16 +210,16 @@ public class AnimalFarm extends Area {
 
 
                     // growingTime(재배시간)이 0이면
-                    if (listOfItems.get(input - 1).growingTime <= 0) {
+                    if (listOfItems.get(input - 1).growingPeriod <= 0) {
 
                         // harvestCK (수확가능여부)를 true로 바꿔줌
-                        listOfItems.get(input - 1).harvestCK = true;
+                        listOfItems.get(input - 1).isHarvestable = true;
 
                         // 초기화 과정....
-                        listOfItems.get(input - 1).harvestCnt = 3;
+                        listOfItems.get(input - 1).harvestCount = 3;
 
                         // 재배시간 초기화
-                        listOfItems.get(input - 1).growingTime = listOfItems.get(input - 1).defaultTime;
+                        listOfItems.get(input - 1).growingPeriod = listOfItems.get(input - 1).defaultTime;
 
                     } else {
                         System.out.println();
@@ -265,14 +265,14 @@ public class AnimalFarm extends Area {
                                     System.out.println();
 
                                     player.gold = listOfItems.get(input - 1).cost;
-                                    listOfItems.get(input - 1).plantCK = true;
+                                    listOfItems.get(input - 1).isPlanted = true;
 
 //                                    CountDown cntdown = new CountDown(listOfItems.get(input - 1).growingTime);
                                     // 재배시간 임시로 0으로 설정
 //                                    listOfItems.get(input - 1).growingTime = 0;
 
 //                                    Test test = new Test();
-                                    int temp = listOfItems.get(input - 1).growingTime;
+                                    int temp = listOfItems.get(input - 1).growingPeriod;
 //                                    Test test = new Test(temp);
                                     Thread animalTimer = new Thread(new AnimalTimer(temp, animalFarm, input));
                                     animalTimer.setDaemon(true);
@@ -356,17 +356,17 @@ public class AnimalFarm extends Area {
                     System.out.print(animalList.get(i) + " - " + listOfItems.get(i).name);
 
                     // 수확가능 여부가 false 라면 => 수확 불가능 상태라면
-                    if (listOfItems.get(i).harvestCK == false) {
+                    if (listOfItems.get(i).isHarvestable == false) {
                         // 농작물을 심었는지 확인함.
                         // 농작물 심었는지 여부가 false라면 => 농작물을 안심었다면
-                        if (listOfItems.get(i).plantCK == false) {
+                        if (listOfItems.get(i).isPlanted == false) {
                             // 재배시간과 비용을 출력함
                             System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 / ");
                             System.out.print("비용 : " + listOfItems.get(i).cost + "골드)");
 
                             // 농작물을 심었고
                             // 농작물 자라는 시간이 0이라면 => 농작물이 다 자랐다면
-                        } else if (listOfItems.get(i).growingTime <= 0) {
+                        } else if (listOfItems.get(i).growingPeriod <= 0) {
 
                             // 수확가능으로 출력함
                             System.out.print(" (수확 가능)");

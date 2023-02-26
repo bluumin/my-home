@@ -7,7 +7,7 @@ import com.bluuminn.myhome.area.Forest;
 import java.util.Random;
 
 public class Game {
-    private static String[][] array = new String[10][15];
+    public static String[][] array = new String[10][15];
     private Bear bear;
     private Fish fish;
     private int itemX = 0;
@@ -62,7 +62,7 @@ public class Game {
                 System.out.println();
             }
             System.out.println("= = = = = = = = = = = = = = = = = = = = = = = = =");
-            System.out.println(farm.listOfItems.get(inputVal - 1).name + " 수확 중 . . .");
+            System.out.println(farm.listOfItems.get(inputVal - 1).getName() + " 수확 중 . . .");
             System.out.println();
             showArray();
             exit = bear.move();
@@ -71,7 +71,7 @@ public class Game {
                     System.out.println();
                 }
                 System.out.println("= = = = = = = = = = = = = = = = = = = = = = = = =");
-                System.out.println(farm.listOfItems.get(inputVal - 1).name + " 수확 중 . . .");
+                System.out.println(farm.listOfItems.get(inputVal - 1).getName() + " 수확 중 . . .");
                 System.out.println();
                 winArray();
 //                System.out.println("아이템 수확");
@@ -91,7 +91,7 @@ public class Game {
                 System.out.println();
             }
             System.out.println("= = = = = = = = = = = = = = = = = = = = = = = = =");
-            System.out.println(animalFarm.listOfItems.get(inputVal - 1).name + " 수확 중 . . .");
+            System.out.println(animalFarm.listOfItems.get(inputVal - 1).getName() + " 수확 중 . . .");
             System.out.println();
             showArray();
             exit = bear.move();
@@ -100,7 +100,7 @@ public class Game {
                     System.out.println();
                 }
                 System.out.println("= = = = = = = = = = = = = = = = = = = = = = = = =");
-                System.out.println(animalFarm.listOfItems.get(inputVal - 1).name + " 수확 중 . . .");
+                System.out.println(animalFarm.listOfItems.get(inputVal - 1).getName() + " 수확 중 . . .");
                 System.out.println();
                 winArray();
 //                System.out.println("아이템 수확");
@@ -120,7 +120,7 @@ public class Game {
                 System.out.println();
             }
             System.out.println("= = = = = = = = = = = = = = = = = = = = = = = = =");
-            System.out.println(forest.listOfItems.get(inputVal - 1).name + " 수확 중 . . .");
+            System.out.println(forest.listOfItems.get(inputVal - 1).getName() + " 수확 중 . . .");
             System.out.println();
             showArray();
             exit = bear.move();
@@ -129,7 +129,7 @@ public class Game {
                     System.out.println();
                 }
                 System.out.println("= = = = = = = = = = = = = = = = = = = = = = = = =");
-                System.out.println(forest.listOfItems.get(inputVal - 1).name + " 수확 중 . . .");
+                System.out.println(forest.listOfItems.get(inputVal - 1).getName() + " 수확 중 . . .");
                 System.out.println();
                 winArray();
 //                System.out.println("아이템 수확");

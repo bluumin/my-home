@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 
 public class Forest extends Area {
-    ArrayList<String> treeList = new ArrayList<String>();
+    ArrayList<String> treeList = new ArrayList<>();
 
     // 전나무 목재
-    GrowthItem fir = new GrowthItem("전나무 목재", "숲", 300);
+    GrowthItem fir = new GrowthItem("전나무목재", "숲", 300);
     ItemEntry firE = new ItemEntry(fir, 0);
 
     // 사과
@@ -25,7 +25,7 @@ public class Forest extends Area {
     ItemEntry orangeE = new ItemEntry(orange, 0);
 
     // 단풍나무 목재
-    GrowthItem maple = new GrowthItem("단풍나무 목재", "숲", 800);
+    GrowthItem maple = new GrowthItem("단풍나무목재", "숲", 800);
     ItemEntry mapleE = new ItemEntry(maple, 0);
 
 
@@ -57,10 +57,10 @@ public class Forest extends Area {
         orange.cost = 220;
         maple.cost = 300;
 
-        fir.growingTime = 10;
-        apple.growingTime = 10;
-        orange.growingTime = 15;
-        maple.growingTime = 15;
+        fir.growingPeriod = 10;
+        apple.growingPeriod = 10;
+        orange.growingPeriod = 15;
+        maple.growingPeriod = 15;
 
         fir.defaultTime = 10;
         apple.defaultTime = 10;
@@ -96,7 +96,7 @@ public class Forest extends Area {
 //    }
 
 
-    public void addInventoryF(Player player, ItemEntry itemEntry, Forest forest) {
+    public void addInventoryF(Player player, ItemEntry itemEntry) {
         count = 0;
 
         boolean exit = true;
@@ -106,7 +106,7 @@ public class Forest extends Area {
 
             // 아이템 수확할 때 수확 가능한지 여부 체크
             // harvestCK 가 true면
-            if (listOfItems.get(input - 1).harvestCK) {
+            if (listOfItems.get(input - 1).isHarvestable()) {
                 if (count == 0) {
                     System.out.print("아무키나 입력하면 ");
                     System.out.println(listOfItems.get(input - 1).name + " 을(를) 수확하러 이동해요");
@@ -115,7 +115,7 @@ public class Forest extends Area {
                 }
 
                 // 아이템의 수확가능한 횟수가 남았으면 실행
-                if (listOfItems.get(input - 1).harvestCnt > 0) {
+                if (listOfItems.get(input - 1).harvestCount > 0) {
                     Game game = new Game();
                     result = game.run(forest, input);
 //                    System.out.println(result);
@@ -123,7 +123,7 @@ public class Forest extends Area {
 //                        System.out.println("result == 참 결과 실행");
                         soundPlay();
                         count++;
-                        if (count == listOfItems.get(input - 1).harvestCnt) {
+                        if (count == listOfItems.get(input - 1).harvestCount) {
                             // 수확할 아이템 이름과 수확 가능한 횟수 출력
 //                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
                             System.out.println();
@@ -135,12 +135,12 @@ public class Forest extends Area {
                             System.out.println();
                             System.out.println("이전 메뉴로 돌아갑니다.");
 
-                            player.inventory.addItem(itemEntry, count);
+                            player.inventory.add(itemEntry, count);
 
                             player.exp += listOfItems.get(input - 1).exp;
 
-                            listOfItems.get(input - 1).harvestCK = false;
-                            listOfItems.get(input - 1).plantCK = false;
+                            listOfItems.get(input - 1).isHarvestable() = false;
+                            listOfItems.get(input - 1).isPlanted() = false;
 
                             exit = false;
 
@@ -160,13 +160,13 @@ public class Forest extends Area {
                             break;
 
                         } else {
-                            listOfItems.get(input - 1).harvestCnt -= count;
+                            listOfItems.get(input - 1).harvestCount -= count;
 //                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("        " + listOfItems.get(input - 1).name + " 획득량 : " + count);
-                            player.inventory.addItem(itemEntry, count);
-                            if (listOfItems.get(input - 1).harvestCnt <= 0) {
-                                listOfItems.get(input - 1).harvestCK = false;
+                            player.inventory.add(itemEntry, count);
+                            if (listOfItems.get(input - 1).harvestCount <= 0) {
+                                listOfItems.get(input - 1).isHarvestable() = false;
                             }
                             exit = false;
                             break;
@@ -176,7 +176,7 @@ public class Forest extends Area {
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("             수확할 수 있는 양을 모두 수확했어요.");
 
-                    listOfItems.get(input - 1).harvestCK = false;
+                    listOfItems.get(input - 1).isHarvestable() = false;
                     scanner.nextLine();
                     exit = false;
                 }
@@ -191,7 +191,7 @@ public class Forest extends Area {
                 //  남은 재배 시간 기다리기
                 //  추가 할 수 있으면 남은 시간 카운트를 gui로 보여주기
 
-                if (listOfItems.get(input - 1).plantCK) {
+                if (listOfItems.get(input - 1).isPlanted) {
 
                     System.out.println();
 //                    System.out.println("시간 기능 구현 해야 함");
@@ -199,16 +199,16 @@ public class Forest extends Area {
 
 
                     // growingTime(재배시간)이 0이면
-                    if (listOfItems.get(input - 1).growingTime <= 0) {
+                    if (listOfItems.get(input - 1).growingPeriod <= 0) {
 
                         // harvestCK (수확가능여부)를 true로 바꿔줌
-                        listOfItems.get(input - 1).harvestCK = true;
+                        listOfItems.get(input - 1).isHarvestable() = true;
 
                         // 초기화 과정....
-                        listOfItems.get(input - 1).harvestCnt = 3;
+                        listOfItems.get(input - 1).harvestCount = 3;
 
                         // 재배시간 초기화
-                        listOfItems.get(input - 1).growingTime = listOfItems.get(input - 1).defaultTime;
+                        listOfItems.get(input - 1).growingPeriod = listOfItems.get(input - 1).defaultTime;
 
                     } else {
                         System.out.println();
@@ -254,14 +254,14 @@ public class Forest extends Area {
                                     System.out.println();
 
                                     player.gold = listOfItems.get(input - 1).cost;
-                                    listOfItems.get(input - 1).plantCK = true;
+                                    listOfItems.get(input - 1).isPlanted = true;
 
 //                                    CountDown cntdown = new CountDown(listOfItems.get(input - 1).growingTime);
                                     // 재배시간 임시로 0으로 설정
 //                                    listOfItems.get(input - 1).growingTime = 0;
 
 //                                    Test test = new Test();
-                                    int temp = listOfItems.get(input - 1).growingTime;
+                                    int temp = listOfItems.get(input - 1).growingPeriod;
 //                                    Test test = new Test(temp);
                                     Thread forestTimer = new Thread(new ForestTimer(temp, forest, input));
                                     forestTimer.setDaemon(true);
@@ -320,7 +320,7 @@ public class Forest extends Area {
         }
     }
 
-    public void getForestItem(Player player, Forest forest) {
+    public void getForestItem(Player player) {
         while (true) {
             for (int i = 0; i < 100; i++) {
                 System.out.println();
@@ -345,17 +345,17 @@ public class Forest extends Area {
                     System.out.print(treeList.get(i) + " - " + listOfItems.get(i).name);
 
                     // 수확가능 여부가 false 라면 => 수확 불가능 상태라면
-                    if (listOfItems.get(i).harvestCK == false) {
+                    if (listOfItems.get(i).isHarvestable == false) {
                         // 농작물을 심었는지 확인함.
                         // 농작물 심었는지 여부가 false라면 => 농작물을 안심었다면
-                        if (listOfItems.get(i).plantCK == false) {
+                        if (listOfItems.get(i).isPlanted == false) {
                             // 재배시간과 비용을 출력함
                             System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 / ");
                             System.out.print("비용 : " + listOfItems.get(i).cost + "골드)");
 
                             // 농작물을 심었고
                             // 농작물 자라는 시간이 0이라면 => 농작물이 다 자랐다면
-                        } else if (listOfItems.get(i).growingTime <= 0) {
+                        } else if (listOfItems.get(i).growingPeriod <= 0) {
 
                             // 수확가능으로 출력함
                             System.out.print(" (수확 가능)");
@@ -424,7 +424,7 @@ public class Forest extends Area {
                     case 1:
                         // 전나무 목재
                         if (listOfItems.get(input - 1).levelCK) {
-                            addInventoryF(player, firE, forest);
+                            addInventoryF(player, firE);
                         } else {
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
@@ -435,7 +435,7 @@ public class Forest extends Area {
                     case 2:
                         // 사과
                         if (listOfItems.get(input - 1).levelCK) {
-                            addInventoryF(player, appleE, forest);
+                            addInventoryF(player, appleE);
                         } else {
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
@@ -446,7 +446,7 @@ public class Forest extends Area {
                     case 3:
                         // 오렌지
                         if (listOfItems.get(input - 1).levelCK) {
-                            addInventoryF(player, orangeE, forest);
+                            addInventoryF(player, orangeE);
                         } else {
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
@@ -457,7 +457,7 @@ public class Forest extends Area {
                     case 4:
                         // 단풍나무 목재
                         if (listOfItems.get(input - 1).levelCK) {
-                            addInventoryF(player, mapleE, forest);
+                            addInventoryF(player, mapleE);
                         } else {
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");

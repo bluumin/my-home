@@ -31,6 +31,6 @@ public class Timer implements Runnable {
             System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t =====================================");
         }
 
-        farm.listOfItems.get(input - 1).growingTime = 0;
+        farm.listOfItems.get(input - 1).growingPeriod = 0;
     }
 }

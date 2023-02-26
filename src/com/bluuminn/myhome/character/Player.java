@@ -6,7 +6,7 @@ import com.bluuminn.myhome.etc.MyHomeConstants;
 import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.inventory.Inventory;
 import com.bluuminn.myhome.inventory.ItemEntry;
-import com.bluuminn.myhome.item.MadeItem;
+import com.bluuminn.myhome.item.CraftItem;
 import com.bluuminn.myhome.quest.Quest;
 import com.bluuminn.myhome.quest.Title;
 
@@ -41,7 +41,7 @@ public class Player extends Character {
     private ArrayList<Title> titles = new ArrayList<>();
 
     // 제작 아이템 목록 리스트
-    private ArrayList<MadeItem> madeItemList = new ArrayList<>();
+    private ArrayList<CraftItem> craftItemList = new ArrayList<>();
 
     // 퀘스트 리스트
     private ArrayList<Quest> playerQuestList = new ArrayList<>();
@@ -84,6 +84,10 @@ public class Player extends Character {
 
     public int getFatigability() {
         return fatigability;
+    }
+
+    public void updateFatigability(int fatigability) {
+        this.fatigability = fatigability;
     }
 
     public int getExp() {
@@ -141,6 +145,10 @@ public class Player extends Character {
 
     public void updateGold(int gold) {
         this.gold += gold;
+    }
+
+    public boolean needToRest() {
+        return this.fatigability >= 100;
     }
 
     public void achieveTitle() {
@@ -716,7 +724,7 @@ public class Player extends Character {
 
                 // 퀘스트 보상 아이템이 있다면 추가
                 if (playerQuestList.get(inputVal - 1).payItem != null) {
-                    player.inventory.addItem(playerQuestList.get(inputVal - 1).payItem, playerQuestList.get(inputVal - 1).payItemCount);
+                    player.inventory.add(playerQuestList.get(inputVal - 1).payItem, playerQuestList.get(inputVal - 1).payItemCount);
                 }
 
                 // 퀘스트 낸 npc 이름 출력  ==> ex) 미미 : ~~~~~
@@ -865,14 +873,14 @@ public class Player extends Character {
         System.out.println(itemName + " 을(를) 제작합니다.");
         // 로딩 스레드
         // 제작 중 동영상 스레드
-        inventory.addItem(itemEntry, cnt);
+        inventory.add(itemEntry, cnt);
         System.out.println();
         System.out.println();
 
         // 제작 완료되면 제작에 사용된 아이템 개수만큼 플레이어의 인벤토리의 아이템 개수 차감
-        for (int i = 0; i < madeItemList.get(value - 1).requiredItem.size(); i++) {
-            ItemEntry testEntry = madeItemList.get(value - 1).requiredItem.get(i).itemEntry;
-            requiCnt = madeItemList.get(value - 1).requiredItem.get(i).howManyItems;
+        for (int i = 0; i < craftItemList.get(value - 1).requiredItems.size(); i++) {
+            ItemEntry testEntry = craftItemList.get(value - 1).requiredItems.get(i).item;
+            requiCnt = craftItemList.get(value - 1).requiredItems.get(i).getQuantity();
             String name = inventory.getItemName(testEntry);
 
             for (int j = 0; j < inventory.getAvailableItems(); j++) {
@@ -896,8 +904,7 @@ public class Player extends Character {
 
     // ========================== 플레이어 정보 확인 ============================
     public void showInfo(Scanner scanner) {
-        boolean outerExit = true;
-        while (outerExit) {
+        while (true) {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("            플레이어 [ " + getName() + " ] 정보");
             System.out.println();
@@ -916,17 +923,16 @@ public class Player extends Character {
 
             // 업적 보기
             int titleQty = this.titles.size();
-            boolean exit = true;
-            while (exit) {
+            while (true) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("                    업적 리스트");
                 System.out.println();
                 for (int i = 0; i < titleQty; i++) {
-                    String hasTitle = this.titles.get(i).isAchieved() ? "달성" : "미달성";
+                    String isAchieved = this.titles.get(i).isAchieved() ? "달성" : "미달성";
 
                     System.out.print("    " + (i + 1) + ". ");
                     System.out.printf("%-12s", this.titles.get(i).getName());
-                    System.out.println("\t\t" + hasTitle);
+                    System.out.println("\t\t" + isAchieved);
                 }
 
                 System.out.println();
@@ -938,14 +944,14 @@ public class Player extends Character {
                 inputValue = scanner.next();
                 scanner.nextLine();
                 if (!MyHomeUtils.isInteger(inputValue)) {
-                    reEnter();
+                    enterAgain();
                     scanner.nextLine();
                     continue;
                 }
 
                 int inputVal = Integer.parseInt(inputValue);
                 if (inputVal < 0 || inputVal > titleQty) {
-                    reEnter();
+                    enterAgain();
                     scanner.nextLine();
                     continue;
                 }
@@ -961,35 +967,11 @@ public class Player extends Character {
                 System.out.println(inputVal + ". " + this.titles.get(inputVal - 1).getName());
                 System.out.println();
                 System.out.println("업적달성조건 : " + this.titles.get(inputVal - 1).getCondition());
-
-                if (inputVal == 1) {
-//                        title0.업적달성조건 = "퀘스트 3회 완료 시";
-                    System.out.println();
-                    System.out.println(inputVal + ". " + this.titles.get(inputVal - 1).getName());
-                    System.out.println();
-                    System.out.println("업적달성조건 : " + this.titles.get(tmptmp - 1).achievementConditions);
-                    System.out.println();
-                    scanner.nextLine();
-                } else if (tmptmp == 2) {
-//                        title1.업적달성조건 = "아이템 제작 10회 이상";
-                    System.out.println();
-                    System.out.println(tmptmp + ". " + player.title.get(tmptmp - 1).titleName);
-                    System.out.println();
-                    System.out.println("업적달성조건 : " + player.title.get(tmptmp - 1).achievementConditions);
-                    if (player.craftingCount >= 10) {
-                        System.out.println();
-                        System.out.println("┌──────────────────────────────────────────────────┐");
-                        System.out.println("                   업적을 달성했어요!");
-                        player.title.get(tmptmp - 1).obtainCK = true;
-                    }
-                    System.out.println();
-                    scanner.nextLine();
-                }
             }
         }
     }
 
-    private static void reEnter() {
+    private static void enterAgain() {
         System.out.println();
         System.out.println("┌──────────────────────────────────────────────────┐");
         System.out.println("                  다시 입력해 주세요.");
@@ -1212,7 +1194,7 @@ public class Player extends Character {
                                     scanner.nextLine();
 
                                     if (inputSel == 1) {
-                                        inventory.getItem(inputVal - 1).potion.recoveryFat(player);
+                                        inventory.getItem(inputVal - 1).potion.calculateRecoveryAmount(player);
                                         player.inventory.removeItem(inputVal - 1, 1);
                                         innerExit = false;
 

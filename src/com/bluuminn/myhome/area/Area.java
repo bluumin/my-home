@@ -1,6 +1,7 @@
 package com.bluuminn.myhome.area;
 
 import com.bluuminn.myhome.character.Player;
+import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.etc.ProgressBar;
 import com.bluuminn.myhome.harvestgame.Game;
 import com.bluuminn.myhome.inventory.ItemEntry;
@@ -28,57 +29,48 @@ public abstract class Area {
     }
 
     public boolean print(Player player) {
-        if (player.getFatigability() >= 100) {
-            System.out.println("피로도가 너무 높아서 아무 것도 할 수 없어요.");
-            return false;
-        } else {
-            for (int i = 0; i < 100; i++) {
-                System.out.println();
-            }
-            System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("                   " + name + "에 도착했다.\n");
-            for (int i = 0; i < listOfItems.size(); i++) {
-                System.out.print(i + 1 + ". ");
+        MyHomeUtils.printLineAsCount(100);
+        System.out.println("┌──────────────────────────────────────────────────┐");
+        System.out.println("                   " + name + "에 도착했다.\n");
 
-                // 아이템의 레벨이 플레이어 레벨과 같거나 작으면 => 수확가능
-                if (listOfItems.get(i).level <= player.level) {
-                    listOfItems.get(i).levelCK = true;
-                }
-                if (listOfItems.get(i).levelCK) {
-                    System.out.print(listOfItems.get(i).name);
-                    if (!listOfItems.get(i).harvestCK) {
-                        if (!listOfItems.get(i).plantCK) {
-                            System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 / ");
-                            System.out.print("비용 : " + listOfItems.get(i).cost + "골드)");
-                        } else if (listOfItems.get(i).growingTime <= 0) {
-                            System.out.print(" (수확 가능)");
-                        } else {
-                            System.out.print(" (재배중..)");
-                        }
-                    } else {
+        for (int i = 0; i < listOfItems.size(); i++) {
+            System.out.print(i + 1 + ". ");
+
+            // 아이템의 레벨이 플레이어 레벨과 같거나 작으면 => 수확가능
+            boolean isHarvestable = listOfItems.get(i).getLevel() <= player.getLevel();
+            System.out.print(listOfItems.get(i).getName());
+            if (isHarvestable) {
+                if (!listOfItems.get(i).isHarvestable) {
+                    if (!listOfItems.get(i).isPlanted) {
+                        System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 / ");
+                        System.out.print("비용 : " + listOfItems.get(i).cost + "골드)");
+                    } else if (listOfItems.get(i).growingPeriod <= 0) {
                         System.out.print(" (수확 가능)");
-                    }
-                } else {
-                    System.out.print(listOfItems.get(i).name);
-                    if (!listOfItems.get(i).harvestCK) {
-                        if (!listOfItems.get(i).plantCK) {
-                            System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 /");
-                        } else {
-                            System.out.print(" (재배중.. / ");
-                        }
                     } else {
-                        System.out.print("(수확 가능)");
+                        System.out.print(" (재배중..)");
                     }
-                    System.out.print(" HOLD - LV." + listOfItems.get(i).level + " 이상)");
-                }
-                if (i < listOfItems.size() - 1) {
-                    System.out.println();
                 } else {
-                    System.out.print(" ");
+                    System.out.print(" (수확 가능)");
                 }
+            } else {
+                if (!listOfItems.get(i).isHarvestable) {
+                    if (!listOfItems.get(i).isPlanted) {
+                        System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 /");
+                    } else {
+                        System.out.print(" (재배중.. / ");
+                    }
+                } else {
+                    System.out.print("(수확 가능)");
+                }
+                System.out.print(" HOLD - LV." + listOfItems.get(i).level + " 이상)");
             }
-            return true;
+            if (i < listOfItems.size() - 1) {
+                System.out.println();
+            } else {
+                System.out.print(" ");
+            }
         }
+        return true;
     }
 
     public void addInventory(Player player, ItemEntry itemEntry, Farm farm) {
@@ -92,14 +84,14 @@ public abstract class Area {
 
             // 아이템 수확할 때 수확 가능한지 여부 체크
             // harvestCK 가 true면
-            if (listOfItems.get(input - 1).harvestCK) {
+            if (listOfItems.get(input - 1).isHarvestable) {
                 if (count == 0) {
                     System.out.println();
                     ProgressBar.loading();
                 }
 
                 // 아이템의 수확가능한 횟수가 남았으면 실행
-                if (listOfItems.get(input - 1).harvestCnt > 0) {
+                if (listOfItems.get(input - 1).harvestCount > 0) {
                     Game game = new Game();
                     result = game.run(farm, input);
 //                    System.out.println(result);
@@ -109,7 +101,7 @@ public abstract class Area {
 //                        Music harvest = new Music("harvest.mp3", false);
 //                        harvest.start();
                         count++;
-                        if (count == listOfItems.get(input - 1).harvestCnt) {
+                        if (count == listOfItems.get(input - 1).harvestCount) {
                             // 수확할 아이템 이름과 수확 가능한 횟수 출력
 //                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
                             System.out.println();
@@ -122,12 +114,12 @@ public abstract class Area {
                             System.out.println();
                             System.out.println("               이전 메뉴로 돌아갑니다.");
 
-                            player.inventory.addItem(itemEntry, count);
+                            player.inventory.add(itemEntry, count);
 
                             player.exp += listOfItems.get(input - 1).exp;
 
-                            listOfItems.get(input - 1).harvestCK = false;
-                            listOfItems.get(input - 1).plantCK = false;
+                            listOfItems.get(input - 1).isHarvestable = false;
+                            listOfItems.get(input - 1).isPlanted = false;
 
                             scanner.nextLine();
 
@@ -151,13 +143,13 @@ public abstract class Area {
                             break;
 
                         } else {
-                            listOfItems.get(input - 1).harvestCnt -= count;
+                            listOfItems.get(input - 1).harvestCount -= count;
 //                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println(listOfItems.get(input - 1).name + " 획득량 : " + count);
-                            player.inventory.addItem(itemEntry, count);
-                            if (listOfItems.get(input - 1).harvestCnt <= 0) {
-                                listOfItems.get(input - 1).harvestCK = false;
+                            player.inventory.add(itemEntry, count);
+                            if (listOfItems.get(input - 1).harvestCount <= 0) {
+                                listOfItems.get(input - 1).isHarvestable = false;
                             }
                             exit = false;
                             break;
@@ -167,7 +159,7 @@ public abstract class Area {
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("          수확할 수 있는 양을 모두 수확했어요.");
 
-                    listOfItems.get(input - 1).harvestCK = false;
+                    listOfItems.get(input - 1).isHarvestable = false;
                     scanner.nextLine();
                     exit = false;
                 }
@@ -182,7 +174,7 @@ public abstract class Area {
                 //  남은 재배 시간 기다리기
                 //  추가 할 수 있으면 남은 시간 카운트를 gui로 보여주기
 
-                if (listOfItems.get(input - 1).plantCK) {
+                if (listOfItems.get(input - 1).isPlanted) {
 
                     System.out.println();
 //                    System.out.println("시간 기능 구현 해야 함");
@@ -190,16 +182,16 @@ public abstract class Area {
 
 
                     // growingTime(재배시간)이 0이면
-                    if (listOfItems.get(input - 1).growingTime <= 0) {
+                    if (listOfItems.get(input - 1).growingPeriod <= 0) {
 
                         // harvestCK (수확가능여부)를 true로 바꿔줌
-                        listOfItems.get(input - 1).harvestCK = true;
+                        listOfItems.get(input - 1).isHarvestable = true;
 
                         // 초기화 과정....
-                        listOfItems.get(input - 1).harvestCnt = 3;
+                        listOfItems.get(input - 1).harvestCount = 3;
 
                         // 재배시간 초기화
-                        listOfItems.get(input - 1).growingTime = listOfItems.get(input - 1).defaultTime;
+                        listOfItems.get(input - 1).growingPeriod = listOfItems.get(input - 1).defaultTime;
 
                     } else {
                         System.out.println();
@@ -242,14 +234,14 @@ public abstract class Area {
                                     System.out.println("└──────────────────────────────────────────────────┘");
 
                                     player.gold -= listOfItems.get(input - 1).cost;
-                                    listOfItems.get(input - 1).plantCK = true;
+                                    listOfItems.get(input - 1).isPlanted = true;
 
 //                                    CountDown cntdown = new CountDown(listOfItems.get(input - 1).growingTime);
                                     // 재배시간 임시로 0으로 설정
 //                                    listOfItems.get(input - 1).growingTime = 0;
 
 //                                    Test test = new Test();
-                                    int temp = listOfItems.get(input - 1).growingTime;
+                                    int temp = listOfItems.get(input - 1).growingPeriod;
 //                                    Test test = new Test(temp);
                                     Thread timer = new Thread(new Timer(temp, farm, input));
                                     timer.setDaemon(true);
@@ -293,13 +285,11 @@ public abstract class Area {
             // 한번 수확할 때마다 플레이어의 피로도 1씩 증가
 
             if (count >= 1) {
-                player.fatigability += 15;
-
-                if (player.fatigability >= 100) {
-                    player.fatigability = 100;
+                int fatigability = player.getFatigability() + 15;
+                if (fatigability > 100) {
+                    fatigability = 100;
                 }
-
-//                player.levelUP();
+                player.updateFatigability(fatigability);
             }
 
             scanner.nextLine();

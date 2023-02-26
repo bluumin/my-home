@@ -5,31 +5,26 @@ import java.util.ArrayList;
 public class Inventory {
 
     // 인벤토리가 담을 수 있는 총 개수
-    private static final int MAX_ITEMS = 10;
+    private static final int MAX_NUMBER_OF_ITEMS = 10;
 
 
     // 인벤토리에 들어있는 아이템 목록
-    private ArrayList<ItemEntry> itemList;
-
-
-    // 인벤토리에 들어있는 아이템 수
-    private int items;
+    private ArrayList<ItemEntry> items;
 
     public Inventory() {
-        itemList = new ArrayList<>(MAX_ITEMS);
-        for (int i = 0; i < MAX_ITEMS; i++) {
-            itemList.add(null);
+        items = new ArrayList<>(MAX_NUMBER_OF_ITEMS);
+        for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++) {
+            items.add(null);
         }
-        items = 0;
     }
 
-    public boolean addItem(ItemEntry entry, int cnt) {
+    public boolean add(ItemEntry entry, int cnt) {
         // 해당 아이템이 있는지 검사
-        int index = findItem(entry);
+        int index = find(entry);
         if (index < 0) { // 아이템이 없다면
 
             // 인벤토리에 빈자리가 있는지 검사
-            boolean ck = ckInventory();
+            boolean ck = isFull();
 
             // 인벤토리가 꽉찼으면 (ckInventory() == true -> 꽉참을 의미)
             if (ck) {
@@ -39,19 +34,19 @@ public class Inventory {
 
             } else {
                 // 빈 자리에 추가
-                for (int i = 0; i < MAX_ITEMS; i++) {
-                    if (itemList.get(i) == null) {
+                for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++) {
+                    if (items.get(i) == null) {
                         if (entry.entryType.equals("일반")) {
-                            itemList.set(i, new ItemEntry(entry.item, cnt));
+                            items.set(i, new ItemEntry(entry.item, cnt));
 
                         } else if (entry.entryType.equals("생산")) {
-                            itemList.set(i, new ItemEntry(entry.growthItem, cnt));
+                            items.set(i, new ItemEntry(entry.growthItem, cnt));
 
                         } else if (entry.entryType.equals("제작")) {
-                            itemList.set(i, new ItemEntry(entry.madeItem, cnt));
+                            items.set(i, new ItemEntry(entry.madeItem, cnt));
 
                         } else if (entry.entryType.equals("포션")) {
-                            itemList.set(i, new ItemEntry(entry.potion, cnt));
+                            items.set(i, new ItemEntry(entry.potion, cnt));
                         } else {
                         }
 
@@ -61,7 +56,7 @@ public class Inventory {
                 }
             }
         } else {    // 아이템이 있다면
-            itemList.get(index).count += cnt; // 수량을 cnt만큼 증가
+            items.get(index).quantity += cnt; // 수량을 cnt만큼 증가
         }
         return true;
     }
@@ -115,12 +110,12 @@ public class Inventory {
     //============================== 아이템 개수 감소(0이면 제거) =================================
     // 해당하는 칸의 아이템의 개수를 cnt만큼 감소시킨다
     public boolean removeItem(int index, int cnt) {
-        ItemEntry entry = itemList.get(index);
+        ItemEntry entry = items.get(index);
         if (entry != null) {
-            itemList.get(index).count -= cnt;
-            if (entry.count <= 0) {
-                itemList.remove(index);
-                itemList.add(null);
+            items.get(index).quantity -= cnt;
+            if (entry.quantity <= 0) {
+                items.remove(index);
+                items.add(null);
                 items--;
             }
             return true;
@@ -128,30 +123,23 @@ public class Inventory {
         return false;
     }
 
-    public int findItem(ItemEntry item) {
-        for (int i = 0; i < MAX_ITEMS; i++) {
-            if (itemList.get(i) != null && itemList.get(i).entryName.equals(item.entryName)) {
+    public int find(ItemEntry item) {
+        for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++) {
+            if (items.get(i) != null && items.get(i).entryName.equals(item.entryName)) {
                 return i;
             }
         }
         return -1;
     }
 
-
-    // ================== 인벤토리 가득 차면 알리기 =================
-    // 인벤토리 칸이 다 차면 알리기
-    public boolean ckInventory() {
-        if (itemList.get(MAX_ITEMS - 1) == null) {
-            return false;   // 빈자리 있음
-        } else {
-            return true;    // 빈자리 없음. 인벤토리 꽉참
-        }
+    public boolean isFull() {
+        return items.size() >= MAX_NUMBER_OF_ITEMS;
     }
 
     // ======================= 아이템 객체 반환 ======================
     // 해당하는 인벤토리 칸의 아이템 객체를 반환한다
     public ItemEntry getItem(int index) {
-        ItemEntry entry = itemList.get(index);
+        ItemEntry entry = items.get(index);
         if (entry != null) {
             return entry;
         }
@@ -159,8 +147,8 @@ public class Inventory {
     }
 
     public int getItemIndex(ItemEntry itemEntry) {
-        for (int i = 0; i < MAX_ITEMS; i++) {
-            if (itemList.get(i) != null && itemList.get(i).entryName.equals(itemEntry.entryName)) {
+        for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++) {
+            if (items.get(i) != null && items.get(i).entryName.equals(itemEntry.entryName)) {
                 return i;
             }
         }
@@ -204,9 +192,9 @@ public class Inventory {
     // ============ 해당 인벤토리 한 칸에 들어있는 아이템 개수 반환 ==========
     // 해당하는 칸의 아이템의 개수를 반환한다
     public int getItemCount(int index) {
-        ItemEntry entry = itemList.get(index);
+        ItemEntry entry = items.get(index);
         if (entry != null) {
-            return entry.count;
+            return entry.quantity;
         }
         return -1;
     }
