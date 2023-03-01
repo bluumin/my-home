@@ -31,6 +31,6 @@ public class AnimalTimer implements Runnable {
             System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t =====================================");
         }
 //        farm.listOfItems.get(input - 1).harvestCK = true;
-        animalFarm.listOfItems.get(input - 1).growingPeriod = 0;
+        animalFarm.items.get(input - 1).growingPeriod = 0;
     }
 }

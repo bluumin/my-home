@@ -228,16 +228,15 @@ public class MyHome {
 
             String inputValue = scanner.next();
             if (!MyHomeUtils.isInteger(inputValue)) {
-                enterAgain();
+                MyHomeUtils.enterAgain();
                 continue;
             }
 
             // TODO: inputValue enum으로 바꾸기. 각 case가 뭘 의미하는지 한눈에 알기 어려움
-            switch (stringToInt(inputValue)) {
+            switch (MyHomeUtils.stringToInt(inputValue)) {
                 case 0:
                     System.exit(0);
                     break;
-
                 case 1:     // 플레이어 정보 보기
                     player.showInfo(scanner);
                     break;
@@ -285,22 +284,13 @@ public class MyHome {
                     break;
                 case 7:     // 미니게임
                     ProgressBar.loading();
-                    player.miniGame(player);
+                    player.miniGame();
                     break;
                 default:
-                    enterAgain();
+                    MyHomeUtils.enterAgain();
+                    scanner.nextLine();
             }
         }
-    }
-
-    private static int stringToInt(String stringNumber) {
-        return Integer.parseInt(stringNumber);
-    }
-
-    private static void enterAgain() {
-        MyHomeUtils.printLineAsCount(1);
-        System.out.println("┌──────────────────────────────────────────────────┐");
-        System.out.println("           잘못 입력했어요. 다시 입력해주세요.");
     }
 
     private static void showMenus(boolean isResting) {
@@ -349,15 +339,15 @@ public class MyHome {
 
             String inputVal = input();
             if (!MyHomeUtils.isInteger(inputVal)) {
-                enterAgain();
+                MyHomeUtils.enterAgain();
                 scanner.nextLine();
                 continue;
             }
 
             // TODO: inputVal enum 으로 변경하기. 각 case가 뭘 의미하는지 한눈에 파악하기 어려움.
-            switch (stringToInt(inputVal)) {
-                case 1: // 밭으로 이동
-                    farm.getFarmItem(player);
+            switch (MyHomeUtils.stringToInt(inputVal)) {
+                case 1:
+                    farm.cultivate(player, scanner);
                     break;
                 case 2: // 동물농장으로 이동
                     animalFarm.getAnimalFarmItem(player, animalFarm);

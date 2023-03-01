@@ -94,6 +94,10 @@ public class Player extends Character {
         return exp;
     }
 
+    public void updateExp(int exp) {
+        this.exp = exp;
+    }
+
     public int getMaxExp() {
         return maxExp;
     }
@@ -135,7 +139,7 @@ public class Player extends Character {
 
     private void payGold() {
         if (this.level <= 5) {
-            this.updateGold(3000);
+            this.updateGold(this.level + 3000);
         }
     }
 
@@ -144,7 +148,7 @@ public class Player extends Character {
     }
 
     public void updateGold(int gold) {
-        this.gold += gold;
+        this.gold = gold;
     }
 
     public boolean needToRest() {
@@ -168,13 +172,13 @@ public class Player extends Character {
     }
 
     // ============================= 미니 게임 ==============================
-    public void miniGame(Player player) {
+    public void miniGame() {
         System.out.println("┌──────────────────────────────────────────────────┐");
         System.out.println();
         System.out.println("                   휴식 및 미니 게임                    ");
         System.out.println();
         System.out.println();
-        if (player.isResting) {
+        if (isResting) {
             System.out.println("                   1. 🚫 휴식 끝내기                         ");
         } else {
             System.out.println("                1. 🛌 휴식 취하기 (" + Math.abs(restCount - 5) + "/5)");
@@ -193,7 +197,7 @@ public class Player extends Character {
                     System.out.println("휴식 모드 횟수를 모두 사용했어요.");
                     scanner.nextLine();
                 } else {
-                    takeARest(player);
+                    rest();
                 }
                 break;
             case 2:  // 미니게임
@@ -526,11 +530,10 @@ public class Player extends Character {
     }
 
     // ========================== 플레이어 휴식 ============================
-    public void takeARest(Player player) {
-
+    public void rest() {
         // 휴식중이 아닐 때
-        if (!player.isResting) {
-            System.out.println(player.name + " ! 피로가 많이 쌓이셨나보군요.");
+        if (!isResting) {
+            System.out.println(getName() + " ! 피로가 많이 쌓이셨나보군요.");
             System.out.println("휴식 모드로 전환할까요? (1회 - 1000골드)");
             System.out.println();
             System.out.println("1. 휴식 취하기    else. 이전 단계로");
@@ -706,7 +709,7 @@ public class Player extends Character {
                         for (int j = 0; j < player.inventory.getAvailableItems(); j++) {
 //                            System.out.println("test 3");
                             if (tmpitemname.equals(player.inventory.getItemName(player.inventory.getItem(j)))) {
-                                player.inventory.removeItem(j, tmpitemcnt);
+                                player.inventory.remove(j, tmpitemcnt);
 //                                System.out.println("test 4");
                             }
                         }
@@ -887,7 +890,7 @@ public class Player extends Character {
                 String tmptmp = inventory.getItemName(inventory.getItem(j));
 
                 if (name.equals(tmptmp)) {
-                    inventory.removeItem(inventory.getItemIndex(testEntry), requiCnt * cnt);
+                    inventory.remove(inventory.getItemIndex(testEntry), requiCnt * cnt);
                 }
             }
         }
@@ -944,14 +947,14 @@ public class Player extends Character {
                 inputValue = scanner.next();
                 scanner.nextLine();
                 if (!MyHomeUtils.isInteger(inputValue)) {
-                    enterAgain();
+                    MyHomeUtils.enterAgain();
                     scanner.nextLine();
                     continue;
                 }
 
                 int inputVal = Integer.parseInt(inputValue);
                 if (inputVal < 0 || inputVal > titleQty) {
-                    enterAgain();
+                    MyHomeUtils.enterAgain();
                     scanner.nextLine();
                     continue;
                 }
@@ -969,12 +972,6 @@ public class Player extends Character {
                 System.out.println("업적달성조건 : " + this.titles.get(inputVal - 1).getCondition());
             }
         }
-    }
-
-    private static void enterAgain() {
-        System.out.println();
-        System.out.println("┌──────────────────────────────────────────────────┐");
-        System.out.println("                  다시 입력해 주세요.");
     }
 
     public void goToStore(Player player, Merchant merchant, Store store) {
@@ -1011,7 +1008,7 @@ public class Player extends Character {
 
                 // 아이템의 개수가 판매하려는 개수보다 많으면 판매하기
                 if (itemQuantity <= player.inventory.getItemCount(itemNum - 1)) {
-                    player.inventory.removeItem(itemNum - 1, itemQuantity);
+                    player.inventory.remove(itemNum - 1, itemQuantity);
                     player.gold += totalPrice;
                     System.out.println();
                     System.out.println("판매 완료!\n");
@@ -1195,7 +1192,7 @@ public class Player extends Character {
 
                                     if (inputSel == 1) {
                                         inventory.getItem(inputVal - 1).potion.calculateRecoveryAmount(player);
-                                        player.inventory.removeItem(inputVal - 1, 1);
+                                        player.inventory.remove(inputVal - 1, 1);
                                         innerExit = false;
 
                                     } else {
@@ -1250,5 +1247,9 @@ public class Player extends Character {
                 }
             }
         }
+    }
+
+    public void saveItem(ItemEntry item) {
+        inventory.add(item);
     }
 }

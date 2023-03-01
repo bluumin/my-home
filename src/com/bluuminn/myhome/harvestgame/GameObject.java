@@ -19,10 +19,7 @@ abstract class GameObject { // 추상 클래스
     }
 
     public boolean collide(GameObject p) { // 이 객체가 객체 p와 충돌했으면 true 리턴
-        if (this.x == p.getX() && this.y == p.getY())
-            return true;
-        else
-            return false;
+        return this.x == p.getX() && this.y == p.getY();
     }
 
     public abstract boolean move(); // 이동한 후의 새로운 위치로 x, y 변경

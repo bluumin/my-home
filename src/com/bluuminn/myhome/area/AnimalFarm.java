@@ -1,7 +1,7 @@
 package com.bluuminn.myhome.area;
 
 import com.bluuminn.myhome.character.Player;
-import com.bluuminn.myhome.harvestgame.Game;
+import com.bluuminn.myhome.harvestgame.BearCatchesFishGame;
 import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.GrowthItem;
 import com.bluuminn.myhome.timer.AnimalTimer;
@@ -43,11 +43,11 @@ public class AnimalFarm extends Area {
         animalList.add("벌통");
         animalList.add("토끼");
 
-        listOfItems.add(milk);
-        listOfItems.add(wool);
-        listOfItems.add(egg);
-        listOfItems.add(honey);
-        listOfItems.add(rabbitFur);
+        items.add(milk);
+        items.add(wool);
+        items.add(egg);
+        items.add(honey);
+        items.add(rabbitFur);
 
         milk.level = 4;
         wool.level = 12;
@@ -92,11 +92,11 @@ public class AnimalFarm extends Area {
 
     // 서브 메뉴 출력
     public int animalSubMenu() {
-        if (listOfItems.get(input - 1).isHarvestable) {
+        if (items.get(input - 1).isHarvestable) {
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("    " + animalList.get(input - 1) + " 로(으로)부터 " + listOfItems.get(input - 1).name + " 얻기");
+            System.out.println("    " + animalList.get(input - 1) + " 로(으로)부터 " + items.get(input - 1).name + " 얻기");
             System.out.println();
-            System.out.println("    1. " + listOfItems.get(input - 1).name + " 얻기        2. 그만하기");
+            System.out.println("    1. " + items.get(input - 1).name + " 얻기        2. 그만하기");
             System.out.print("입력 >> ");
 
             return 1;
@@ -117,24 +117,24 @@ public class AnimalFarm extends Area {
 
             // 아이템 수확할 때 수확 가능한지 여부 체크
             // harvestCK 가 true면
-            if (listOfItems.get(input - 1).isHarvestable) {
+            if (items.get(input - 1).isHarvestable) {
                 if (count == 0) {
                     System.out.print("아무키나 입력하면 ");
-                    System.out.println(listOfItems.get(input - 1).name + " 을(를) 수확하러 이동해요");
+                    System.out.println(items.get(input - 1).name + " 을(를) 수확하러 이동해요");
 
                     scanner.nextLine();
                 }
 
                 // 아이템의 수확가능한 횟수가 남았으면 실행
-                if (listOfItems.get(input - 1).harvestCount > 0) {
-                    Game game = new Game();
-                    result = game.run(animalFarm, input);
+                if (items.get(input - 1).harvestCount > 0) {
+                    BearCatchesFishGame bearCatchesFish = new BearCatchesFishGame();
+                    result = bearCatchesFish.start(animalFarm, input);
 //                    System.out.println(result);
                     if (result) {
 //                        System.out.println("result == 참 결과 실행");
-                        soundPlay();
+                        playSound();
                         count++;
-                        if (count == listOfItems.get(input - 1).harvestCount) {
+                        if (count == items.get(input - 1).harvestCount) {
                             // 수확할 아이템 이름과 수확 가능한 횟수 출력
 //                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
                             System.out.println();
@@ -142,26 +142,26 @@ public class AnimalFarm extends Area {
                             System.out.println("    " + count + "개 획득");
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("         수확할 수 있는 양을 모두 수확했어요.");
-                            System.out.println(listOfItems.get(input - 1).name + " 획득량 : " + (count));
+                            System.out.println(items.get(input - 1).name + " 획득량 : " + (count));
                             System.out.println();
                             System.out.println("이전 메뉴로 돌아갑니다.");
 
                             player.inventory.add(itemEntry, count);
 
-                            player.exp += listOfItems.get(input - 1).exp;
+                            player.exp += items.get(input - 1).exp;
 
-                            listOfItems.get(input - 1).isHarvestable = false;
-                            listOfItems.get(input - 1).isPlanted = false;
+                            items.get(input - 1).isHarvestable = false;
+                            items.get(input - 1).isPlanted = false;
 
                             exit = false;
 
                         } else {
 
 //                            test();
-                            soundPlay();
+                            playSound();
                             System.out.println();
                             System.out.println("    " + count + "개 획득");
-                            player.exp += listOfItems.get(input - 1).exp;
+                            player.exp += items.get(input - 1).exp;
                         }
 
                     } else {
@@ -171,13 +171,13 @@ public class AnimalFarm extends Area {
                             break;
 
                         } else {
-                            listOfItems.get(input - 1).harvestCount -= count;
+                            items.get(input - 1).harvestCount -= count;
 //                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
                             System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("        " + listOfItems.get(input - 1).name + " 획득량 : " + count);
+                            System.out.println("        " + items.get(input - 1).name + " 획득량 : " + count);
                             player.inventory.add(itemEntry, count);
-                            if (listOfItems.get(input - 1).harvestCount <= 0) {
-                                listOfItems.get(input - 1).isHarvestable = false;
+                            if (items.get(input - 1).harvestCount <= 0) {
+                                items.get(input - 1).isHarvestable = false;
                             }
                             exit = false;
                             break;
@@ -187,7 +187,7 @@ public class AnimalFarm extends Area {
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("             수확할 수 있는 양을 모두 수확했어요.");
 
-                    listOfItems.get(input - 1).isHarvestable = false;
+                    items.get(input - 1).isHarvestable = false;
                     scanner.nextLine();
                     exit = false;
                 }
@@ -202,7 +202,7 @@ public class AnimalFarm extends Area {
                 //  남은 재배 시간 기다리기
                 //  추가 할 수 있으면 남은 시간 카운트를 gui로 보여주기
 
-                if (listOfItems.get(input - 1).isPlanted) {
+                if (items.get(input - 1).isPlanted) {
 
                     System.out.println();
 //                    System.out.println("시간 기능 구현 해야 함");
@@ -210,16 +210,16 @@ public class AnimalFarm extends Area {
 
 
                     // growingTime(재배시간)이 0이면
-                    if (listOfItems.get(input - 1).growingPeriod <= 0) {
+                    if (items.get(input - 1).growingPeriod <= 0) {
 
                         // harvestCK (수확가능여부)를 true로 바꿔줌
-                        listOfItems.get(input - 1).isHarvestable = true;
+                        items.get(input - 1).isHarvestable = true;
 
                         // 초기화 과정....
-                        listOfItems.get(input - 1).harvestCount = 3;
+                        items.get(input - 1).harvestCount = 3;
 
                         // 재배시간 초기화
-                        listOfItems.get(input - 1).growingPeriod = listOfItems.get(input - 1).defaultTime;
+                        items.get(input - 1).growingPeriod = items.get(input - 1).defaultTime;
 
                     } else {
                         System.out.println();
@@ -244,7 +244,7 @@ public class AnimalFarm extends Area {
                             harvestFlag = 1;
                             System.out.println("┌──────────────────────────────────────────────────┐");
                             System.out.println("   동물을 길들이는 중이거나 수확 가능한 아이템이 없습니다.\n");
-                            System.out.println(animalList.get(input - 1) + "을(를) 길들이면 " + listOfItems.get(input - 1).name + "을 얻을 수 있습니다.");
+                            System.out.println(animalList.get(input - 1) + "을(를) 길들이면 " + items.get(input - 1).name + "을 얻을 수 있습니다.");
                             System.out.println(animalList.get(input - 1) + " 을(를) 길들일까요?");
                             System.out.println();
                             System.out.println("1." + animalList.get(input - 1) + " 길들이기        else. 이전 메뉴로 가기");
@@ -264,15 +264,15 @@ public class AnimalFarm extends Area {
                                     System.out.println("└──────────────────────────────────────────────────┘");
                                     System.out.println();
 
-                                    player.gold = listOfItems.get(input - 1).cost;
-                                    listOfItems.get(input - 1).isPlanted = true;
+                                    player.gold = items.get(input - 1).cost;
+                                    items.get(input - 1).isPlanted = true;
 
 //                                    CountDown cntdown = new CountDown(listOfItems.get(input - 1).growingTime);
                                     // 재배시간 임시로 0으로 설정
 //                                    listOfItems.get(input - 1).growingTime = 0;
 
 //                                    Test test = new Test();
-                                    int temp = listOfItems.get(input - 1).growingPeriod;
+                                    int temp = items.get(input - 1).growingPeriod;
 //                                    Test test = new Test(temp);
                                     Thread animalTimer = new Thread(new AnimalTimer(temp, animalFarm, input));
                                     animalTimer.setDaemon(true);
@@ -343,30 +343,30 @@ public class AnimalFarm extends Area {
             for (int i = 0; i < animalList.size(); i++) {
 
                 // 아이템의 레벨이 플레이어 레벨과 같거나 작으면 => 수확가능
-                if (listOfItems.get(i).level <= player.level) {
-                    listOfItems.get(i).levelCK = true;
+                if (items.get(i).level <= player.level) {
+                    items.get(i).levelCK = true;
                 }
 
                 System.out.print(i + 1 + ". ");
 
                 // 레벨이 충족돼서 재배 및 수확이 가능 하다면
-                if (listOfItems.get(i).levelCK) {
+                if (items.get(i).levelCK) {
 
                     // 동물이름 - 수확아이템 출력
-                    System.out.print(animalList.get(i) + " - " + listOfItems.get(i).name);
+                    System.out.print(animalList.get(i) + " - " + items.get(i).name);
 
                     // 수확가능 여부가 false 라면 => 수확 불가능 상태라면
-                    if (listOfItems.get(i).isHarvestable == false) {
+                    if (items.get(i).isHarvestable == false) {
                         // 농작물을 심었는지 확인함.
                         // 농작물 심었는지 여부가 false라면 => 농작물을 안심었다면
-                        if (listOfItems.get(i).isPlanted == false) {
+                        if (items.get(i).isPlanted == false) {
                             // 재배시간과 비용을 출력함
-                            System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 / ");
-                            System.out.print("비용 : " + listOfItems.get(i).cost + "골드)");
+                            System.out.print(" (재배시간 : " + items.get(i).defaultTime + "초 / ");
+                            System.out.print("비용 : " + items.get(i).cost + "골드)");
 
                             // 농작물을 심었고
                             // 농작물 자라는 시간이 0이라면 => 농작물이 다 자랐다면
-                        } else if (listOfItems.get(i).growingPeriod <= 0) {
+                        } else if (items.get(i).growingPeriod <= 0) {
 
                             // 수확가능으로 출력함
                             System.out.print(" (수확 가능)");
@@ -383,9 +383,9 @@ public class AnimalFarm extends Area {
 
                     // 레벨이 충족되지 않았다면
                 } else {
-                    System.out.print(animalList.get(i) + " - " + listOfItems.get(i).name);
-                    System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 /");
-                    System.out.print(" HOLD - LV." + listOfItems.get(i).level + " 이상)");
+                    System.out.print(animalList.get(i) + " - " + items.get(i).name);
+                    System.out.print(" (재배시간 : " + items.get(i).defaultTime + "초 /");
+                    System.out.print(" HOLD - LV." + items.get(i).level + " 이상)");
                     // 수확가능 여부 체크
                     // 수확가능 여부 false => 수확 불가
 //                    if (listOfItems.get(i).harvestCK == false) {
@@ -414,7 +414,7 @@ public class AnimalFarm extends Area {
 //                    System.out.print(animalList.get(i) + " - " + listOfItems.get(i).itemName);
 //                    System.out.print(" (HOLD - LV." + listOfItems.get(i).level + " 이상)");
 //                }
-                if (i < listOfItems.size() - 1) {       // 다음 리스트가 존재하면
+                if (i < items.size() - 1) {       // 다음 리스트가 존재하면
                     System.out.println();               // 줄바꿔줌
                 } else {                                // 다음 리스트가 없으면
                     System.out.print(" ");              // 공백출력
@@ -429,12 +429,12 @@ public class AnimalFarm extends Area {
 
             if (input == 0) {
                 break;
-            } else if (input > 0 && listOfItems.size() >= input) {
+            } else if (input > 0 && items.size() >= input) {
 
                 switch (input) {
                     case 1:
                         // 우유
-                        if (listOfItems.get(input - 1).levelCK) {
+                        if (items.get(input - 1).levelCK) {
                             addInventory(player, milkE, animalFarm);
                         } else {
                             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -445,7 +445,7 @@ public class AnimalFarm extends Area {
 
                     case 2:
                         // 양털
-                        if (listOfItems.get(input - 1).levelCK) {
+                        if (items.get(input - 1).levelCK) {
                             addInventory(player, woolE, animalFarm);
                         } else {
                             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -456,7 +456,7 @@ public class AnimalFarm extends Area {
 
                     case 3:
                         // 달걀
-                        if (listOfItems.get(input - 1).levelCK) {
+                        if (items.get(input - 1).levelCK) {
                             addInventory(player, eggE, animalFarm);
                         } else {
                             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -467,7 +467,7 @@ public class AnimalFarm extends Area {
 
                     case 4:
                         // 꿀
-                        if (listOfItems.get(input - 1).levelCK) {
+                        if (items.get(input - 1).levelCK) {
                             addInventory(player, honeyE, animalFarm);
                         } else {
                             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -478,7 +478,7 @@ public class AnimalFarm extends Area {
 
                     case 5:
                         // 토끼털
-                        if (listOfItems.get(input - 1).levelCK) {
+                        if (items.get(input - 1).levelCK) {
                             addInventory(player, rabbitFurE, animalFarm);
                         } else {
                             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -494,10 +494,5 @@ public class AnimalFarm extends Area {
                 scanner.nextLine();
             }
         } // while 종료
-    }
-
-    @Override
-    protected void welcome() {
-
     }
 }
