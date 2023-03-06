@@ -1,4 +1,4 @@
-package com.bluuminn.myhome.item;
+package com.bluuminn.myhome.area;
 
 public enum AreaType {
     FOREST("숲"),
