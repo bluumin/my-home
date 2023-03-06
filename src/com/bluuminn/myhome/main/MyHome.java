@@ -350,7 +350,7 @@ public class MyHome {
                     farm.cultivate(player, scanner);
                     break;
                 case 2: // 동물농장으로 이동
-                    animalFarm.getAnimalFarmItem(player, animalFarm);
+                    animalFarm.breed(player, scanner);
                     break;
                 case 3: // 숲으로 이동
                     forest.getForestItem(player);

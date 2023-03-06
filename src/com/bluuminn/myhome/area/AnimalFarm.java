@@ -1,498 +1,170 @@
 package com.bluuminn.myhome.area;
 
 import com.bluuminn.myhome.character.Player;
+import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.harvestgame.BearCatchesFishGame;
 import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.GrowthItem;
-import com.bluuminn.myhome.timer.AnimalTimer;
+import com.bluuminn.myhome.timer.FarmTimer;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
 
 public class AnimalFarm extends Area {
-
-    public ArrayList<String> animalList = new ArrayList<>();
-
-    // 우유
-    public GrowthItem milk = new GrowthItem("우유", "동물 농장", 90);
-    ItemEntry milkE = new ItemEntry(milk, 0);
-
-    // 양털
-    GrowthItem wool = new GrowthItem("양털", "동물 농장", 120);
-    ItemEntry woolE = new ItemEntry(wool, 0);
-
-    // 달걀
-    GrowthItem egg = new GrowthItem("달걀", "동물 농장", 150);
-    ItemEntry eggE = new ItemEntry(egg, 0);
-
-    // 꿀
-    GrowthItem honey = new GrowthItem("꿀", "동물 농장", 180);
-    ItemEntry honeyE = new ItemEntry(honey, 0);
-
-    // 토끼털
-    GrowthItem rabbitFur = new GrowthItem("토끼털", "동물 농장", 200);
-    ItemEntry rabbitFurE = new ItemEntry(rabbitFur, 0);
-
+    private final List<GrowthItem> items = new ArrayList<>();
 
     public AnimalFarm() {
-
-        name = "동물 농장";
-        animalList.add("젖소");
-        animalList.add("양");
-        animalList.add("닭");
-        animalList.add("벌통");
-        animalList.add("토끼");
+        super("동물농장");
+        String areaName = getName();
+        GrowthItem milk = new GrowthItem("우유", areaName, 4, 90, 40, 8, 10);
+        GrowthItem wool = new GrowthItem("양털", areaName, 12, 120, 120, 20, 15);
+        GrowthItem egg = new GrowthItem("달걀", areaName, 12, 150, 160, 30, 10);
+        GrowthItem honey = new GrowthItem("꿀", areaName, 12, 180, 120, 32, 15);
+        GrowthItem rabbitFur = new GrowthItem("토끼털", areaName, 12, 200, 200, 50, 10);
 
         items.add(milk);
         items.add(wool);
         items.add(egg);
         items.add(honey);
         items.add(rabbitFur);
-
-        milk.level = 4;
-        wool.level = 12;
-        egg.level = 12;
-        honey.level = 12;
-        rabbitFur.level = 12;
-
-        milk.exp = 8;
-        wool.exp = 20;
-        egg.exp = 30;
-        honey.exp = 32;
-        rabbitFur.exp = 50;
-
-        milk.cost = 40;
-        wool.cost = 120;
-        egg.cost = 160;
-        honey.cost = 120;
-        rabbitFur.cost = 200;
-
-        milk.growingPeriod = 10;
-        wool.growingPeriod = 15;
-        egg.growingPeriod = 10;
-        honey.growingPeriod = 15;
-        rabbitFur.growingPeriod = 10;
-
-        milk.defaultTime = 10;
-        wool.defaultTime = 15;
-        egg.defaultTime = 10;
-        honey.defaultTime = 15;
-        rabbitFur.defaultTime = 10;
-
-
-//        listOfItems.add(strawberry);
-//        strawberry.level = 3;
-//        strawberry.exp = 6;
-//        strawberry.cost = 140;
-//        strawberry.growingTime = 30;
-//        strawberry.defaultTime = 30;
-
-
     }
 
-    // 서브 메뉴 출력
-    public int animalSubMenu() {
-        if (items.get(input - 1).isHarvestable) {
+    public void breed(Player player, Scanner scanner) {
+        while (true) {
+            MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("    " + animalList.get(input - 1) + " 로(으로)부터 " + items.get(input - 1).name + " 얻기");
-            System.out.println();
-            System.out.println("    1. " + items.get(input - 1).name + " 얻기        2. 그만하기");
+            System.out.println("                   " + getName() + "에 도착했다.\n");
+
+            int playerLevel = player.getLevel();
+            for (int i = 0; i < items.size(); i++) {
+                GrowthItem item = items.get(i);
+                System.out.print((i + 1) + ". " + item.getName());
+
+                // 아이템의 레벨이 플레이어 레벨과 같거나 작으면 => 재배가능
+                if (!item.isPlantable(playerLevel)) {
+                    System.out.println(" HOLD - LV." + item.getLevel() + " 이상)");
+                    continue;
+                }
+                if (!item.isPlanted()) {
+                    System.out.println(" (재배시간: " + item.getGrowingPeriod() + "초 / 비용: " + item.getCost() + "골드)");
+                    continue;
+                }
+                if (item.getGrowingPeriod() <= 0) {
+                    System.out.println(" (수확 가능)");
+                    continue;
+                }
+                System.out.print(" (재배중..)");
+            }
+
+            MyHomeUtils.printLineAsCount(2);
+            System.out.println("수확하고 싶은 작물의 번호를 입력하세요. (0. 이전 단계로)");
             System.out.print("입력 >> ");
+            String inputValue = scanner.next();
+            scanner.nextLine();
+            if (!MyHomeUtils.isInteger(inputValue)) {
+                MyHomeUtils.enterAgain();
+            }
+            int input = MyHomeUtils.stringToInt(inputValue);
+            if (input == 0) {
+                return;
+            }
+            if (input >= items.size() || input < 0) {
+                MyHomeUtils.enterAgain();
+                scanner.nextLine();
+                continue;
+            }
 
-            return 1;
-
-        } else {
-            return -1;
-        }
-    }
-
-
-    public void addInventory(Player player, ItemEntry itemEntry, AnimalFarm animalFarm) {
-        count = 0;
-
-        boolean exit = true;
-        boolean result;
-
-        while (exit) {
-
-            // 아이템 수확할 때 수확 가능한지 여부 체크
-            // harvestCK 가 true면
-            if (items.get(input - 1).isHarvestable) {
-                if (count == 0) {
-                    System.out.print("아무키나 입력하면 ");
-                    System.out.println(items.get(input - 1).name + " 을(를) 수확하러 이동해요");
-
+            while (true) {
+                GrowthItem item = items.get(input - 1);
+                // 레벨이 안되면 아무것도 못한다고 알려주기
+                if (!item.isPlantable(playerLevel)) {
+                    printNotPlantable();
                     scanner.nextLine();
+                    continue;
                 }
-
-                // 아이템의 수확가능한 횟수가 남았으면 실행
-                if (items.get(input - 1).harvestCount > 0) {
-                    BearCatchesFishGame bearCatchesFish = new BearCatchesFishGame();
-                    result = bearCatchesFish.start(animalFarm, input);
-//                    System.out.println(result);
-                    if (result) {
-//                        System.out.println("result == 참 결과 실행");
-                        playSound();
-                        count++;
-                        if (count == items.get(input - 1).harvestCount) {
-                            // 수확할 아이템 이름과 수확 가능한 횟수 출력
-//                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
-                            System.out.println();
-
-                            System.out.println("    " + count + "개 획득");
-                            System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("         수확할 수 있는 양을 모두 수확했어요.");
-                            System.out.println(items.get(input - 1).name + " 획득량 : " + (count));
-                            System.out.println();
-                            System.out.println("이전 메뉴로 돌아갑니다.");
-
-                            player.inventory.add(itemEntry, count);
-
-                            player.exp += items.get(input - 1).exp;
-
-                            items.get(input - 1).isHarvestable = false;
-                            items.get(input - 1).isPlanted = false;
-
-                            exit = false;
-
-                        } else {
-
-//                            test();
-                            playSound();
-                            System.out.println();
-                            System.out.println("    " + count + "개 획득");
-                            player.exp += items.get(input - 1).exp;
-                        }
-
-                    } else {
-//                        System.out.println("result == 거짓 결과 실행");
-                        if (count <= 0) {
-                            exit = false;
-                            break;
-
-                        } else {
-                            items.get(input - 1).harvestCount -= count;
-//                            System.out.println(listOfItems.get(inputVal - 1).itemName + " " + listOfItems.get(inputVal - 1).harvestCnt);
-                            System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("        " + items.get(input - 1).name + " 획득량 : " + count);
-                            player.inventory.add(itemEntry, count);
-                            if (items.get(input - 1).harvestCount <= 0) {
-                                items.get(input - 1).isHarvestable = false;
-                            }
-                            exit = false;
-                            break;
-                        }
-                    }
-                } else {
+                // 아무것도 안한 상태면 재배시작하기
+                if (!item.isPlanted()) {
                     System.out.println("┌──────────────────────────────────────────────────┐");
-                    System.out.println("             수확할 수 있는 양을 모두 수확했어요.");
-
-                    items.get(input - 1).isHarvestable = false;
-                    scanner.nextLine();
-                    exit = false;
-                }
-
-                //  harvestCK(수확가능여부) 가 false일 경우
-                //      => 수확할 수 있는 아이템이 없는 경우
-            } else {
-
-                //  plantCK(재배 시작 여부) 를 검사
-
-                //  plantCK 가 true일 경우
-                //  남은 재배 시간 기다리기
-                //  추가 할 수 있으면 남은 시간 카운트를 gui로 보여주기
-
-                if (items.get(input - 1).isPlanted) {
-
+                    System.out.println("        재배 중이거나 수확 가능한 아이템이 없습니다.");
                     System.out.println();
-//                    System.out.println("시간 기능 구현 해야 함");
-//                    System.out.println("시간 기능 구현 다 됐다는 가정 하에 실행 중");
-
-
-                    // growingTime(재배시간)이 0이면
-                    if (items.get(input - 1).growingPeriod <= 0) {
-
-                        // harvestCK (수확가능여부)를 true로 바꿔줌
-                        items.get(input - 1).isHarvestable = true;
-
-                        // 초기화 과정....
-                        items.get(input - 1).harvestCount = 3;
-
-                        // 재배시간 초기화
-                        items.get(input - 1).growingPeriod = items.get(input - 1).defaultTime;
-
-                    } else {
-                        System.out.println();
-                        System.out.println("┌──────────────────────────────────────────────────┐");
-                        System.out.println("            아직 " + animalList.get(input - 1) + " 을(를) 길들이는 중이에요.");
-                        System.out.println("        " + animalList.get(input - 1) + " 이(가)" + " 길들여지면 알려드릴게요!");
-                        System.out.println("└──────────────────────────────────────────────────┘");
-                        System.out.println();
+                    System.out.println(item.getName() + " 을(를) 재배할까요?");
+                    System.out.println();
+                    System.out.println("1. 재배 하기        0. 이전 메뉴로 가기");
+                    System.out.print("입력 >> ");
+                    String subInputValue = scanner.next();
+                    if (!MyHomeUtils.isInteger(subInputValue)) {
+                        MyHomeUtils.enterAgain();
                         scanner.nextLine();
-                        exit = false;
+                        continue;
+                    }
+                    int subInput = MyHomeUtils.stringToInt(subInputValue);
+                    if (subInput < 0 || 1 < subInput) {
+                        MyHomeUtils.enterAgain();
+                        scanner.nextLine();
+                        continue;
+                    }
+                    if (player.getGold() < item.getCost()) {
+                        System.out.println("┌──────────────────────────────────────────────────┐");
+                        System.out.println("                   골드가 부족합니다.");
+                        scanner.nextLine();
                         continue;
                     }
 
-                    // plantCK 가 false일 경우
-                    // 재배를 시작하거나 이전 메뉴로 이동하기
-                } else {
-                    int harvestFlag = 0;
-
-                    while (harvestFlag == 0) {
-
-                        try {
-                            harvestFlag = 1;
-                            System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("   동물을 길들이는 중이거나 수확 가능한 아이템이 없습니다.\n");
-                            System.out.println(animalList.get(input - 1) + "을(를) 길들이면 " + items.get(input - 1).name + "을 얻을 수 있습니다.");
-                            System.out.println(animalList.get(input - 1) + " 을(를) 길들일까요?");
-                            System.out.println();
-                            System.out.println("1." + animalList.get(input - 1) + " 길들이기        else. 이전 메뉴로 가기");
-                            System.out.print("입력 >> ");
-
-                            inputSel = scanner.nextInt();
-                            scanner.nextLine();
-
-                            // 재배 시작
-                            switch (inputSel) {
-
-                                case 1:
-                                    System.out.println();
-                                    System.out.println("┌──────────────────────────────────────────────────┐");
-                                    System.out.println("                " + animalList.get(input - 1) + " 을(를) 길들입니다.");
-                                    System.out.println("        " + animalList.get(input - 1) + " 이(가)" + " 길들여지면 알려드릴게요!");
-                                    System.out.println("└──────────────────────────────────────────────────┘");
-                                    System.out.println();
-
-                                    player.gold = items.get(input - 1).cost;
-                                    items.get(input - 1).isPlanted = true;
-
-//                                    CountDown cntdown = new CountDown(listOfItems.get(input - 1).growingTime);
-                                    // 재배시간 임시로 0으로 설정
-//                                    listOfItems.get(input - 1).growingTime = 0;
-
-//                                    Test test = new Test();
-                                    int temp = items.get(input - 1).growingPeriod;
-//                                    Test test = new Test(temp);
-                                    Thread animalTimer = new Thread(new AnimalTimer(temp, animalFarm, input));
-                                    animalTimer.setDaemon(true);
-                                    animalTimer.start();
-
-//                                    System.out.println(currentThread());
-
-//                                    System.out.println("┌──────────────────────────────────────────────────┐");
-//                                    System.out.println("          계속 하시려면 아무키나 입력하세요.");
-//                                    System.out.println("└──────────────────────────────────────────────────┘");
-                                    scanner.nextLine();
-                                    break;
-
-                                case 2:
-                                    break;
-
-                                default:
-                                    return;
-
-                            }
-
-                            exit = false;
-
-                        } catch (InputMismatchException e) {
-
-                            harvestFlag = 0;
-
-                            scanner.nextLine();
-
-                            System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("            잘못 입력했어요. 다시 입력해주세요.");
-
-                            continue;
-
-                        }
+                    int playerGold = player.getGold();
+                    int plantCost = item.getCost();
+                    int remainGold = playerGold - plantCost;
+                    if (remainGold < 0) {
+                        remainGold = 0;
                     }
-                }
-            }
-
-            // 한번 수확할 때마다 플레이어의 피로도 15씩 증가
-
-            if (count >= 1) {
-                player.fatigability += 15;
-
-                if (player.fatigability >= 100) {
-                    player.fatigability = 100;
+                    player.updateGold(remainGold);
+                    item.plant();
+                    new Thread(new FarmTimer(item)).start();
+                    System.out.println("┌──────────────────────────────────────────────────┐");
+                    System.out.println("                  " + item.getName() + " 을(를) 재배합니다.");
+                    System.out.println("                재배가 완료되면 알려드릴게요!");
+                    System.out.println("└──────────────────────────────────────────────────┘");
+                    break;
                 }
 
-//                player.levelUP();
-            }
-
-            scanner.nextLine();
-            for (int i = 0; i < 100; i++) {
+                // 기다리기
+                if (!item.isHarvestable()) {
+                    System.out.println();
+                    System.out.println("┌──────────────────────────────────────────────────┐");
+                    System.out.println("               아직 " + item.getName() + " 을(를) 재배 중이에요.");
+                    System.out.println("                재배가 완료되면 알려드릴게요!");
+                    System.out.println("└──────────────────────────────────────────────────┘");
+                    break;
+                }
+                // 수확가능 한 양을 모두 수확했을 때
+                if (item.getHarvestRemainQuantity() < 1) {
+                    item.initHarvestable();
+                    System.out.println("┌──────────────────────────────────────────────────┐");
+                    System.out.println("          수확할 수 있는 양을 모두 수확했어요.");
+                    System.out.println("          " + item.getName() + " 획득량: " + item.getHarvestCount());
+                    System.out.println();
+                    System.out.println("               이전 메뉴로 돌아갑니다.");
+                    scanner.nextLine();
+                    break;
+                }
+                // 수확하기
+                new BearCatchesFishGame().start(item);
+                playSound();
                 System.out.println();
+                System.out.println("┌──────────────────────────────────────────────────┐");
+                System.out.println("               " + item.getName() + " 1개 획득!");
+                player.saveItem(ItemEntry.createItemEntry(item, 1));
+                item.decreaseHarvestRemainQuantityBy1();
+                int exp = player.getExp() + item.getExp();
+                player.updateExp(exp);
+                int fatigability = player.getFatigability() + 15;
+                if (fatigability > 100) {
+                    fatigability = 100;
+                }
+                player.updateFatigability(fatigability);
+                scanner.nextLine();
+                MyHomeUtils.printLineAsCount(100);
             }
         }
-    }
-
-    public void getAnimalFarmItem(Player player, AnimalFarm animalFarm) {
-        while (true) {
-            for (int i = 0; i < 100; i++) {
-                System.out.println();
-            }
-            System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("            " + name + "에 도착했다.\n");
-
-            // 동물 - 획득 아이템 출력
-            for (int i = 0; i < animalList.size(); i++) {
-
-                // 아이템의 레벨이 플레이어 레벨과 같거나 작으면 => 수확가능
-                if (items.get(i).level <= player.level) {
-                    items.get(i).levelCK = true;
-                }
-
-                System.out.print(i + 1 + ". ");
-
-                // 레벨이 충족돼서 재배 및 수확이 가능 하다면
-                if (items.get(i).levelCK) {
-
-                    // 동물이름 - 수확아이템 출력
-                    System.out.print(animalList.get(i) + " - " + items.get(i).name);
-
-                    // 수확가능 여부가 false 라면 => 수확 불가능 상태라면
-                    if (items.get(i).isHarvestable == false) {
-                        // 농작물을 심었는지 확인함.
-                        // 농작물 심었는지 여부가 false라면 => 농작물을 안심었다면
-                        if (items.get(i).isPlanted == false) {
-                            // 재배시간과 비용을 출력함
-                            System.out.print(" (재배시간 : " + items.get(i).defaultTime + "초 / ");
-                            System.out.print("비용 : " + items.get(i).cost + "골드)");
-
-                            // 농작물을 심었고
-                            // 농작물 자라는 시간이 0이라면 => 농작물이 다 자랐다면
-                        } else if (items.get(i).growingPeriod <= 0) {
-
-                            // 수확가능으로 출력함
-                            System.out.print(" (수확 가능)");
-
-                            // 농작물을 심었고 자라는 시간이 남아있다면 재배중 출력함
-                        } else {
-                            System.out.print(" (재배중..)");
-                        }
-
-                        // 수확가능여부가 true라면 수확가능 출력함
-                    } else {
-                        System.out.print(" (수확 가능)");
-                    }
-
-                    // 레벨이 충족되지 않았다면
-                } else {
-                    System.out.print(animalList.get(i) + " - " + items.get(i).name);
-                    System.out.print(" (재배시간 : " + items.get(i).defaultTime + "초 /");
-                    System.out.print(" HOLD - LV." + items.get(i).level + " 이상)");
-                    // 수확가능 여부 체크
-                    // 수확가능 여부 false => 수확 불가
-//                    if (listOfItems.get(i).harvestCK == false) {
-//
-//                        // 농작물 심었는지 여부 체크
-//                        // 농작물 심었는지 여부 false => 농작물 안심음
-//                        if (listOfItems.get(i).plantCK == false) {
-//                            // 재배시간 몇초인지 띄워줌
-//                            System.out.print(" (재배시간 : " + listOfItems.get(i).defaultTime + "초 /");
-//                        }
-////                        else {
-////                            System.out.print(" (재배중.. / ");
-////                        }
-//                    } else {
-//                        System.out.print("(수확 가능)");
-//                    }
-
-                }
-
-//                System.out.print(i + 1 + ". ");             // 출력할 수 있는 아이템 목록 순서 출력
-//                if (listOfItems.get(i).level <= player.level) {
-//                    listOfItems.get(i).levelCK = true;
-//                    // 동물 - 획득 아이템 출력
-//                    System.out.print(animalList.get(i) + " - " + listOfItems.get(i).itemName);
-//                } else {
-//                    System.out.print(animalList.get(i) + " - " + listOfItems.get(i).itemName);
-//                    System.out.print(" (HOLD - LV." + listOfItems.get(i).level + " 이상)");
-//                }
-                if (i < items.size() - 1) {       // 다음 리스트가 존재하면
-                    System.out.println();               // 줄바꿔줌
-                } else {                                // 다음 리스트가 없으면
-                    System.out.print(" ");              // 공백출력
-                }
-            }
-
-            System.out.println("\n\n얻고 싶은 재료의 번호를 입력하세요. (0. 이전 단계로)");
-            System.out.print("입력 >> ");
-//            inputVal = scanner.nextLine();
-            input = scanner.nextInt();
-            scanner.nextLine();
-
-            if (input == 0) {
-                break;
-            } else if (input > 0 && items.size() >= input) {
-
-                switch (input) {
-                    case 1:
-                        // 우유
-                        if (items.get(input - 1).levelCK) {
-                            addInventory(player, milkE, animalFarm);
-                        } else {
-                            System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
-                            scanner.nextLine();
-                        }
-                        break;
-
-                    case 2:
-                        // 양털
-                        if (items.get(input - 1).levelCK) {
-                            addInventory(player, woolE, animalFarm);
-                        } else {
-                            System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
-                            scanner.nextLine();
-                        }
-                        break;
-
-                    case 3:
-                        // 달걀
-                        if (items.get(input - 1).levelCK) {
-                            addInventory(player, eggE, animalFarm);
-                        } else {
-                            System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
-                            scanner.nextLine();
-                        }
-                        break;
-
-                    case 4:
-                        // 꿀
-                        if (items.get(input - 1).levelCK) {
-                            addInventory(player, honeyE, animalFarm);
-                        } else {
-                            System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
-                            scanner.nextLine();
-                        }
-                        break;
-
-                    case 5:
-                        // 토끼털
-                        if (items.get(input - 1).levelCK) {
-                            addInventory(player, rabbitFurE, animalFarm);
-                        } else {
-                            System.out.println("┌──────────────────────────────────────────────────┐");
-                            System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
-                            scanner.nextLine();
-                        }
-                        break;
-
-                }
-            } else {
-                System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("            잘못 입력했어요. 다시 입력해주세요.");
-                scanner.nextLine();
-            }
-        } // while 종료
     }
 }

@@ -12,13 +12,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Farm extends Area {
-
     private final List<GrowthItem> items = new ArrayList<>();
-    private final String areaName = getName();
-
 
     public Farm() {
         super("밭");
+        String areaName = getName();
         GrowthItem meal = new GrowthItem("밀", areaName, 1, 90, 50, 30, 10);
         GrowthItem strawberry = new GrowthItem("딸기", areaName, 3, 120, 140, 6, 15);
         GrowthItem tomato = new GrowthItem("토마토", areaName, 6, 150, 300, 31, 10);
@@ -169,10 +167,5 @@ public class Farm extends Area {
                 MyHomeUtils.printLineAsCount(100);
             }
         }
-    }
-
-    private static void printNotPlantable() {
-        System.out.println("┌──────────────────────────────────────────────────┐");
-        System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
     }
 }

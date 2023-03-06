@@ -16,4 +16,9 @@ public abstract class Area {
 //        Music harvest = new Music("harvest.mp3", false);
 //        harvest.start();
     }
+
+    protected static void printNotPlantable() {
+        System.out.println("┌──────────────────────────────────────────────────┐");
+        System.out.println("    플레이어의 레벨이 충족되지 않아 아직 획득 할 수 없습니다.");
+    }
 }
