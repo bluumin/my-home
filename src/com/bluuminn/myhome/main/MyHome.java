@@ -349,11 +349,11 @@ public class MyHome {
                 case 1:
                     farm.cultivate(player, scanner);
                     break;
-                case 2: // 동물농장으로 이동
+                case 2:
                     animalFarm.breed(player, scanner);
                     break;
-                case 3: // 숲으로 이동
-                    forest.getForestItem(player);
+                case 3:
+                    forest.growTrees(player, scanner);
                     break;
                 default:
                     return;
