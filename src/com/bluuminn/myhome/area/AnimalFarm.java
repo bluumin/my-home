@@ -17,11 +17,11 @@ public class AnimalFarm extends Area {
     public AnimalFarm() {
         super("동물농장");
         String areaName = getName();
-        GrowthItem milk = new GrowthItem("우유", areaName, 4, 90, 40, 8, 10);
-        GrowthItem wool = new GrowthItem("양털", areaName, 12, 120, 120, 20, 15);
-        GrowthItem egg = new GrowthItem("달걀", areaName, 12, 150, 160, 30, 10);
-        GrowthItem honey = new GrowthItem("꿀", areaName, 12, 180, 120, 32, 15);
-        GrowthItem rabbitFur = new GrowthItem("토끼털", areaName, 12, 200, 200, 50, 10);
+        GrowthItem milk = new GrowthItem("우유", "젖소", areaName, 4, 90, 40, 8, 10);
+        GrowthItem wool = new GrowthItem("양털", "양", areaName, 12, 120, 120, 20, 15);
+        GrowthItem egg = new GrowthItem("달걀", "닭", areaName, 12, 150, 160, 30, 10);
+        GrowthItem honey = new GrowthItem("꿀", "벌통", areaName, 12, 180, 120, 32, 15);
+        GrowthItem rabbitFur = new GrowthItem("토끼털", "토끼", areaName, 12, 200, 200, 50, 10);
 
         items.add(milk);
         items.add(wool);

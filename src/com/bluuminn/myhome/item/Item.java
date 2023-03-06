@@ -2,7 +2,8 @@ package com.bluuminn.myhome.item;
 
 public class Item {
     // 아이템 이름
-    private String name;
+    private final String name;
+    private final String resource;
 
     private ItemType type;
 
@@ -38,8 +39,9 @@ public class Item {
     }
 
 
-    public Item(String name, ItemType type, String productionArea, int level, int salePrice, int cost, int exp) {
+    public Item(String name, String resource, ItemType type, String productionArea, int level, int salePrice, int cost, int exp) {
         this.name = name;
+        this.resource = resource;
         this.type = type;
         this.productionArea = productionArea;
         this.level = level;
@@ -48,8 +50,9 @@ public class Item {
         this.exp = exp;
     }
 
-    public Item(String name, ItemType type, String productionArea, int salePrice) {
+    public Item(String name, String resource, ItemType type, String productionArea, int salePrice) {
         this.name = name;
+        this.resource = resource;
         this.type = type;
         this.productionArea = productionArea;
         this.salePrice = salePrice;

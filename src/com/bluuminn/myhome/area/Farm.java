@@ -17,12 +17,12 @@ public class Farm extends Area {
     public Farm() {
         super("밭");
         String areaName = getName();
-        GrowthItem meal = new GrowthItem("밀", areaName, 1, 90, 50, 30, 10);
-        GrowthItem strawberry = new GrowthItem("딸기", areaName, 3, 120, 140, 6, 15);
-        GrowthItem tomato = new GrowthItem("토마토", areaName, 6, 150, 300, 31, 10);
-        GrowthItem cotton = new GrowthItem("솜", areaName, 10, 180, 540, 99, 15);
-        GrowthItem potato = new GrowthItem("감자", areaName, 16, 200, 940, 339, 10);
-        GrowthItem corn = new GrowthItem("옥수수", areaName, 20, 220, 1240, 756, 15);
+        GrowthItem meal = new GrowthItem("밀", "밀", areaName, 1, 90, 50, 30, 10);
+        GrowthItem strawberry = new GrowthItem("딸기", "딸기", areaName, 3, 120, 140, 6, 15);
+        GrowthItem tomato = new GrowthItem("토마토", "토마토", areaName, 6, 150, 300, 31, 10);
+        GrowthItem cotton = new GrowthItem("솜", "솜", areaName, 10, 180, 540, 99, 15);
+        GrowthItem potato = new GrowthItem("감자", "감자", areaName, 16, 200, 940, 339, 10);
+        GrowthItem corn = new GrowthItem("옥수수", "옥수수", areaName, 20, 220, 1240, 756, 15);
         items.add(meal);
         items.add(strawberry);
         items.add(tomato);

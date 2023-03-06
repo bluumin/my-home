@@ -8,15 +8,15 @@ public class GrowthItem extends Item {
     private boolean isPlanted;
 
     // 다 자라는데 걸리는 시간
-    private int growingPeriod;
+    private final int growingPeriod;
 
     // 한번에 획득할 수 있는 횟수 카운트
-    private int harvestCount;
+    private final int harvestCount;
 
     private int harvestRemainQuantity;
 
-    public GrowthItem(String name, String productionArea, int level, int salePrice, int cost, int exp, int growingPeriod) {
-        super(name, ItemType.CULTIVATE, productionArea, level, salePrice, cost, exp);
+    public GrowthItem(String name, String resource, String productionArea, int level, int salePrice, int cost, int exp, int growingPeriod) {
+        super(name, resource, ItemType.CULTIVATE, productionArea, level, salePrice, cost, exp);
         this.isHarvestable = false;
         this.isPlanted = false;
         this.growingPeriod = growingPeriod;
