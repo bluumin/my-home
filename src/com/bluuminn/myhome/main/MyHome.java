@@ -280,7 +280,7 @@ public class MyHome {
                     break;
                 case 6:     // 상점
                     ProgressBar.loading();
-                    player.goToStore(player, merchant, store);
+                    merchant.buyAndSell(player, scanner);
                     break;
                 case 7:     // 미니게임
                     ProgressBar.loading();

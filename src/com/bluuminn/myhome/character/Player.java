@@ -1,7 +1,6 @@
 package com.bluuminn.myhome.character;
 
 import com.bluuminn.myhome.area.CraftShop;
-import com.bluuminn.myhome.area.Store;
 import com.bluuminn.myhome.etc.MyHomeConstants;
 import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.inventory.Inventory;
@@ -35,16 +34,16 @@ public class Player extends Character {
     // 퀘스트 리스트 체크 용
     private boolean ckck;
 
-    private boolean isResting;
+    private final boolean isResting;
 
     // 칭호 리스트
-    private ArrayList<Title> titles = new ArrayList<>();
+    private final ArrayList<Title> titles = new ArrayList<>();
 
     // 제작 아이템 목록 리스트
-    private ArrayList<CraftItem> craftItemList = new ArrayList<>();
+    private final ArrayList<CraftItem> craftItemList = new ArrayList<>();
 
     // 퀘스트 리스트
-    private ArrayList<Quest> playerQuestList = new ArrayList<>();
+    private final ArrayList<Quest> playerQuestList = new ArrayList<>();
 
     // 아이템 한개당 단가를 임시 저장할 변수
     private int singlePrice;
@@ -62,7 +61,7 @@ public class Player extends Character {
     private int gold;               // 돈(마이홈의 화폐 단위)
     private boolean hasWoodenWorkbench;       // 원목 작업대 구입 여부
     private boolean hasCookingStove;         // 요리용 화덕 구입 여부
-    private Inventory inventory = new Inventory();
+    private final Inventory inventory = new Inventory();
 
     private Player(String name) {
         super(name);
@@ -116,6 +115,22 @@ public class Player extends Character {
 
     public int getGold() {
         return gold;
+    }
+
+    public boolean hasWoodenWorkbench() {
+        return hasWoodenWorkbench;
+    }
+
+    public void ownWoodenWorkbench() {
+        this.hasWoodenWorkbench = true;
+    }
+
+    public void ownCookingStove() {
+        this.hasCookingStove = true;
+    }
+
+    public boolean hasCookingStove() {
+        return hasCookingStove;
     }
 
     public void levelUp() {
@@ -232,7 +247,6 @@ public class Player extends Character {
                 break;
 
             default:
-                return;
 
         }
     }
@@ -431,8 +445,8 @@ public class Player extends Character {
         int ball = 0;
 //        int inNum = scanner.nextInt();
 //        scanner.nextLine();
-        int computer[] = new int[3]; //컴퓨터가 정한 값
-        int user[] = new int[3]; //유저가 정한 값
+        int[] computer = new int[3]; //컴퓨터가 정한 값
+        int[] user = new int[3]; //유저가 정한 값
 
         Random random = new Random();
 
@@ -467,7 +481,6 @@ public class Player extends Character {
 
         int cnt = 0;
 
-        outer:
         while (strike < 3) { //스트라이크 3이 될 때 까지 무한 루프
             cnt++;
             //3번 반복하여 유저 입력 받음.
@@ -517,7 +530,7 @@ public class Player extends Character {
                 System.out.println("\n 👍 3 Strike !!");
                 System.out.println("게임에서 승리했습니다. (턴 수 : " + cnt + ")");
                 System.out.println();
-                player.fatigability -= (int) 100 / cnt;
+                player.fatigability -= 100 / cnt;
                 restCount = 5;
                 System.out.println("휴식 모드 횟수가 초기화 되었습니다.");
                 scanner.nextLine();
@@ -582,11 +595,11 @@ public class Player extends Character {
     // ============================ 플레이어 퀘스트 리스트 확인 ==============================
     public void viewQuestList(Player player, NPC mimi) {
 //        System.out.println(mimi.tmpPlayer.playerQuestList.size());
-        if (mimi.tmpPlayer.playerQuestList.size() >= 0) {
+        if (NPC.tmpPlayer.playerQuestList.size() >= 0) {
 //            System.out.println("test1");
-            for (int i = 0; i < mimi.tmpPlayer.playerQuestList.size(); i++) {
+            for (int i = 0; i < NPC.tmpPlayer.playerQuestList.size(); i++) {
 //                System.out.println("test2");
-                tmpQuest = mimi.tmpPlayer.playerQuestList.get(i);
+                tmpQuest = NPC.tmpPlayer.playerQuestList.get(i);
                 if (player.playerQuestList.size() <= 0) {
                     player.playerQuestList.add(tmpQuest);
                 } else {
@@ -606,7 +619,6 @@ public class Player extends Character {
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("            진행 중인 퀘스트가 없습니다.");
                 scanner.nextLine();
-                return;
             } else {
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("                  퀘스트 리스트 ");
@@ -624,7 +636,6 @@ public class Player extends Character {
                 if (inputVal <= player.playerQuestList.size() && inputVal > 0) {
                     player.questInfo(player, inputVal, mimi);
                 } else if (inputVal == 0) {
-                    return;
                 }
             }
         }
@@ -747,13 +758,12 @@ public class Player extends Character {
                 System.out.println();
                 System.out.println("퀘스트 완료!");
                 player.questCompletedCount += 1;
-                mimi.tmpPlayer.playerQuestList.remove(inputVal - 1);
+                NPC.tmpPlayer.playerQuestList.remove(inputVal - 1);
                 playerQuestList.remove(inputVal - 1);
                 scanner.nextLine();
             }
         } else {
 
-            return;
         }
 
     }
@@ -905,7 +915,6 @@ public class Player extends Character {
         scanner.nextLine();
     }
 
-    // ========================== 플레이어 정보 확인 ============================
     public void showInfo(Scanner scanner) {
         while (true) {
             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -974,165 +983,133 @@ public class Player extends Character {
         }
     }
 
-    public void goToStore(Player player, Merchant merchant, Store store) {
-        merchant.lines(store, player);
-    }
+    public void sellItem(Scanner scanner) {
+        while (true) {
+            if (inventory.isEmpty()) {
+                System.out.println("┌──────────────────────────────────────────────────┐");
+                System.out.println("            판매 할 수 있는 아이템이 없습니다.");
+                System.out.println("                이전 메뉴로 돌아갑니다.");
+                return;
+            }
 
-    public void playerProcedure(Store store, Player player, int itemNum, int itemQuantity) {
-
-        // 선택한 아이템 이름을 저장
-        selItem = player.inventory.getItemName(player.inventory.getItem(itemNum - 1));
-
-        // 한개당 가격을 저장
-        singlePrice = (int) (player.inventory.getItemPrice(player.inventory.getItem(itemNum - 1)) * 0.6);
-
-        // 총 가격을 저장
-        totalPrice = singlePrice * itemQuantity;
-
-        // 인벤토리에 있는 아이템의 개수 저장
-        int itemCnt = player.inventory.getItemCount(itemNum - 1);
-
-
-        try {
-            System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("   " + selItem + " " + itemQuantity + " 개를 " + totalPrice + " 골드에 판매 하시겠습니까?");
+            ArrayList<ItemEntry> items = inventory.getItems();
+            showInventory(items);
             System.out.println();
-            System.out.println("1. 예        2. 아니오(이전으로)");
+            System.out.println("판매하고 싶은 아이템의 번호를 입력하세요. (0. 이전으로)");
             System.out.println();
             System.out.print("입력 >> ");
-            Scanner scanner = new Scanner(System.in);
-            inputVal = scanner.nextInt();
+            String inputValue = scanner.next();
             scanner.nextLine();
-
-            if (inputVal == 1) {
-
-                // 아이템의 개수가 판매하려는 개수보다 많으면 판매하기
-                if (itemQuantity <= player.inventory.getItemCount(itemNum - 1)) {
-                    player.inventory.remove(itemNum - 1, itemQuantity);
-                    player.gold += totalPrice;
-                    System.out.println();
-                    System.out.println("판매 완료!\n");
-                    System.out.println("현재 보유한 골드 : " + player.gold);
-
-                } else {        // 아이템의 개수가 판매하려는 개수보다 적으면
-                    System.out.println("┌──────────────────────────────────────────────────┐");
-                    System.out.println("             아이템의 개수가 부족합니다.\n");
-                    System.out.println("      현재 보유한 " + selItem + " 개수 : " + itemCnt + " 개");
-
-                }
-            } else {
-                System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("                이전 메뉴로 돌아갑니다.");
+            if (!MyHomeUtils.isInteger(inputValue)) {
+                MyHomeUtils.enterAgain();
                 scanner.nextLine();
+                continue;
             }
-        } catch (InputMismatchException e) {
+            int input = Integer.parseInt(inputValue);
+            if (input == 0) {
+                break;
+            }
+            if (input < 0 || input > inventory.getNumberOfItems()) {
+                MyHomeUtils.enterAgain();
+                scanner.nextLine();
+                continue;
+            }
 
-
-            scanner.nextLine();
-
-            System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("            잘못 입력했어요. 다시 입력해주세요.");
-
-            //continue;
-        }
-    }
-
-
-    public void sellingItem(Store store, Player player) {
-        boolean exit = true;
-        while (exit) {
-
-            // 인벤토리가 비어있을때 => 팔 수 있는 아이템이 없음
-            if (player.inventory.getAvailableItems() <= 0) {
+            // 선택한 번호가 범위 내에 있으면 (범위 : 인벤토리 1번 ~ 마지막번)
+            while (true) {
+                ItemEntry item = items.get(input);
                 System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("            판매 할 수 있는 아이템이 없습니다.\n");
-                System.out.println("                이전 메뉴로 돌아갑니다.");
-                exit = false;
-
-                // 인벤토리에 1개 이상의 아이템이 있을때
-            } else {
-
-                // 인벤토리를 출력해줌
-                viewInvenInTheStore(player.inventory);
-
+                System.out.println("  " + item.getItemName() + " 을(를) 몇 개 판매 하시겠습니까? (0. 이전으로)");
                 System.out.println();
-
-                try {
-                    System.out.println("판매하고 싶은 아이템의 번호를 입력하세요. (0. 이전으로)");
-                    System.out.print("입력 >> ");
-                    Scanner scanner = new Scanner(System.in);
-                    int itemNum = scanner.nextInt();
+                System.out.print("입력 >> ");
+                inputValue = scanner.next();
+                scanner.nextLine();
+                if (!MyHomeUtils.isInteger(inputValue)) {
+                    MyHomeUtils.enterAgain();
                     scanner.nextLine();
-
-                    // 선택한 번호가 범위 내에 있으면 (범위 : 인벤토리 1번 ~ 마지막번)
-                    if (itemNum <= player.inventory.getAvailableItems() && itemNum > 0) {
-                        boolean innerExit = true;
-                        while (innerExit) {
-                            try {
-                                System.out.println("┌──────────────────────────────────────────────────┐");
-                                System.out.println("  " + player.inventory.getItemName(player.inventory.getItem(itemNum - 1)) + " 을(를) 몇 개 판매 하시겠습니까? (0. 인벤토리 리스트 보기)");
-                                System.out.println();
-                                System.out.print("입력 >> ");
-                                int itemQuantity = scanner.nextInt();
-                                scanner.nextLine();
-
-                                // 0 입력시 이전 단계로
-                                if (itemQuantity == 0) {
-                                    innerExit = false;
-                                    //exit = false;
-
-                                    // 0이 아니면
-                                } else {
-                                    playerProcedure(store, player, itemNum, itemQuantity);
-                                    innerExit = false;
-
-                                }
-                            } catch (InputMismatchException e) {
-
-                                scanner.nextLine();
-
-                                System.out.println("┌──────────────────────────────────────────────────┐");
-                                System.out.println("            잘못 입력했어요. 다시 입력해주세요.");
-
-                                continue;
-                            }
-                        }
-                    } else if (itemNum == 0) {
-                        exit = false;
-                    } else {
-                        System.out.println("┌──────────────────────────────────────────────────┐");
-                        System.out.println("            잘못 입력했어요. 다시 입력해주세요.");
-                    }
-                } catch (InputMismatchException e) {
-
-                    scanner.nextLine();
-
-                    System.out.println("┌──────────────────────────────────────────────────┐");
-                    System.out.println("            잘못 입력했어요. 다시 입력해주세요.");
-
                     continue;
                 }
+                int salesQuantity = Integer.parseInt(inputValue);
+                if (salesQuantity == 0) {
+                    return;
+                }
+                if (salesQuantity < 0 || item.getQuantity() < salesQuantity) {
+                    MyHomeUtils.enterAgain();
+                    scanner.nextLine();
+                    continue;
+                }
+
+                // 선택한 아이템 이름을 저장
+                String itemName = item.getItemName();
+
+                // 한개당 가격을 저장
+                int pricePerItem = item.getItemSalePrice();
+
+                // 총 가격을 저장
+                totalPrice = pricePerItem * salesQuantity;
+
+                // 인벤토리에 있는 아이템의 개수 저장
+                int itemQuantity = item.getQuantity();
+
+                System.out.println("┌──────────────────────────────────────────────────┐");
+                System.out.println("   " + itemName + " " + salesQuantity + "개를 " + totalPrice + "골드에 판매 하시겠습니까?");
+                System.out.println();
+                System.out.println("1. 예        0. 아니오(이전으로)");
+                System.out.println();
+                System.out.print("입력 >> ");
+                inputValue = scanner.next();
+                scanner.nextLine();
+                if (!MyHomeUtils.isInteger(inputValue)) {
+                    MyHomeUtils.enterAgain();
+                    scanner.nextLine();
+                    continue;
+                }
+                input = Integer.parseInt(inputValue);
+                if (input == 0) {
+                    break;
+                }
+                if (input > 1 || input < 0) {
+                    MyHomeUtils.enterAgain();
+                    scanner.nextLine();
+                    continue;
+                }
+
+                if (salesQuantity > item.getQuantity()) {
+                    System.out.println("┌──────────────────────────────────────────────────┐");
+                    System.out.println("               아이템의 개수가 부족합니다.");
+                    System.out.println();
+                    System.out.println("      현재 보유한 " + itemName + " 개수: " + itemQuantity + "개");
+                    continue;
+                }
+
+                int remainQuantity = itemQuantity - salesQuantity;
+                item.updateQuantity(remainQuantity);
+                if (remainQuantity <= 0) {
+                    inventory.remove(item);
+                }
+                updateGold(this.gold + totalPrice);
+                System.out.println();
+                System.out.println("판매 완료!");
+                System.out.println("현재 보유 골드: " + this.gold);
+                break;
             }
         }
     }
 
-    public void viewInvenInTheStore(Inventory inventory) {      // 가격 추가해서 보여주기
-        if (inventory.getAvailableItems() <= 0) {
+    public void showInventory(ArrayList<ItemEntry> items) {
+        if (inventory.isEmpty()) {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("               인벤토리가 비었습니다.");
-            scanner.nextLine();
-        } else {
-            System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("                  인벤토리 리스트\n");
-            for (int i = 0; i < inventory.getAvailableItems(); i++) {
-
-                // 아이템 판매 가격 임시 저장
-                int temp = (int) (inventory.getItemPrice(inventory.getItem(i)) * 0.6);
-
-                System.out.print(i + 1 + ". ");
-                System.out.println(inventory.getItemName(inventory.getItem(i)) + " (" + temp + "골드)");
-                System.out.println("\t\t\t\t\t\t\t\t" + inventory.getItemCount(i) + " 개");
-            }
+            return;
+        }
+        System.out.println("┌──────────────────────────────────────────────────┐");
+        System.out.println("                  인벤토리 리스트");
+        System.out.println();
+        for (int i = 0; i < inventory.getNumberOfItems(); i++) {
+            ItemEntry item = items.get(i);
+            System.out.print(i + 1 + ". ");
+            System.out.println(item.getItemName() + " (" + item.getItemSalePrice() + "골드)");
+            System.out.println("\t\t\t\t\t\t\t\t" + item.getQuantity() + "개");
         }
     }
 

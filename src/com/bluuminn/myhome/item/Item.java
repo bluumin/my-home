@@ -3,18 +3,18 @@ package com.bluuminn.myhome.item;
 public class Item {
     // 아이템 이름
     private final String name;
-    private final String resource;
+    private String resource;
 
-    private ItemType type;
+    private final ItemType type;
 
     // 아이템 획득지
-    private String productionArea;
+    private final String productionArea;
 
     // 아이템 레벨. (플레이어 레벨이 아이템 레벨이 되어야 획득 가능)
     private int level;
 
     // 아이템 가격 (상점 가격)
-    private int salePrice;
+    private final int price;
 
     // 아이템 심거나 만들 때 비용
     private int cost;
@@ -38,23 +38,25 @@ public class Item {
         return exp;
     }
 
+    public int getPrice() {
+        return price;
+    }
 
-    public Item(String name, String resource, ItemType type, String productionArea, int level, int salePrice, int cost, int exp) {
+    public Item(String name, String resource, ItemType type, String productionArea, int level, int price, int cost, int exp) {
         this.name = name;
         this.resource = resource;
         this.type = type;
         this.productionArea = productionArea;
         this.level = level;
-        this.salePrice = salePrice;
+        this.price = price;
         this.cost = cost;
         this.exp = exp;
     }
 
-    public Item(String name, String resource, ItemType type, String productionArea, int salePrice) {
+    public Item(String name, ItemType type, String productionArea, int price) {
         this.name = name;
-        this.resource = resource;
         this.type = type;
         this.productionArea = productionArea;
-        this.salePrice = salePrice;
+        this.price = price;
     }
 }

@@ -30,4 +30,12 @@ public class ItemEntry {
     public String getItemName() {
         return this.item.getName();
     }
+
+    public int getItemSalePrice() {
+        return (int) (this.item.getPrice() * 0.6);
+    }
+
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }

@@ -7,12 +7,23 @@ public class Inventory {
     // 인벤토리가 담을 수 있는 총 개수
     private static final int MAX_NUMBER_OF_ITEMS = 10;
 
-
     // 인벤토리에 들어있는 아이템 목록
     private ArrayList<ItemEntry> items;
 
     public Inventory() {
         items = new ArrayList<>(MAX_NUMBER_OF_ITEMS);
+    }
+
+    public ArrayList<ItemEntry> getItems() {
+        return items;
+    }
+
+    public int getNumberOfItems() {
+        return items.size();
+    }
+
+    public boolean isEmpty() {
+        return items == null || items.isEmpty();
     }
 
     public void add(ItemEntry entry) {
@@ -39,18 +50,8 @@ public class Inventory {
 
     //============================== 아이템 개수 감소(0이면 제거) =================================
     // 해당하는 칸의 아이템의 개수를 cnt만큼 감소시킨다
-    public void remove(int index, int cnt) {
-        ItemEntry entry = items.get(index);
-        if (entry != null) {
-            items.get(index).quantity -= cnt;
-            if (entry.quantity <= 0) {
-                items.remove(index);
-                items.add(null);
-                items--;
-            }
-            return true;
-        }
-        return false;
+    public void remove(ItemEntry item) {
+        items.remove(item);
     }
 
     public int find(ItemEntry entry) {
@@ -86,22 +87,6 @@ public class Inventory {
         return -1;
     }
 
-    // ==================== 아이템 이름 반환 ===================
-    // 해당하는 아이템의 이름을 반환한다
-    public String getItemName(ItemEntry item) {
-        if (item.entryType.equals("일반")) {
-            return item.item.name;
-        } else if (item.entryType.equals("생산")) {
-            return item.growthItem.name;
-        } else if (item.entryType.equals("제작")) {
-            return item.madeItem.name;
-        } else if (item.entryType.equals("포션")) {
-            return item.potion.name;
-        } else {
-            return null;
-        }
-    }
-
     // ==================== 아이템 가격 반환 ===================
     // 해당하는 아이템의 가격을 반환한다
     public int getItemPrice(ItemEntry item) {
@@ -128,12 +113,5 @@ public class Inventory {
             return entry.quantity;
         }
         return -1;
-    }
-
-
-    // ================ 인벤토리에 들어있는 전체 아이템 객체 수 반환 =================
-    // 인벤토리에 들어가있는 아이템 객체의 개수를 반환한다
-    public int getAvailableItems() {
-        return items;
     }
 }

@@ -15,8 +15,8 @@ public class GrowthItem extends Item {
 
     private int harvestRemainQuantity;
 
-    public GrowthItem(String name, String resource, String productionArea, int level, int salePrice, int cost, int exp, int growingPeriod) {
-        super(name, resource, ItemType.CULTIVATE, productionArea, level, salePrice, cost, exp);
+    public GrowthItem(String name, String resource, String productionArea, int level, int price, int cost, int exp, int growingPeriod) {
+        super(name, resource, ItemType.CULTIVATE, productionArea, level, price, cost, exp);
         this.isHarvestable = false;
         this.isPlanted = false;
         this.growingPeriod = growingPeriod;
