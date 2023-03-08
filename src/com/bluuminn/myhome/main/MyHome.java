@@ -9,6 +9,7 @@ import com.bluuminn.myhome.etc.MyHomeConstants;
 import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.etc.ProgressBar;
 import com.bluuminn.myhome.inventory.ItemEntry;
+import com.bluuminn.myhome.item.ItemStorage;
 import com.bluuminn.myhome.quest.Needs;
 import com.bluuminn.myhome.quest.Quest;
 import com.bluuminn.myhome.quest.Title;
@@ -30,15 +31,18 @@ public class MyHome {
     private final Merchant merchant;
     private final NPC mimi;
     private final NPC tomson;
+    private final ItemStorage itemStorage;
+
     SoundPlayerUsingClip player = new SoundPlayerUsingClip();
     Scanner scanner = new Scanner(System.in);
 
     public MyHome() {
-        farm = new Farm();         // 밭 객체 추가
-        animalFarm = new AnimalFarm();   // 동물 농장 객체 추가
-        forest = new Forest();   // 숲 객체 추가
-        store = new Store();  // 상점 객체 추가
-        craftShop = new CraftShop("공방", player, store, farm, animalFarm);
+        itemStorage = new ItemStorage();
+        farm = new Farm(itemStorage);
+        animalFarm = new AnimalFarm(itemStorage);
+        forest = new Forest(itemStorage);
+        craftShop = new CraftShop(itemStorage);
+        store = new Store();
         merchant = Merchant.createMerchant("로빈");
         mimi = NPC.createNPC("미미");
         tomson = NPC.createNPC("톰슨");
@@ -193,7 +197,7 @@ public class MyHome {
         quest1.questContent = ("수확한 밀로 끈을 만들어봐요!").toCharArray();
         quest1.payForGold = 1000;
         quest1.payExp = 40;
-        quest1.payItem = new ItemEntry(animalFarm.milk, 0);
+        quest1.payItem = ItemEntry.of(ItemStorage.MILK, 0);
         quest1.payItemCount = 1;
         quest1.needs.add(new Needs("밀짚끈", 4));
         quest1.questEnding = ("생각보다 튼튼해 보여요. 처음이라 걱정했는데 잘하고 계시는데요?\n앞으로도 이렇게만 해주세요!").toCharArray();

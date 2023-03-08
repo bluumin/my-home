@@ -5,27 +5,18 @@ import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.harvestgame.BearCatchesFishGame;
 import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.GrowthItem;
+import com.bluuminn.myhome.item.ItemStorage;
 import com.bluuminn.myhome.timer.FarmTimer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Forest extends Area {
-    private final List<GrowthItem> items = new ArrayList<>();
+    private final List<GrowthItem> items;
 
-    public Forest() {
+    public Forest(ItemStorage itemStorage) {
         super("숲");
-        String areaName = getName();
-        GrowthItem fir = new GrowthItem("전나무목재", "전나무", areaName, 3, 300, 70, 20, 10);
-        GrowthItem apple = new GrowthItem("사과", "사과나무", areaName, 7, 400, 180, 24, 10);
-        GrowthItem orange = new GrowthItem("오렌지", "오렌지나무", areaName, 10, 500, 220, 24, 10);
-        GrowthItem maple = new GrowthItem("단풍나무목재", "단풍나무", areaName, 12, 800, 300, 32, 15);
-
-        items.add(fir);
-        items.add(apple);
-        items.add(orange);
-        items.add(maple);
+        items = itemStorage.getForestItems();
     }
 
     public void growTrees(Player player, Scanner scanner) {
@@ -151,7 +142,7 @@ public class Forest extends Area {
                 System.out.println();
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("               " + item.getName() + " 1개 획득!");
-                player.saveItem(ItemEntry.createItemEntry(item, 1));
+                player.saveItem(ItemEntry.of(item, 1));
                 item.decreaseHarvestRemainQuantityBy1();
                 int exp = player.getExp() + item.getExp();
                 player.updateExp(exp);

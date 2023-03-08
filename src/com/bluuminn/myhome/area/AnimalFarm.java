@@ -5,6 +5,7 @@ import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.harvestgame.BearCatchesFishGame;
 import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.GrowthItem;
+import com.bluuminn.myhome.item.ItemStorage;
 import com.bluuminn.myhome.timer.FarmTimer;
 
 import java.util.ArrayList;
@@ -12,29 +13,19 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AnimalFarm extends Area {
-    private final List<GrowthItem> items = new ArrayList<>();
+    private final List<GrowthItem> items;
 
-    public AnimalFarm() {
+    public AnimalFarm(ItemStorage itemStorage) {
         super("동물농장");
-        String areaName = getName();
-        GrowthItem milk = new GrowthItem("우유", "젖소", areaName, 4, 90, 40, 8, 10);
-        GrowthItem wool = new GrowthItem("양털", "양", areaName, 12, 120, 120, 20, 15);
-        GrowthItem egg = new GrowthItem("달걀", "닭", areaName, 12, 150, 160, 30, 10);
-        GrowthItem honey = new GrowthItem("꿀", "벌통", areaName, 12, 180, 120, 32, 15);
-        GrowthItem rabbitFur = new GrowthItem("토끼털", "토끼", areaName, 12, 200, 200, 50, 10);
-
-        items.add(milk);
-        items.add(wool);
-        items.add(egg);
-        items.add(honey);
-        items.add(rabbitFur);
+        items = itemStorage.getAnimalFarmItems();
     }
 
     public void breed(Player player, Scanner scanner) {
         while (true) {
             MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("                   " + getName() + "에 도착했다.\n");
+            System.out.println("                   " + getName() + "에 도착했다.");
+            System.out.println();
 
             int playerLevel = player.getLevel();
             for (int i = 0; i < items.size(); i++) {
@@ -153,7 +144,7 @@ public class AnimalFarm extends Area {
                 System.out.println();
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("               " + item.getName() + " 1개 획득!");
-                player.saveItem(ItemEntry.createItemEntry(item, 1));
+                player.saveItem(ItemEntry.of(item, 1));
                 item.decreaseHarvestRemainQuantityBy1();
                 int exp = player.getExp() + item.getExp();
                 player.updateExp(exp);

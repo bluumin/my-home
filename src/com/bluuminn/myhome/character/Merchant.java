@@ -197,7 +197,7 @@ public class Merchant extends NPC {
             }
             int remainGold = playerGold - totalPrice;
             player.updateGold(remainGold);
-            player.saveItem(ItemEntry.createItemEntry(item, itemQuantity));
+            player.saveItem(ItemEntry.of(item, itemQuantity));
             System.out.println("구매 완료!");
             System.out.println();
             System.out.println("현재 보유 골드: " + player.getGold());

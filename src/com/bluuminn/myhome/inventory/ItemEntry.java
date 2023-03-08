@@ -15,7 +15,7 @@ public class ItemEntry {
         this.quantity = quantity;
     }
 
-    public static ItemEntry createItemEntry(Item item, int quantity) {
+    public static ItemEntry of(Item item, int quantity) {
         return new ItemEntry(item, quantity);
     }
 
