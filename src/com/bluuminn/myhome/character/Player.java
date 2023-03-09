@@ -112,6 +112,10 @@ public class Player extends Character {
         return restCount;
     }
 
+    public void resetRestCount() {
+        this.restCount = 5;
+    }
+
     public boolean isResting() {
         return isResting;
     }
