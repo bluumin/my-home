@@ -42,10 +42,10 @@ public class Arcade extends Area {
             }
             switch (input) {
                 case 1:
-                    numberBaseball(player);
+                    numberBaseball(player, scanner);
                     break;
                 case 2:
-                    rockScissorPaper(player);
+                    rockScissorPaper(player, scanner);
                     break;
                 default:
                     return;
@@ -54,172 +54,218 @@ public class Arcade extends Area {
         }
     }
 
-    // ============================ 가위바위보 - 미니게임 ===============================
-    private void rockScissorPaper(Player player) {
-        // 가위 - 1
-        // 바위 - 2
-        // 보 - 3
-
-        int lose = 0, win = 0, draw = 0;
-
-        boolean outExit = true;
-        while (outExit) {
-            int com = 0, user = 0;
-            String userInput = null;
-            String comVal = null;
-            String tmpUser = null;
-
-            Random random = new Random();
-            com = random.nextInt(3) + 1;
-            if (com == 1) {
-                comVal = "✌️";
-            } else if (com == 2) {
-                comVal = "✊";
-            } else if (com == 3) {
-                comVal = "✋";
-            }
-
-
+    private void rockScissorPaper(Player player, Scanner scanner) {
+        while (true) {
+            System.out.println("┌──────────────────────────────────────────────────┐");
+            System.out.println("                   ✌️ 가위 바위 보");
             System.out.println();
-            System.out.println("\r ✌️ - 가위 or 1");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println("\r ✊️ - 바위 or 2");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println("\r ✋️ - 보 or 3");
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            boolean exit = true;
-
-            while (exit) {
-                System.out.println();
-                System.out.print("입력 >> ");
-                userInput = scanner.nextLine();
-
-                if (userInput.equals("가위") || userInput.equals("1")) {
-                    user = 1;
-                    tmpUser = "✌️";
-                    exit = false;
-
-                } else if (userInput.equals("바위") || userInput.equals("2")) {
-                    user = 2;
-                    tmpUser = "✊";
-                    exit = false;
-
-                } else if (userInput.equals("보") || userInput.equals("3")) {
-                    user = 3;
-                    tmpUser = "✋";
-                    exit = false;
-
-                } else if (userInput.equals("0")) {
-                    return;
-//                    exit = false;
-
-                } else {
-                    System.out.println("잘못 입력했어요. 다시 입력해주세요.");
-                    continue;
-                }
-            }
+            System.out.println("                    1. 게임 시작");
+            System.out.println("                    2. 설명 보기");
             System.out.println();
-            System.out.println("👤(Player)       🖥(Computer)");
-            System.out.println();
-            System.out.println("    " + tmpUser + "       🆚       " + comVal);
-            System.out.println();
+            System.out.println("                    0. 이전으로");
 
-            switch (user) {
-                case 1:
-                    if (com == 1) {
-                        System.out.println("✊ 비겼어요!");
-                        draw++;
-                        System.out.println();
-                    } else if (com == 2) {
-                        System.out.println("🙁 아쉽지만 졌네요.");
-                        lose++;
-                        System.out.println();
-                    } else if (com == 3) {
-                        System.out.println("👏 이겼어요!");
-                        win++;
-                        System.out.println();
-                    }
-                    break;
-                case 2:
-                    if (com == 1) {
-                        System.out.println("👏 이겼어요!");
-                        win++;
-                        System.out.println();
-                    } else if (com == 2) {
-                        System.out.println("✊ 비겼어요!");
-                        draw++;
-                        System.out.println();
-                    } else if (com == 3) {
-                        System.out.println("🙁 아쉽지만 졌네요.");
-                        lose++;
-                        System.out.println();
-                    }
-                    break;
-                case 3:
-                    if (com == 1) {
-                        System.out.println("🙁 아쉽지만 졌네요.");
-                        lose++;
-                        System.out.println();
-                    } else if (com == 2) {
-                        System.out.println("👏 이겼어요!");
-                        win++;
-                        System.out.println();
-                    } else if (com == 3) {
-                        System.out.println("✊ 비겼어요!");
-                        draw++;
-                        System.out.println();
-                    }
-                    break;
-            }
-
-            System.out.println("1. 다시 하기   2. 그만 하기");
-            int tmp = scanner.nextInt();
-            scanner.nextLine();
-
-            if (tmp == 1) {
-                continue;
-            } else {
-                System.out.print("이긴 횟수의 3배 만큼 피로도가 회복됩니다.");
-                System.out.println("(이긴 횟수 : " + win + ")");
-                player.fatigability -= win * 3;
-                if (player.fatigability < 0) {
-                    player.fatigability = 0;
-                }
-                System.out.println();
+            String inputValue = scanner.next();
+            if (!MyHomeUtils.isInteger(inputValue)) {
+                MyHomeUtils.enterAgain();
                 scanner.nextLine();
-                outExit = false;
+                continue;
             }
+            int input = MyHomeUtils.stringToInt(inputValue);
+            if (input > 2 || input < 0) {
+                MyHomeUtils.enterAgain();
+                scanner.nextLine();
+                continue;
+            }
+            if (input == 0) {
+                break;
+            }
+            if (input == 2) {
+                descRockScissorPaper();
+                scanner.nextLine();
+                continue;
+            }
+
+            int winCount = playRockScissorPaper(player, scanner);
+            System.out.print("이긴 횟수의 3배 만큼 피로도가 회복됩니다.");
+            System.out.println("(이긴 횟수: " + winCount + ")");
+            player.updateFatigability(player.getFatigability() - (winCount * 3));
+            System.out.println();
+            scanner.nextLine();
         }
     }
 
+    private int playRockScissorPaper(Player player, Scanner scanner) {
+        int win = 0;
+        while (true) {
+            String computerValue = "";
+            String computerValueEmoji = null;
+            String userInputEmoji;
+
+            Random random = new Random();
+            int computer = random.nextInt(3) + 1;
+            if (computer == 1) {
+                computerValue = "가위";
+                computerValueEmoji = "✌️";
+            }
+            if (computer == 2) {
+                computerValue = "바위";
+                computerValueEmoji = "✊";
+            }
+            if (computer == 3) {
+                computerValue = "보";
+                computerValueEmoji = "✋";
+            }
+
+            System.out.println();
+            System.out.println("\r ✌️: 가위(1)");
+            MyHomeUtils.delayAsMillis(1000);
+
+            System.out.println("\r ✊️: 바위(2)");
+            MyHomeUtils.delayAsMillis(1000);
+
+            System.out.println("\r ✋️: 보(3)");
+            MyHomeUtils.delayAsMillis(1000);
+
+            String userValue;
+            while (true) {
+                System.out.println();
+                System.out.println("[ 가위(1) 바위(2) 보(3) ]");
+                System.out.print("입력 >> ");
+                String userInput = scanner.nextLine();
+                if ("가위".equals(userInput) || "1".equals(userInput)) {
+                    userValue = "가위";
+                    userInputEmoji = "✌️";
+                    break;
+                }
+                if ("바위".equals(userInput) || "2".equals(userInput)) {
+                    userValue = "바위";
+                    userInputEmoji = "✊";
+                    break;
+                }
+                if ("보".equals(userInput) || "3".equals(userInput)) {
+                    userValue = "보";
+                    userInputEmoji = "✋";
+                    break;
+                }
+                System.out.println("잘못 입력했어요. 다시 입력해주세요.");
+            }
+            System.out.println();
+            System.out.println("👤(" + player.getName() + ")       🖥(Computer)");
+            System.out.println();
+            System.out.println("    " + userInputEmoji + "       🆚       " + computerValueEmoji);
+            System.out.println();
+
+            switch (userValue) {
+                case "가위":
+                    if ("가위".equals(computerValue)) {
+                        System.out.println("✊ 비겼어요!");
+                        System.out.println();
+                    }
+                    if ("바위".equals(computerValue)) {
+                        System.out.println("🙁 아쉽지만 졌어요.");
+                        System.out.println();
+                    }
+                    if ("보".equals(computerValue)) {
+                        win++;
+                        System.out.println("👏 이겼어요!");
+                        System.out.println();
+                    }
+                    break;
+                case "바위":
+                    if ("가위".equals(computerValue)) {
+                        win++;
+                        System.out.println("👏 이겼어요!");
+                        System.out.println();
+                    }
+                    if ("바위".equals(computerValue)) {
+                        System.out.println("✊ 비겼어요!");
+                        System.out.println();
+                    }
+                    if ("보".equals(computerValue)) {
+                        System.out.println("🙁 아쉽지만 졌어요.");
+                        System.out.println();
+                    }
+                    break;
+                case "보":
+                    if ("가위".equals(computerValue)) {
+                        System.out.println("🙁 아쉽지만 졌어요.");
+                    }
+                    if ("바위".equals(computerValue)) {
+                        win++;
+                        System.out.println("👏 이겼어요!");
+                    }
+                    if ("보".equals(computerValue)) {
+                        System.out.println("✊ 비겼어요!");
+                    }
+                    break;
+            }
+
+            System.out.println();
+            System.out.println("1. 다시 하기      0. 그만 하기");
+            String inputValue = scanner.next();
+            if (!MyHomeUtils.isInteger(inputValue)) {
+                MyHomeUtils.enterAgain();
+                scanner.nextLine();
+                continue;
+            }
+            int input = MyHomeUtils.stringToInt(inputValue);
+            if (input > 1 || input < 0) {
+                MyHomeUtils.enterAgain();
+                scanner.nextLine();
+            }
+            if (input == 0) {
+                break;
+            }
+        }
+        return win;
+    }
+
+    private void descRockScissorPaper() {
+        System.out.println("┌──────────────────────────────────────────────────┐");
+        System.out.println("                   ✌️ 가위 바위 보");
+        System.out.println();
+        System.out.println("  컴퓨터와 가위바위보 게임을 진행합니다.");
+        System.out.println("  진행 방법은 다음과 같습니다.");
+        System.out.println();
+        System.out.println("  ============================= ");
+        System.out.println("    [가위(1) 바위(2) 보(3)]");
+        System.out.println("    입력 >> ");
+        System.out.println("  ============================= ");
+        System.out.println("  위와 같은 입력 화면이 나타나면 가위 / 바위 / 보 중에 하나를 입력합니다.");
+        System.out.println("  한글 대신 옆에 적힌 숫자를 입력할 수 있습니다.");
+        System.out.println();
+        System.out.println("  [입력 예시]");
+        System.out.println("  입력 >> 가위      ⭕️");
+        System.out.println("  입력 >> 바위      ⭕️");
+        System.out.println("  입력 >> 보       ⭕️");
+        System.out.println("  입력 >> 1        ⭕");
+        System.out.println("  입력 >> 2        ⭕");
+        System.out.println("  입력 >> 3        ⭕");
+        System.out.println("  입력 >> 가위가위   ❌");
+        System.out.println("  입력 >> 2222     ❌");
+        System.out.println("  입력 >> 보보      ❌");
+        System.out.println();
+        System.out.println("  게임을 시작하려면 아무 키나 입력하세요");
+    }
+
     // ================================ 숫자 야구 - 미니 게임 =============================
-    private void numberBaseball(Player player) {
+    private void numberBaseball(Player player, Scanner scanner) {
         System.out.println();
         for (int i = 0; i < 100; i++) {
             System.out.println();
         }
         System.out.println("┌──────────────────────────────────────────────────┐");
-        System.out.println("                   ⚾︎ 숫자 야구!");
+        System.out.println("                   ⚾ 숫자 야구");
         System.out.println();
-        System.out.println("        1. 설명 보기            else. 바로 하기");
+        System.out.println("                 1. 게임 시작");
+        System.out.println("                 2. 설명 보기");
+        System.out.println("                 0. 이전으로");
+        System.out.println();
         System.out.print("입력 >> ");
         int exCk = scanner.nextInt();
         scanner.nextLine();
 
-        if (exCk == 1) {
+        if (exCk == 2) {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("                        숫자 야구");
             System.out.println();
@@ -238,7 +284,7 @@ public class Arcade extends Area {
             System.out.println("    User: 5 2 7   => 1 Strike 1 Ball");
             System.out.println("    User: 5 7 8   => 1 Strike 1 Ball");
             System.out.println();
-            System.out.println("게임을 시작하려면 아무키나 입력하세요");
+            System.out.println("게임을 시작하려면 아무 키나 입력하세요");
             scanner.nextLine();
         }
 
