@@ -28,6 +28,8 @@ public class MyHome {
     private final Forest forest;
     private final Store store;
     private final CraftShop craftShop;
+
+    private final Arcade arcade;
     private final Merchant merchant;
     private final NPC mimi;
     private final NPC tomson;
@@ -37,6 +39,7 @@ public class MyHome {
     Scanner scanner = new Scanner(System.in);
 
     public MyHome() {
+        arcade = new Arcade();
         itemStorage = new ItemStorage();
         farm = new Farm(itemStorage);
         animalFarm = new AnimalFarm(itemStorage);
@@ -286,9 +289,13 @@ public class MyHome {
                     ProgressBar.loading();
                     merchant.buyAndSell(player, scanner);
                     break;
-                case 7:     // 미니게임
+                case 7:     // 휴식 취하기
                     ProgressBar.loading();
-                    player.miniGame();
+                    player.willRest(scanner);
+                    break;
+                case 8:     // 미니게임
+                    ProgressBar.loading();
+                    arcade.showGames(player, scanner);
                     break;
                 default:
                     MyHomeUtils.enterAgain();
@@ -300,22 +307,27 @@ public class MyHome {
     private static void showMenus(boolean isResting) {
         MyHomeUtils.printLineAsCount(100);
         System.out.println("┌──────────────────────────────────────────────────┐");
-        System.out.println("                     Main Menu                      ");
+        System.out.println("                     Main Menu");
         System.out.println("└──────────────────────────────────────────────────┘");
         System.out.println();
-        System.out.println("               1. 👤 내 정보 보기           ");
+        System.out.println("               1. 👤 내 정보 보기");
         if (!isResting) {
-            System.out.println("               2. 🍓 재료 수확하기           ");
-            System.out.println("               3. 🔨 아이템 제작            ");
-            System.out.println("               4. 📜 퀘스트 리스트 보기       ");
+            System.out.println("               2. 🍓 재료 수확하기");
+            System.out.println("               3. 🔨 아이템 제작");
+            System.out.println("               4. 📜 퀘스트 리스트 보기");
         } else {
-            System.out.println("               2. 🍓 재료 수확하기 (휴식중)           ");
-            System.out.println("               3. 🔨 아이템 제작 (휴식중)            ");
-            System.out.println("               4. 📜 퀘스트 리스트 보기 (휴식중)       ");
+            System.out.println("               2. 🍓 재료 수확하기 (휴식중)");
+            System.out.println("               3. 🔨 아이템 제작 (휴식중)");
+            System.out.println("               4. 📜 퀘스트 리스트 보기 (휴식중)");
         }
-        System.out.println("               5. 📦 인벤토리 보기           ");
-        System.out.println("               6. 💰 상점                  ");
-        System.out.println("               7. 🎮 휴식 & 미니 게임        ");
+        System.out.println("               5. 📦 인벤토리 보기");
+        System.out.println("               6. 💰 상점");
+        if (!isResting) {
+            System.out.println("               7. 😴 휴식 취하기");
+        } else {
+            System.out.println("               7. 🚫 휴식 끝내기");
+        }
+        System.out.println("               8. 🎮 미니 게임");
         System.out.println();
 //                    System.out.println("               9. ⚙️ 설정");
         System.out.println("               0. 🔚 게임 종료               ");
