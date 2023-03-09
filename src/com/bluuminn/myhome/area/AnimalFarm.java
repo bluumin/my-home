@@ -34,7 +34,7 @@ public class AnimalFarm extends Area {
 
                 // 아이템의 레벨이 플레이어 레벨과 같거나 작으면 => 재배가능
                 if (!item.isPlantable(playerLevel)) {
-                    System.out.println(" HOLD - LV." + item.getLevel() + " 이상)");
+                    System.out.println(" [ 🔒 ] LV." + item.getLevel() + " 이상)");
                     continue;
                 }
                 if (!item.isPlanted()) {
@@ -148,11 +148,7 @@ public class AnimalFarm extends Area {
                 item.decreaseHarvestRemainQuantityBy1();
                 int exp = player.getExp() + item.getExp();
                 player.updateExp(exp);
-                int fatigability = player.getFatigability() + 15;
-                if (fatigability > 100) {
-                    fatigability = 100;
-                }
-                player.updateFatigability(fatigability);
+                player.updateFatigability(player.getFatigability() + 15);
                 scanner.nextLine();
                 MyHomeUtils.printLineAsCount(100);
             }

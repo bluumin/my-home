@@ -11,13 +11,7 @@ public class Potion extends StoreItem {
     }
 
     public void calculateRecoveryAmount(Player player) {
-        int fatigability = player.getFatigability();
-        fatigability -= recovery;
-
-        if (fatigability < 0) {
-            fatigability = 0;
-        }
-        player.updateFatigability(fatigability);
+        player.updateFatigability(player.getFatigability() - recovery);
         System.out.println(getName() + " 아이템을 사용했어요.");
     }
 }
