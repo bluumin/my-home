@@ -2,8 +2,6 @@ package com.bluuminn.myhome.item;
 
 import com.bluuminn.myhome.inventory.ItemEntry;
 
-import java.util.List;
-
 public class CraftItem extends Item {
 
     private final ItemEntry[] requiredItems;
@@ -15,5 +13,13 @@ public class CraftItem extends Item {
 
     public static CraftItem of(String name, String resource, String areaOfProduction, int level, int salePrice, int cost, int exp, ItemEntry... requiredItems) {
         return new CraftItem(name, resource, areaOfProduction, level, salePrice, cost, exp, requiredItems);
+    }
+
+    public boolean isCraftable(int playerLevel) {
+        return playerLevel >= getLevel();
+    }
+
+    public ItemEntry[] getRequiredItems() {
+        return requiredItems;
     }
 }

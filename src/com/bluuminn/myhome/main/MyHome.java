@@ -269,7 +269,7 @@ public class MyHome {
                         continue;
                     }
                     ProgressBar.loading();
-                    player.goToCraftShop(craftShop, player);
+                    craftShop.craft(player, scanner);
                     break;
                 case 4:     // 퀘스트 리스트 확인
                     if (isResting) {

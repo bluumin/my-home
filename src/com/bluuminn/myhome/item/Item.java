@@ -53,8 +53,9 @@ public class Item {
         this.exp = exp;
     }
 
-    public Item(String name, ItemType type, String productionArea, int price) {
+    public Item(String name, String resource, ItemType type, String productionArea, int price) {
         this.name = name;
+        this.resource = resource;
         this.type = type;
         this.productionArea = productionArea;
         this.price = price;

@@ -27,7 +27,7 @@ public class Inventory {
     }
 
     public void add(ItemEntry entry) {
-        int index = find(entry);
+        int index = indexOf(entry);
         if (index >= 0) {
             ItemEntry item = items.get(index);
             item.addQuantity(entry.getQuantity());
@@ -48,13 +48,13 @@ public class Inventory {
         }
     }
 
-    //============================== 아이템 개수 감소(0이면 제거) =================================
+    // 아이템 개수 감소(0이면 제거)
     // 해당하는 칸의 아이템의 개수를 cnt만큼 감소시킨다
     public void remove(ItemEntry item) {
         items.remove(item);
     }
 
-    public int find(ItemEntry entry) {
+    public int indexOf(ItemEntry entry) {
         for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++) {
             ItemEntry item = items.get(i);
             if (item != null && item.getItemName().equals(entry.getItemName())) {
@@ -68,50 +68,19 @@ public class Inventory {
         return items.size() >= MAX_NUMBER_OF_ITEMS;
     }
 
-    // ======================= 아이템 객체 반환 ======================
-    // 해당하는 인벤토리 칸의 아이템 객체를 반환한다
-    public ItemEntry getItem(int index) {
+    public int getItemQuantity(int index) {
         ItemEntry entry = items.get(index);
         if (entry != null) {
-            return entry;
+            return entry.getQuantity();
         }
-        return null;
+        return 0;
     }
 
-    public int getItemIndex(ItemEntry itemEntry) {
-        for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++) {
-            if (items.get(i) != null && items.get(i).entryName.equals(itemEntry.entryName)) {
-                return i;
-            }
+    public ItemEntry find(ItemEntry item) {
+        int index = indexOf(item);
+        if (index < 0) {
+            return null;
         }
-        return -1;
-    }
-
-    // ==================== 아이템 가격 반환 ===================
-    // 해당하는 아이템의 가격을 반환한다
-    public int getItemPrice(ItemEntry item) {
-
-        if (item.entryType.equals("일반")) {
-            return item.item.price;
-        } else if (item.entryType.equals("생산")) {
-            return item.growthItem.price;
-        } else if (item.entryType.equals("제작")) {
-            return item.madeItem.price;
-        } else if (item.entryType.equals("포션")) {
-            return item.potion.price;
-        } else {
-            return -1;
-        }
-    }
-
-
-    // ============ 해당 인벤토리 한 칸에 들어있는 아이템 개수 반환 ==========
-    // 해당하는 칸의 아이템의 개수를 반환한다
-    public int getItemCount(int index) {
-        ItemEntry entry = items.get(index);
-        if (entry != null) {
-            return entry.quantity;
-        }
-        return -1;
+        return items.get(index);
     }
 }

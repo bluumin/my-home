@@ -32,18 +32,19 @@ public class Farm extends Area {
 
                 // 아이템의 레벨이 플레이어 레벨과 같거나 작으면 => 재배가능
                 if (!item.isPlantable(playerLevel)) {
-                    System.out.println(" [ 🔒 ] LV." + item.getLevel() + " 이상)");
+                    System.out.print(" [ 🔒 ] LV." + item.getLevel() + " 이상)");
                     continue;
                 }
                 if (!item.isPlanted()) {
-                    System.out.println(" (재배시간: " + item.getGrowingPeriod() + "초 / 비용: " + item.getCost() + "골드)");
+                    System.out.print(" (재배시간: " + item.getGrowingPeriod() + "초 / 비용: " + item.getCost() + "골드)");
                     continue;
                 }
                 if (item.getGrowingPeriod() <= 0) {
-                    System.out.println(" (수확 가능)");
+                    System.out.print(" (수확 가능)");
                     continue;
                 }
                 System.out.print(" (재배중..)");
+                System.out.println();
             }
 
             MyHomeUtils.printLineAsCount(2);

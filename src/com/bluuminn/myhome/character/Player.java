@@ -1,6 +1,5 @@
 package com.bluuminn.myhome.character;
 
-import com.bluuminn.myhome.area.CraftShop;
 import com.bluuminn.myhome.etc.MyHomeConstants;
 import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.inventory.Inventory;
@@ -138,6 +137,14 @@ public class Player extends Character {
 
     public int getGold() {
         return gold;
+    }
+
+    public int getCraftingCount() {
+        return craftingCount;
+    }
+
+    private void increaseCraftingCountBy1() {
+        this.craftingCount++;
     }
 
     public boolean hasWoodenWorkbench() {
@@ -465,7 +472,7 @@ public class Player extends Character {
             // 플레이어 인벤토리의 i번째 아이템 이름을 임시 저장
             String pItemName = player.inventory.getItemName(player.inventory.getItem(i));
             // 플레이어 인벤토리의 i번째 아이템의 개수를 임시 저장
-            int pItemCnt = player.inventory.getItemCount(i);
+            int pItemCnt = player.inventory.getItemQuantity(i);
 
             // 플레이어의 퀘스트리스트의 필요한 아이템 리스트 크기만큼 반복
             for (int j = 0; j < playerQuestList.get(inputVal - 1).needs.size(); j++) {
@@ -500,94 +507,35 @@ public class Player extends Character {
 
     }
 
+    public void craft(CraftItem craftItem, int craftCount) {
+        String itemName = craftItem.getName();
+        System.out.println("┌──────────────────────────────────────────────────┐");
+        System.out.println("            " + itemName + " 을(를) 제작합니다.");
 
-    // ======================= 제작 공방으로 이동 ============================
-    public void goToCraftShop(CraftShop craftShop, Player player) {
+        // TODO: 로딩 스레드
+        // TODO: 제작 중 동영상 스레드
 
-        if (player.fatigability >= 100) {
-            System.out.println("피로도가 너무 높아서 아무 것도 할 수 없어요.");
-            scanner.nextLine();
-        } else {
-            if (!player.hasWoodenWorkbench) {
-                System.out.println("감사제를 준비하려면 원목 작업대가 필요해요.");
-                System.out.println("상점에서 원목 작업대를 구입하세요.");
-                System.out.println();
-                scanner.nextLine();
-                for (int i = 0; i < 100; i++) {
-                    System.out.println();
-                }
-                progressBar.loading();
-                for (int i = 0; i < 100; i++) {
-                    System.out.println();
-                }
-                System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("                판매 아이템 목록\n");
-                System.out.print("      1. 원목 작업대\n\t\t\t\t\t\t\t\t\t");
-                System.out.printf("%5d" + " 골드", 100);
-                System.out.println("\n");
-                System.out.println("1. 구입하기     else. 뒤로가기");
-                System.out.print("입력 >> ");
-                inputVal = scanner.nextInt();
-                scanner.nextLine();
-                if (inputVal == 1) {
-                    System.out.println();
-                    player.gold -= 100;
-                    System.out.println("원목 작업대를 구입했어요!");
-                    player.hasWoodenWorkbench = true;
-                    scanner.nextLine();
-                } else {
-                    return;
-                }
-                for (int i = 0; i < 100; i++) {
-                    System.out.println();
-                }
-            }
-            craftShop.printCraftMenu(player);
-        }
-    }
+        for (ItemEntry requiredItem : craftItem.getRequiredItems()) {
+            int requiredQuantity = requiredItem.getQuantity();
 
+            ItemEntry inventoryItem = getItem(requiredItem);
+            int inventoryItemQuantity = inventoryItem.getQuantity();
+            inventoryItemQuantity -= (requiredQuantity * craftCount);
+            inventoryItem.updateQuantity(inventoryItemQuantity);
 
-    // ============================== 아이템 제작 =============================
-
-    // itemName - 어떤 아이템을 제작하는지 출력할 용도
-    // itemEntry - 인벤토리 검사 비교용
-    // cnt - 몇개 만들 건지
-    // requiCnt - 필요한 재료 아이템 개수
-    // tmpInven - 인벤토리에 있는 재료 아이템 개수
-    // value - 제작할 아이템의 메뉴 번호(리스트 값 꺼내오기 위함)
-    public void makingItem(Player player, String itemName, ItemEntry itemEntry, int cnt, int value) {
-        int requiCnt;
-        // 제작하기
-        System.out.println(itemName + " 을(를) 제작합니다.");
-        // 로딩 스레드
-        // 제작 중 동영상 스레드
-        inventory.add(itemEntry, cnt);
-        System.out.println();
-        System.out.println();
-
-        // 제작 완료되면 제작에 사용된 아이템 개수만큼 플레이어의 인벤토리의 아이템 개수 차감
-        for (int i = 0; i < craftItemList.get(value - 1).requiredItems.size(); i++) {
-            ItemEntry testEntry = craftItemList.get(value - 1).requiredItems.get(i).item;
-            requiCnt = craftItemList.get(value - 1).requiredItems.get(i).getQuantity();
-            String name = inventory.getItemName(testEntry);
-
-            for (int j = 0; j < inventory.getAvailableItems(); j++) {
-                String tmptmp = inventory.getItemName(inventory.getItem(j));
-
-                if (name.equals(tmptmp)) {
-                    inventory.remove(inventory.getItemIndex(testEntry), requiCnt * cnt);
-                }
+            if (inventoryItemQuantity <= 0) {
+                inventory.remove(inventoryItem);
             }
         }
 
-        player.craftingCount++;
-        player.fatigability += 7;
-        if (player.fatigability >= 100) {
-            player.fatigability = 100;
-        }
-        System.out.println(itemName + "제작 완료!");
+        inventory.add(ItemEntry.of(craftItem, craftCount));
         System.out.println();
-        scanner.nextLine();
+        System.out.println();
+
+        increaseCraftingCountBy1();
+        updateFatigability(getFatigability() + 7);
+        updateExp(getExp() + craftItem.getExp());
+        System.out.println(itemName + " 제작 완료!");
     }
 
     public void showInfo(Scanner scanner) {
@@ -811,7 +759,7 @@ public class Player extends Character {
                     for (int i = 0; i < inventory.getAvailableItems(); i++) {
                         System.out.print(i + 1 + ". ");
                         System.out.print(inventory.getItemName(inventory.getItem(i)) + "\n" + "\t\t\t\t\t\t");
-                        System.out.println(inventory.getItemCount(i) + " 개");
+                        System.out.println(inventory.getItemQuantity(i) + " 개");
                     }
 
 //                    System.out.println("인벤토리 아이템 개수 "+inventory.getAvailableItems());
@@ -903,5 +851,9 @@ public class Player extends Character {
 
     public void saveItem(ItemEntry item) {
         inventory.add(item);
+    }
+
+    public ItemEntry getItem(ItemEntry item) {
+        return inventory.find(item);
     }
 }

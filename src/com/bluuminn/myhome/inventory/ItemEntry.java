@@ -36,6 +36,10 @@ public class ItemEntry {
     }
 
     public void updateQuantity(int quantity) {
+        if (quantity < 0) {
+            this.quantity = 0;
+            return;
+        }
         this.quantity = quantity;
     }
 }
