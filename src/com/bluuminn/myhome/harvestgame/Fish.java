@@ -1,16 +1,16 @@
 package com.bluuminn.myhome.harvestgame;
 
-class Fish extends GameObject {
-    public Fish(int startX, int startY, int distance) {
-        super(startX, startY, distance);
+class Fish extends MiniGamePiece {
+    public Fish(int x, int y) {
+        super(x, y, 0);
     }
 
-    public boolean move() {
-        return true;
+    @Override
+    public void move(String[][] board) {
     }
 
     @Override
     public String getShape() {
-        return "♣";
+        return "🐟";
     }
 }
