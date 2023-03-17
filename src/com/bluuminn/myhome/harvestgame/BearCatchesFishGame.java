@@ -7,9 +7,21 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class BearCatchesFishGame {
-    private final String[][] board = new String[10][15];
+    private final String[][] board;
     private Bear bear;
     private Fish fish;
+    private boolean haveWon;
+
+    public BearCatchesFishGame() {
+        board = new String[10][15];
+        this.bear = new Bear(0, 0);
+        this.fish = getPositionedFish();
+        this.haveWon = false;
+    }
+
+    public boolean haveWon() {
+        return haveWon;
+    }
 
     public Fish getPositionedFish() {
         int x = 0, y = 0;
@@ -21,9 +33,7 @@ public class BearCatchesFishGame {
     }
 
 
-    public void set() { // 게임 초기 설정
-        bear = new Bear(0, 0);
-        fish = getPositionedFish();
+    public void set() {
         for (String[] strings : board) {
             Arrays.fill(strings, "_");
         }
@@ -40,7 +50,7 @@ public class BearCatchesFishGame {
         }
     }
 
-    private void winArray() { // 이겼을 경우 보여줄 배열(플레이어가 아이템에 닿으면 아이템 자리에 플레이어 모양 출력)
+    private void showWonBoard() { // 이겼을 경우 보여줄 배열(플레이어가 아이템에 닿으면 아이템 자리에 플레이어 모양 출력)
         board[bear.getX()][bear.getY()] = bear.getShape();
         for (String[] strings : board) {
             for (String string : strings) {
@@ -58,11 +68,16 @@ public class BearCatchesFishGame {
             System.out.println("        " + item.getName() + " 수확중 ...");
             System.out.println();
             if (bear.collide(fish)) {
-                winArray();
+                showWonBoard();
+                win();
                 break;
             }
             showArray();
             bear.move(board);
         }
+    }
+
+    private void win() {
+        this.haveWon = true;
     }
 }

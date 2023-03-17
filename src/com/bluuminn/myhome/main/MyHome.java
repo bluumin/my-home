@@ -2,12 +2,15 @@ package com.bluuminn.myhome.main;
 
 import com.bluuminn.myhome.area.*;
 import com.bluuminn.myhome.audio.SoundPlayerUsingClip;
+import com.bluuminn.myhome.character.LevelUpThread;
 import com.bluuminn.myhome.character.Merchant;
 import com.bluuminn.myhome.character.Player;
 import com.bluuminn.myhome.etc.MyHomeConstants;
 import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.etc.ProgressBar;
 import com.bluuminn.myhome.item.ItemStorage;
+import com.bluuminn.myhome.quest.AchieveTitleThread;
+import com.bluuminn.myhome.quest.QuestThread;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -21,32 +24,30 @@ public class MyHome {
     private final Farm farm;
     private final AnimalFarm animalFarm;
     private final Forest forest;
-    private final Store store;
     private final CraftShop craftShop;
     private final Arcade arcade;
     private final Merchant merchant;
-    private final ItemStorage itemStorage;
 
-    SoundPlayerUsingClip player = new SoundPlayerUsingClip();
+    SoundPlayerUsingClip soundPlayer = new SoundPlayerUsingClip();
     Scanner scanner = new Scanner(System.in);
 
     public MyHome() {
         arcade = new Arcade();
-        itemStorage = new ItemStorage();
+        ItemStorage itemStorage = new ItemStorage();
         farm = new Farm(itemStorage);
         animalFarm = new AnimalFarm(itemStorage);
         forest = new Forest(itemStorage);
         craftShop = new CraftShop(itemStorage);
-        store = new Store(itemStorage);
         merchant = Merchant.createMerchant("로빈", itemStorage);
     }
 
     public void start() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         ProgressBar.loading();
-
-        player.play("intro.wav");
+        soundPlayer.play("intro.wav", 1);
 
         MyHomeUtils.printLineAsCount(100);
+        soundPlayer.stop();
+        soundPlayer.play("mainMusic.wav", 0);
 
         System.out.println(
                 "\r                              -,*.~                                   \n" +
@@ -85,13 +86,7 @@ public class MyHome {
                 "/_/ /_/ /_/\\__, /  /_/ /_/\\____/_/ /_/ /_/\\___/ \n" +
                 "          /____/                                \n");
 
-        MyHomeUtils.printLineAsCount(22);
-
-        player.stop();
-        player.play("mainMusic.wav");
-
-        MyHomeUtils.printLineAsCount(11);
-
+        MyHomeUtils.printLineAsCount(33);
         ProgressBar.loading();
 
         System.out.print("\r달님이 수호해주는 마을…");
@@ -116,18 +111,22 @@ public class MyHome {
             System.out.print("입력 >> ");              // 게임 플레이어 이름 입력
             playerName = scanner.nextLine();
 
-            System.out.println("┌──────────────────────────────────────────────────┐");
             if (playerName == null || playerName.length() < 2) {
+                System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("            이름이 너무 짧아요. 다시 입력해주세요.        ");
-            } else if (playerName.length() > 8) {
+            }
+            if (playerName != null && playerName.length() > 8) {
+                System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("            이름이 너무 길어요. 다시 입력해주세요.        ");
             }
-            System.out.println("└──────────────────────────────────────────────────┘");
         } while (playerName == null || playerName.length() < 2 || playerName.length() > 8);
 
         MyHomeUtils.printLineAsCount(1);
         Player player = Player.createPlayer(playerName);
-        System.out.println("[ " + playerName + " ] 반가워요");
+        System.out.println("┌──────────────────────────────────────────────────┐");
+        System.out.println("            [ " + playerName + " ] 반가워요");
+        System.out.println("└──────────────────────────────────────────────────┘");
+
 
         // =================== 로딩 시나리오 ========================
 
@@ -173,6 +172,15 @@ public class MyHome {
         System.out.println("└──────────────────────────────────────────────────┘");
         scanner.nextLine();
         //  ================== 로딩 시나리오 끝================
+
+        LevelUpThread levelUpThread = new LevelUpThread(player);
+        new Thread(levelUpThread).start();
+
+        QuestThread questThread = new QuestThread(player);
+        new Thread(questThread).start();
+
+        AchieveTitleThread achieveTitleThread = new AchieveTitleThread(player);
+        new Thread(achieveTitleThread).start();
 
         boolean isResting = player.isResting();
         while (true) {
@@ -287,7 +295,7 @@ public class MyHome {
         scanner.nextLine(); // enter 눌러야 다음 진행
     }
 
-    private void showAreas(Player player) {
+    private void showAreas(Player player) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         while (true) {
             MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");

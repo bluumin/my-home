@@ -6,8 +6,11 @@ import com.bluuminn.myhome.harvestgame.BearCatchesFishGame;
 import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.GrowthItem;
 import com.bluuminn.myhome.item.ItemStorage;
-import com.bluuminn.myhome.timer.FarmTimer;
+import com.bluuminn.myhome.timer.CultivateTimer;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,11 +22,12 @@ public class Farm extends Area {
         items = itemStorage.getFarmItems();
     }
 
-    public void cultivate(Player player, Scanner scanner) {
+    public void cultivate(Player player, Scanner scanner) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         while (true) {
             MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("                   " + getName() + "에 도착했다.\n");
+            System.out.println("                   " + getName() + "에 도착했어요.");
+            System.out.println();
 
             int playerLevel = player.getLevel();
             for (int i = 0; i < items.size(); i++) {
@@ -33,14 +37,17 @@ public class Farm extends Area {
                 // 아이템의 레벨이 플레이어 레벨과 같거나 작으면 => 재배가능
                 if (!item.isPlantable(playerLevel)) {
                     System.out.print(" [ 🔒 ] LV." + item.getLevel() + " 이상)");
+                    System.out.println();
                     continue;
                 }
                 if (!item.isPlanted()) {
                     System.out.print(" (재배시간: " + item.getGrowingPeriod() + "초 / 비용: " + item.getCost() + "골드)");
+                    System.out.println();
                     continue;
                 }
                 if (item.getGrowingPeriod() <= 0) {
                     System.out.print(" (수확 가능)");
+                    System.out.println();
                     continue;
                 }
                 System.out.print(" (재배중..)");
@@ -109,7 +116,7 @@ public class Farm extends Area {
                     }
                     player.updateGold(remainGold);
                     item.plant();
-                    new Thread(new FarmTimer(item)).start();
+                    new Thread(new CultivateTimer(item)).start();
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("                  " + item.getName() + " 을(를) 재배합니다.");
                     System.out.println("                재배가 완료되면 알려드릴게요!");
@@ -133,16 +140,23 @@ public class Farm extends Area {
                     System.out.println("          수확할 수 있는 양을 모두 수확했어요.");
                     System.out.println("          " + item.getName() + " 획득량: " + item.getHarvestCount());
                     System.out.println();
-                    System.out.println("               이전 메뉴로 돌아갑니다.");
+                    System.out.println("               이전 단계로 돌아갑니다.");
                     scanner.nextLine();
                     break;
                 }
                 // 수확하기
-                new BearCatchesFishGame().start(item);
+                BearCatchesFishGame game = new BearCatchesFishGame();
+                game.start(item);
+                if (!game.haveWon()) {
+                    System.out.println("┌──────────────────────────────────────────────────┐");
+                    System.out.println("                수확 중 문제가 생겼어요.");
+                    System.out.println("                이전 단계로 돌아갑니다.");
+                    break;
+                }
                 playSound();
                 System.out.println();
                 System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("               " + item.getName() + " 1개 획득!");
+                System.out.println("              " + item.getName() + " 1개 획득!");
                 player.saveItem(ItemEntry.of(item, 1));
                 item.decreaseHarvestRemainQuantityBy1();
                 int exp = player.getExp() + item.getExp();

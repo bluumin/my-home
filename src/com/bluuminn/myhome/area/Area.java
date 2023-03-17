@@ -1,20 +1,26 @@
 package com.bluuminn.myhome.area;
 
+import com.bluuminn.myhome.audio.SoundPlayerUsingClip;
+
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
+
 public abstract class Area {
     private final String name;
+    private final SoundPlayerUsingClip soundPlayer;
 
-    public Area(String name) {
+    protected Area(String name) {
         this.name = name;
+        soundPlayer = new SoundPlayerUsingClip();
     }
 
     public String getName() {
         return name;
     }
 
-    public void playSound() {
-        // TODO: 사운드 출력
-//        Music harvest = new Music("harvest.mp3", false);
-//        harvest.start();
+    public void playSound() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        soundPlayer.play("harvest.wav", 1);
     }
 
     protected static void printNotPlantable() {

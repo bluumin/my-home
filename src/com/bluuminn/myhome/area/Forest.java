@@ -6,8 +6,11 @@ import com.bluuminn.myhome.harvestgame.BearCatchesFishGame;
 import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.GrowthItem;
 import com.bluuminn.myhome.item.ItemStorage;
-import com.bluuminn.myhome.timer.FarmTimer;
+import com.bluuminn.myhome.timer.CultivateTimer;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,7 +22,7 @@ public class Forest extends Area {
         items = itemStorage.getForestItems();
     }
 
-    public void growTrees(Player player, Scanner scanner) {
+    public void growTrees(Player player, Scanner scanner) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         while (true) {
             MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -109,7 +112,7 @@ public class Forest extends Area {
                     }
                     player.updateGold(remainGold);
                     item.plant();
-                    new Thread(new FarmTimer(item)).start();
+                    new Thread(new CultivateTimer(item)).start();
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("                  " + item.getName() + " 을(를) 기릅니다.");
                     System.out.println("                다 자라면 알려드릴게요!");
@@ -138,11 +141,18 @@ public class Forest extends Area {
                     break;
                 }
                 // 수확하기
-                new BearCatchesFishGame().start(item);
+                BearCatchesFishGame game = new BearCatchesFishGame();
+                game.start(item);
+                if (!game.haveWon()) {
+                    System.out.println("┌──────────────────────────────────────────────────┐");
+                    System.out.println("                수확 중 문제가 생겼어요.");
+                    System.out.println("                이전 단계로 돌아갑니다.");
+                    break;
+                }
                 playSound();
                 System.out.println();
                 System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("               " + item.getName() + " 1개 획득!");
+                System.out.println("              " + item.getName() + " 1개 획득!");
                 player.saveItem(ItemEntry.of(item, 1));
                 item.decreaseHarvestRemainQuantityBy1();
                 int exp = player.getExp() + item.getExp();

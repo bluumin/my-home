@@ -6,13 +6,14 @@ import java.io.InputStream;
 
 public class SoundPlayerUsingClip implements LineListener {
 
-    private boolean isPlaybackCompleted;
+    //    private boolean isPlaybackCompleted;
     private AudioInputStream audioStream;
     private Clip audioClip;
     private Long clipTime;
 
     @Override
     public void update(LineEvent event) {
+        /*
         if (LineEvent.Type.START == event.getType()) {
             System.out.println("Playback started.");
         }
@@ -20,9 +21,10 @@ public class SoundPlayerUsingClip implements LineListener {
             isPlaybackCompleted = true;
             System.out.println("Playback completed.");
         }
+         */
     }
 
-    public void play(String audioFilePath) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+    public void play(String audioFilePath, int count) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         InputStream inputStream = getClass().getResourceAsStream(audioFilePath);
         audioStream = AudioSystem.getAudioInputStream(inputStream);
         AudioFormat format = audioStream.getFormat();
@@ -31,11 +33,12 @@ public class SoundPlayerUsingClip implements LineListener {
         audioClip = (Clip) AudioSystem.getLine(info);
         audioClip.addLineListener(this);
         audioClip.open(audioStream);
-        audioClip.loop(Clip.LOOP_CONTINUOUSLY);
+        audioClip.loop(count == 0 ? Clip.LOOP_CONTINUOUSLY : count);
         audioClip.start();
     }
 
     public void stop() throws IOException {
+        audioClip.setFramePosition(0);
         audioClip.stop();
         audioClip.close();
         audioStream.close();
@@ -47,9 +50,6 @@ public class SoundPlayerUsingClip implements LineListener {
     }
 
     public void resume() {
-        if (clipTime == null) {
-            System.out.println("음악 일시정지 된 적 없음");
-        }
         audioClip.setMicrosecondPosition(clipTime);
         audioClip.start();
     }

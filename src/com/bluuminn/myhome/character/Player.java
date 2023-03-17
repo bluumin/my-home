@@ -494,11 +494,22 @@ public class Player extends Character {
             System.out.println();
             System.out.println("    골드 : " + getGold());
             System.out.println();
-            System.out.println("1. 업적 확인하기     else. 메인 메뉴로");
+            System.out.println("1. 업적 확인하기       0. 메인 메뉴로");
             System.out.print("입력 >> ");
             String inputValue = scanner.next();
-            if (!MyHomeUtils.isInteger(inputValue) || Integer.parseInt(inputValue) != 1) {
-                return;
+            if (!MyHomeUtils.isInteger(inputValue)) {
+                MyHomeUtils.enterAgain();
+                scanner.nextLine();
+                continue;
+            }
+            int input = MyHomeUtils.stringToInt(inputValue);
+            if (input > 1 || input < 0) {
+                MyHomeUtils.enterAgain();
+                scanner.nextLine();
+                continue;
+            }
+            if (input == 0) {
+                break;
             }
 
             // 업적 보기
@@ -529,7 +540,7 @@ public class Player extends Character {
                     continue;
                 }
 
-                int input = MyHomeUtils.stringToInt(inputValue);
+                input = MyHomeUtils.stringToInt(inputValue);
                 if (input < 0 || input > titleQty) {
                     MyHomeUtils.enterAgain();
                     scanner.nextLine();

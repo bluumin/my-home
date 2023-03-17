@@ -18,6 +18,9 @@ public class QuestThread implements Runnable {
         int questQuantity = storage.getQuestQuantity();
         List<QuestInfo> quests = storage.getQuestInfos();
         while (player.getQuests().size() <= questQuantity) {
+            if (player.getLevel() <= 3) {
+                continue;
+            }
             int randomNumber = (int) (Math.random() * questQuantity);
             QuestInfo questInfo = quests.get(randomNumber);
             if (player.hasQuest(questInfo)) {

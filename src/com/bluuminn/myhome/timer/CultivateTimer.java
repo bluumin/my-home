@@ -2,10 +2,10 @@ package com.bluuminn.myhome.timer;
 
 import com.bluuminn.myhome.item.GrowthItem;
 
-public class FarmTimer implements Runnable {
+public class CultivateTimer implements Runnable {
     private final GrowthItem item;
 
-    public FarmTimer(GrowthItem item) {
+    public CultivateTimer(GrowthItem item) {
         this.item = item;
     }
 
