@@ -48,10 +48,26 @@ public class ItemStorage {
 
     public static final CraftItem CANDLE = CraftItem.of("딸기 향초", "원목 작업대", "공방", 3, 1000, 650, 160, ItemEntry.of(ItemStorage.STRAW_ROPE, 1), ItemEntry.of(ItemStorage.STRAW_ROPE, 1));
 
+    /**
+     * 상점 아이템
+     */
+
+    public static final StoreItem woodenWorkbench = new StoreItem("원목 작업대", ItemType.STORE, "상점", 100);
+    public static final StoreItem cookingStove = new StoreItem("요리용 화덕", ItemType.STORE, "상점", 2400);
+    public static final StoreItem sheepskin = new StoreItem("양가죽", ItemType.STORE, "상점", 400);
+    public static final StoreItem beef = new StoreItem("소고기", ItemType.STORE, "상점", 400);
+    public static final StoreItem asparagus = new StoreItem("아스파라거스", ItemType.STORE, "상점", 300);
+    public static final StoreItem cowhide = new StoreItem("소가죽", ItemType.STORE, "상점", 500);
+    public static final StoreItem horsehide = new StoreItem("말가죽", ItemType.STORE, "상점", 500);
+    public static final Potion recovery30 = new Potion("피로도 30 회복 물약", "상점", 2000, 30);
+    public static final Potion recovery70 = new Potion("피로도 70 회복 물약", "상점", 5500, 70);
+    public static final Potion recovery100 = new Potion("피로도 100 회복 물약", "상점", 10000, 100);
+
     public final List<GrowthItem> farmItems = new ArrayList<>();
     public final List<GrowthItem> animalFarmItems = new ArrayList<>();
     public final List<GrowthItem> forestItems = new ArrayList<>();
     public final List<CraftItem> craftItems = new ArrayList<>();
+    public final List<StoreItem> storeItems = new ArrayList<>();
 
     public ItemStorage() {
         farmItems.add(MEAL);
@@ -77,6 +93,15 @@ public class ItemStorage {
         craftItems.add(NATURE_ORGANIC_TABLE);
         craftItems.add(ECO_BASKET);
         craftItems.add(CANDLE);
+
+        storeItems.add(sheepskin);
+        storeItems.add(beef);
+        storeItems.add(asparagus);
+        storeItems.add(cowhide);
+        storeItems.add(horsehide);
+        storeItems.add(recovery30);
+        storeItems.add(recovery70);
+        storeItems.add(recovery100);
     }
 
     public List<GrowthItem> getFarmItems() {
@@ -93,5 +118,9 @@ public class ItemStorage {
 
     public List<CraftItem> getCraftItems() {
         return new ArrayList<>(craftItems);
+    }
+
+    public List<StoreItem> getStoreItems() {
+        return new ArrayList<>(storeItems);
     }
 }

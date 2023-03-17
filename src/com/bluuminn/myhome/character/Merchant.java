@@ -2,7 +2,7 @@ package com.bluuminn.myhome.character;
 
 import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.inventory.ItemEntry;
-import com.bluuminn.myhome.item.Potion;
+import com.bluuminn.myhome.item.ItemStorage;
 import com.bluuminn.myhome.item.StoreItem;
 
 import java.util.ArrayList;
@@ -10,38 +10,15 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Merchant extends NPC {
-    private final List<StoreItem> onSaleItems = new ArrayList<>();
+    private List<StoreItem> onSaleItems = new ArrayList<>();
 
-    private Merchant(String name) {
+    private Merchant(String name, ItemStorage itemStorage) {
         super(name);
-
-        String areaName = "상점";
-        StoreItem woodenWorkbench = new StoreItem("원목 작업대", areaName, 100);
-        StoreItem cookingStove = new StoreItem("요리용 화덕", areaName, 2400);
-
-        StoreItem sheepskin = new StoreItem("양가죽", areaName, 400);
-        StoreItem beef = new StoreItem("소고기", areaName, 400);
-        StoreItem asparagus = new StoreItem("아스파라거스", areaName, 300);
-        StoreItem cowhide = new StoreItem("소가죽", areaName, 500);
-        StoreItem horsehide = new StoreItem("말가죽", areaName, 500);
-        Potion recovery30 = new Potion("피로도 30 회복 물약", areaName, 2000, 30);
-        Potion recovery70 = new Potion("피로도 70 회복 물약", areaName, 5500, 70);
-        Potion recovery100 = new Potion("피로도 100 회복 물약", areaName, 10000, 100);
-
-        onSaleItems.add(woodenWorkbench);
-        onSaleItems.add(cookingStove);
-        onSaleItems.add(sheepskin);
-        onSaleItems.add(beef);
-        onSaleItems.add(asparagus);
-        onSaleItems.add(cowhide);
-        onSaleItems.add(horsehide);
-        onSaleItems.add(recovery30);
-        onSaleItems.add(recovery70);
-        onSaleItems.add(recovery100);
+        onSaleItems = itemStorage.getStoreItems();
     }
 
-    public static Merchant createMerchant(String name) {
-        return new Merchant(name);
+    public static Merchant createMerchant(String name, ItemStorage itemStorage) {
+        return new Merchant(name, itemStorage);
     }
 
     public void buyAndSell(Player player, Scanner scanner) {

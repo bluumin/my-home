@@ -1,28 +1,27 @@
 package com.bluuminn.myhome.quest;
 
 public class Title {
-    private String name;
-    private String condition;
-    private boolean achieved;
+    private final TitleInfo info;
+    private boolean isAchieved;
 
-    public Title(String name) {
-        this.name = name;
-        this.achieved = false;
+    private Title(TitleInfo info) {
+        this.info = info;
+        this.isAchieved = false;
     }
 
-    public String getName() {
-        return name;
+    public static Title of(TitleInfo info) {
+        return new Title(info);
     }
 
-    public String getCondition() {
-        return condition;
+    public TitleInfo getInfo() {
+        return info;
     }
 
     public boolean isAchieved() {
-        return achieved;
+        return isAchieved;
     }
 
     public void achieved() {
-        this.achieved = true;
+        this.isAchieved = true;
     }
 }

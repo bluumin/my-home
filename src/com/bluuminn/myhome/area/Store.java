@@ -1,24 +1,15 @@
 package com.bluuminn.myhome.area;
 
-import com.bluuminn.myhome.character.Merchant;
-import com.bluuminn.myhome.item.Potion;
-import com.bluuminn.myhome.item.StoreItem;
+import com.bluuminn.myhome.item.ItemStorage;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Store extends Area {
-
-    private final Merchant merchant = Merchant.createMerchant("로빈");
-
-    private final List<StoreItem> onSaleItems = new ArrayList<>();
 
     boolean[] event;
     int rand;
 
     class StoreTimer implements Runnable {
-
         Store storeTimer;
 
         public void rand() {
@@ -60,38 +51,9 @@ public class Store extends Area {
         }
     }
 
-    public Store() {
+    public Store(ItemStorage itemStorage) {
         super("상점");
-        String areaName = getName();
-
         // TODO: 원목 작업대 판매 가능하도록 작업하기
-        // Item wooden = new Item("원목 작업대", "상점", 100);
-
-        // 양가죽
-        StoreItem sheepskin = new StoreItem("양가죽", areaName, 400);
-        // 소고기
-        StoreItem beef = new StoreItem("소고기", areaName, 400);
-        // 아스파라거스
-        StoreItem asparagus = new StoreItem("아스파라거스", areaName, 300);
-        // 소가죽
-        StoreItem cowhide = new StoreItem("소가죽", areaName, 500);
-        // 말가죽
-        StoreItem horsehide = new StoreItem("말가죽", areaName, 500);
-        // 피로도 30 회복 물약
-        Potion recovery30 = new Potion("피로도 30 회복 물약", areaName, 2000, 30);
-        // 피로도 70 회복 물약
-        Potion recovery70 = new Potion("피로도 70 회복 물약", areaName, 5500, 70);
-        // 피로도 100 회복 물약
-        Potion recovery100 = new Potion("피로도 100 회복 물약", areaName, 10000, 100);
-
-        onSaleItems.add(sheepskin);
-        onSaleItems.add(beef);
-        onSaleItems.add(asparagus);
-        onSaleItems.add(cowhide);
-        onSaleItems.add(horsehide);
-        onSaleItems.add(recovery30);
-        onSaleItems.add(recovery70);
-        onSaleItems.add(recovery100);
     }
 
 //    public void storeTimeSale(Player player, Store store){

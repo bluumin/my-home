@@ -1,35 +1,71 @@
 package com.bluuminn.myhome.quest;
 
+import com.bluuminn.myhome.character.NPC;
+import com.bluuminn.myhome.character.Player;
+import com.bluuminn.myhome.inventory.Inventory;
 import com.bluuminn.myhome.inventory.ItemEntry;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Quest {
-    public String questName;       // 퀘스트 이름
-    public String npcName;         // 퀘스트 제공 npc 이름
-    public char[] questContent;    // 퀘스트 내용
-    public char[] questEnding;     // 퀘스트 종료시 멘트
+    private QuestInfo info;
+    private boolean isCompleted;
 
-    public ArrayList<Needs> needs = new ArrayList<Needs>();
-
-    public ItemEntry payItem = null;
-    //    String payItem = null;     // 보상 아이템 이름
-    public int payItemCount = 0;       // 보상 아이템 개수
-    public int payForGold = 0;     // 보상 골드
-    public int payExp = 0;         // 보상 경험치
-
-    public boolean completeCK;     // 완료 여부 체크(완료되면 리스트 삭제할 용도)
-    // 퀘스트가 아이템을 만들어서 납품하는 것인지, 만들기만 하는 것인지 확인
-    // true = 납품  false = 제작만
-    public boolean deliverCK;
-
-
-    public Quest(String name, String npc, boolean deliverCK) {
-        this.questName = name;
-        this.npcName = npc;
-        this.completeCK = false;
-        this.deliverCK = deliverCK;
+    private Quest(QuestInfo info) {
+        this.info = info;
+        this.isCompleted = false;
     }
 
+    public static Quest create(QuestInfo info) {
+        return new Quest(info);
+    }
 
+    public QuestInfo getInfo() {
+        return this.info;
+    }
+
+    public String getQuestName() {
+        return this.info.getName();
+    }
+
+    public NPC getNpc() {
+        return this.info.getNpc();
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public boolean complete(Player player) {
+        Inventory inventory = player.getInventory();
+        for (ItemEntry deliveryItem : getInfo().getRequiredDeliveryItems()) {
+            ItemEntry inventoryItem = inventory.find(deliveryItem);
+            inventoryItem.updateQuantity(inventoryItem.getQuantity() - deliveryItem.getQuantity());
+            if (inventoryItem.getQuantity() <= 0) {
+                inventory.remove(inventoryItem);
+            }
+        }
+
+        int playerExp = player.getExp();
+        int playerGold = player.getGold();
+        Inventory playerInventory = new Inventory(inventory);
+        try {
+            if (getInfo().getRewardExp() > 0) {
+                player.updateExp(playerExp + getInfo().getRewardExp());
+            }
+            if (getInfo().getRewardGold() > 0) {
+                player.updateGold(playerGold + getInfo().getRewardGold());
+            }
+            List<ItemEntry> rewardItems = getInfo().getRewardItems();
+            rewardItems.forEach(inventory::add);
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+            player.updateExp(playerExp);
+            player.updateGold(playerGold);
+            player.replaceInventory(playerInventory);
+            return false;
+        }
+        this.isCompleted = true;
+        return true;
+    }
 }

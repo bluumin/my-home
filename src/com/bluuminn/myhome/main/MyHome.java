@@ -3,16 +3,11 @@ package com.bluuminn.myhome.main;
 import com.bluuminn.myhome.area.*;
 import com.bluuminn.myhome.audio.SoundPlayerUsingClip;
 import com.bluuminn.myhome.character.Merchant;
-import com.bluuminn.myhome.character.NPC;
 import com.bluuminn.myhome.character.Player;
 import com.bluuminn.myhome.etc.MyHomeConstants;
 import com.bluuminn.myhome.etc.MyHomeUtils;
 import com.bluuminn.myhome.etc.ProgressBar;
-import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.ItemStorage;
-import com.bluuminn.myhome.quest.Needs;
-import com.bluuminn.myhome.quest.Quest;
-import com.bluuminn.myhome.quest.Title;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -28,11 +23,8 @@ public class MyHome {
     private final Forest forest;
     private final Store store;
     private final CraftShop craftShop;
-
     private final Arcade arcade;
     private final Merchant merchant;
-    private final NPC mimi;
-    private final NPC tomson;
     private final ItemStorage itemStorage;
 
     SoundPlayerUsingClip player = new SoundPlayerUsingClip();
@@ -45,10 +37,8 @@ public class MyHome {
         animalFarm = new AnimalFarm(itemStorage);
         forest = new Forest(itemStorage);
         craftShop = new CraftShop(itemStorage);
-        store = new Store();
-        merchant = Merchant.createMerchant("로빈");
-        mimi = NPC.createNPC("미미");
-        tomson = NPC.createNPC("톰슨");
+        store = new Store(itemStorage);
+        merchant = Merchant.createMerchant("로빈", itemStorage);
     }
 
     public void start() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
@@ -181,55 +171,10 @@ public class MyHome {
         System.out.println("                공방 운영에 도움이 될만한                  ");
         System.out.println("             초기 지원 자금 " + MyHomeConstants.INITIAL_SUPPORT_GOLD + "골드를 드릴게요.      ");
         System.out.println("└──────────────────────────────────────────────────┘");
-
-        scanner.nextLine(); // enter 눌러야 다음 진행
-
+        scanner.nextLine();
         //  ================== 로딩 시나리오 끝================
 
-        // ============================= 업적 타이틀 추가 ==============================
-        Title title0 = new Title("공방의 새 주인");
-        player.title.add(title0);
-        title0.achievementConditions = "퀘스트 3회 완료 시";
-
-        Title title1 = new Title("원목 공예 장인");
-        player.title.add(title1);
-        title1.achievementConditions = "아이템 제작 10회 이상";
-
-        // ============================= 퀘스트 생성 =============================
-        Quest quest1 = new Quest("밀짚을 이용한 끈!", "미미", false);
-        quest1.questContent = ("수확한 밀로 끈을 만들어봐요!").toCharArray();
-        quest1.payForGold = 1000;
-        quest1.payExp = 40;
-        quest1.payItem = ItemEntry.of(ItemStorage.MILK, 0);
-        quest1.payItemCount = 1;
-        quest1.needs.add(new Needs("밀짚끈", 4));
-        quest1.questEnding = ("생각보다 튼튼해 보여요. 처음이라 걱정했는데 잘하고 계시는데요?\n앞으로도 이렇게만 해주세요!").toCharArray();
-
-        Quest quest2 = new Quest("밀짚끈으로 소파를?", "미미", false);
-        quest2.questContent = ("만들어 놓은 밀짚끈으로 소파를 만들어볼까요?").toCharArray();
-        quest2.payForGold = 980;
-        quest2.payExp = 45;
-        quest2.needs.add(new Needs("네이쳐 오가닉 소파", 1));
-        quest2.questEnding = ("우와! 정말 좋아 보여요! 저도 나중에 부탁해도 될까요?").toCharArray();
-
-        Quest quest3 = new Quest("톰슨 할아버지의 첫 주문!", "톰슨", true);
-        quest3.questContent = ("자네가 만든 의자 괜찮더군! 작업실에 의자가 필요한데.. 괜찮으면 만들어주지 않겠나?").toCharArray();
-        quest3.payForGold = 2000;
-        quest3.payExp = 45;
-        quest3.needs.add(new Needs("네이쳐 오가닉 소파", 1));
-        quest3.questEnding = ("흠, 제법 하는구먼.. 밀짚도 튼튼하게 엮여있고..\n그렇다곤 해도 아직 초보자니 마음을 놓지 말게나!").toCharArray();
-
-        // ====================== 각 NPC 퀘스트 리스트에 추가 =========================
-        mimi.npcQuestList.add(quest1);
-        mimi.npcQuestList.add(quest2);
-        tomson.npcQuestList.add(quest3);
-
-        mimi.questEvent.start();
-        tomson.questEvent.start();
-
-        player.playerLvUp();
         boolean isResting = player.isResting();
-
         while (true) {
             showMenus(isResting);
 
@@ -280,10 +225,10 @@ public class MyHome {
                         System.out.println(FATIGUE_IS_TOO_HIGH);
                         continue;
                     }
-                    player.viewQuestList(player, mimi);
+                    player.showQuests(scanner);
                     break;
                 case 5:     // 인벤토리 확인
-                    player.viewInventory(player);
+                    player.showInventory(scanner);
                     break;
                 case 6:     // 상점
                     ProgressBar.loading();

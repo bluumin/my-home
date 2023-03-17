@@ -1,6 +1,7 @@
 package com.bluuminn.myhome.inventory;
 
 import com.bluuminn.myhome.item.Item;
+import com.bluuminn.myhome.item.ItemType;
 
 public class ItemEntry {
 
@@ -17,6 +18,10 @@ public class ItemEntry {
 
     public static ItemEntry of(Item item, int quantity) {
         return new ItemEntry(item, quantity);
+    }
+
+    public Item getItem() {
+        return item;
     }
 
     public int getQuantity() {
@@ -41,5 +46,9 @@ public class ItemEntry {
             return;
         }
         this.quantity = quantity;
+    }
+
+    public ItemType getItemType() {
+        return this.item.getType();
     }
 }

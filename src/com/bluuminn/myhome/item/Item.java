@@ -42,6 +42,18 @@ public class Item {
         return price;
     }
 
+    public String getResource() {
+        return resource;
+    }
+
+    public String getProductionArea() {
+        return productionArea;
+    }
+
+    public ItemType getType() {
+        return type;
+    }
+
     public Item(String name, String resource, ItemType type, String productionArea, int level, int price, int cost, int exp) {
         this.name = name;
         this.resource = resource;
