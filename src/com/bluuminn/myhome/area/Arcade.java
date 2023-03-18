@@ -10,8 +10,7 @@ public class Arcade extends Area {
         super("오락실");
     }
 
-    public void showGames(Player player) {
-        Scanner scanner = new Scanner(System.in);
+    public void showGames(Player player, Scanner scanner) {
         while (true) {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("                 🎮 미니 게임 리스트");
@@ -24,17 +23,14 @@ public class Arcade extends Area {
             System.out.println();
             System.out.print("입력 >> ");
 
-            String inputValue = scanner.next();
-            scanner.nextLine();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input > 2 || input < 0) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             if (input == 0) {
@@ -65,16 +61,14 @@ public class Arcade extends Area {
             System.out.println();
             System.out.println("                     0. 이전으로");
 
-            String inputValue = scanner.next();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input > 2 || input < 0) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             if (input == 0) {
@@ -209,16 +203,15 @@ public class Arcade extends Area {
 
             System.out.println();
             System.out.println("1. 다시 하기      0. 그만 하기");
-            String inputValue = scanner.next();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input > 1 || input < 0) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
+                continue;
             }
             if (input == 0) {
                 break;
@@ -267,10 +260,9 @@ public class Arcade extends Area {
             System.out.println("                    0. 이전으로");
             System.out.println();
             System.out.print("입력 >> ");
-            String inputValue = scanner.next();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
@@ -283,8 +275,7 @@ public class Arcade extends Area {
                 continue;
             }
             if (input > 2 || input < 0) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
 
@@ -307,16 +298,14 @@ public class Arcade extends Area {
             TODO: 난이도 선택하게 해서 피로도만 깎거나 휴식 횟수도 깎거나.. 하면 좋을 듯
             System.out.print("몇자리 수 야구를 하시겠어요? 3~5 사이의 숫자를 입력해주세요.");
             System.out.print("입력 >> ");
-            String inputValue = scanner.next();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int numberOfDigit = MyHomeUtils.stringToInt(inputValue);
             if (numberOfDigit < 3 || numberOfDigit > 5) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
              */
@@ -344,7 +333,7 @@ public class Arcade extends Area {
                 while (user.size() < numberOfDigit) {
                     System.out.println();
                     System.out.print(number + "번째 수: ");
-                    String userInputValue = scanner.next();
+                    String userInputValue = MyHomeUtils.input(scanner);
                     if (!MyHomeUtils.isInteger(userInputValue)) {
                         System.out.println("1~9 사이의 숫자만 입력해주세요.");
                         scanner.nextLine();

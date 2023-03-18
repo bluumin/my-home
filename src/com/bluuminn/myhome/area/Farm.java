@@ -22,8 +22,7 @@ public class Farm extends Area {
         items = itemStorage.getFarmItems();
     }
 
-    public void cultivate(Player player) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
-        Scanner scanner = new Scanner(System.in);
+    public void cultivate(Player player, Scanner scanner) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         while (true) {
             MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -37,38 +36,33 @@ public class Farm extends Area {
 
                 // 아이템의 레벨이 플레이어 레벨과 같거나 작으면 => 재배가능
                 if (!item.isPlantable(playerLevel)) {
-                    System.out.print(" [ 🔒 ] LV." + item.getLevel() + " 이상)");
-                    System.out.println();
+                    System.out.println(" [ 🔒 ] LV." + item.getLevel() + " 이상)");
                     continue;
                 }
                 if (!item.isPlanted()) {
-                    System.out.print(" (재배시간: " + item.getGrowingPeriod() + "초 / 비용: " + item.getCost() + "골드)");
-                    System.out.println();
+                    System.out.println(" (재배시간: " + item.getGrowingPeriod() + "초 / 비용: " + item.getCost() + "골드)");
                     continue;
                 }
                 if (item.getGrowingPeriod() <= 0) {
-                    System.out.print(" (수확 가능)");
-                    System.out.println();
+                    System.out.println(" (수확 가능)");
                     continue;
                 }
-                System.out.print(" (재배중..)");
-                System.out.println();
+                System.out.println(" (재배중..)");
             }
 
             MyHomeUtils.printLineAsCount(2);
             System.out.println("수확하고 싶은 작물의 번호를 입력하세요. (0. 이전 단계로)");
             System.out.print("입력 >> ");
-            String inputValue = scanner.next();
-            scanner.nextLine();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
+                MyHomeUtils.enterAgain(scanner);
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input == 0) {
                 return;
             }
             if (input >= items.size() || input < 0) {
-                MyHomeUtils.enterAgain();
+                MyHomeUtils.enterAgain(scanner);
                 scanner.nextLine();
                 continue;
             }
@@ -90,16 +84,14 @@ public class Farm extends Area {
                     System.out.println();
                     System.out.println("1. 재배 하기        0. 이전 메뉴로 가기");
                     System.out.print("입력 >> ");
-                    String subInputValue = scanner.next();
+                    String subInputValue = MyHomeUtils.input(scanner);
                     if (!MyHomeUtils.isInteger(subInputValue)) {
-                        MyHomeUtils.enterAgain();
-                        scanner.nextLine();
+                        MyHomeUtils.enterAgain(scanner);
                         continue;
                     }
                     int subInput = MyHomeUtils.stringToInt(subInputValue);
                     if (subInput < 0 || 1 < subInput) {
-                        MyHomeUtils.enterAgain();
-                        scanner.nextLine();
+                        MyHomeUtils.enterAgain(scanner);
                         continue;
                     }
                     if (player.getGold() < item.getCost()) {

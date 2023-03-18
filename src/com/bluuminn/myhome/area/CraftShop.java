@@ -17,8 +17,8 @@ public class CraftShop extends Area {
         items = itemStorage.getCraftItems();
     }
 
-    public void craft(Player player) {
-        Scanner scanner = new Scanner(System.in);
+    public void craft(Player player, Scanner scanner) {
+//        Scanner scanner = new Scanner(System.in);
         if (!player.hasWoodenWorkbench()) {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("          감사제를 준비하려면 원목 작업대가 필요해요.");
@@ -32,16 +32,14 @@ public class CraftShop extends Area {
             showCraftMenus(playerLevel);
             System.out.println();
             System.out.print("입력 >> ");
-            String inputValue = scanner.next();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input < 0 || input > items.size()) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             if (input == 0) {
@@ -87,16 +85,14 @@ public class CraftShop extends Area {
                 System.out.println();
                 System.out.println("1. 제작하기         0. 이전으로");
                 System.out.print("입력 >> ");
-                inputValue = scanner.next();
+                inputValue = MyHomeUtils.input(scanner);
                 if (!MyHomeUtils.isInteger(inputValue)) {
-                    MyHomeUtils.enterAgain();
-                    scanner.nextLine();
+                    MyHomeUtils.enterAgain(scanner);
                     continue;
                 }
                 input = MyHomeUtils.stringToInt(inputValue);
                 if (input > 1 || input < 0) {
-                    MyHomeUtils.enterAgain();
-                    scanner.nextLine();
+                    MyHomeUtils.enterAgain(scanner);
                     continue;
                 }
                 if (input == 0) {
@@ -113,10 +109,9 @@ public class CraftShop extends Area {
                     System.out.println("몇 개 제작하시겠어요? (최대 제작 가능 개수: " + craftableQuantity + ")");
                     System.out.println("숫자만 입력해주세요.          0. 이전으로");
                     System.out.print("입력 >> ");
-                    inputValue = scanner.next();
+                    inputValue = MyHomeUtils.input(scanner);
                     if (!MyHomeUtils.isInteger(inputValue)) {
-                        MyHomeUtils.enterAgain();
-                        scanner.nextLine();
+                        MyHomeUtils.enterAgain(scanner);
                         continue;
                     }
                     int craftCount = MyHomeUtils.stringToInt(inputValue);

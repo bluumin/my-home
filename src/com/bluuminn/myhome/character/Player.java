@@ -225,8 +225,7 @@ public class Player extends Character {
         }
     }
 
-    public void willRest() {
-        Scanner scanner = new Scanner(System.in);
+    public void willRest(Scanner scanner) {
         while (true) {
             if (this.isResting) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
@@ -247,10 +246,9 @@ public class Player extends Character {
             System.out.println("1. 휴식 취하기    0. 이전 단계로");
             System.out.print("입력 >> ");
 
-            String inputValue = scanner.next();
-            scanner.nextLine();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
 
@@ -259,7 +257,7 @@ public class Player extends Character {
                 break;
             }
             if (input > 1 || input < 0) {
-                MyHomeUtils.enterAgain();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -272,8 +270,7 @@ public class Player extends Character {
         }
     }
 
-    public void showQuests() {
-        Scanner scanner = new Scanner(System.in);
+    public void showQuests(Scanner scanner) {
         while (true) {
             if (quests.isEmpty()) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
@@ -293,16 +290,14 @@ public class Player extends Character {
             System.out.println();
             System.out.println("퀘스트 번호를 입력하면 자세한 정보를 확인할 수 있습니다. (0. 이전으로)");
             System.out.print("입력 >> ");
-            String inputValue = scanner.next();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input < 0 || input > quests.size()) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             if (input == 0) {
@@ -372,16 +367,14 @@ public class Player extends Character {
             System.out.println();
             System.out.println();
             System.out.println("1. 퀘스트 완료하기       0. 이전으로");
-            String inputValue = scanner.next();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input < 0 || input > 1) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             if (input == 0) {
@@ -498,16 +491,14 @@ public class Player extends Character {
             System.out.println();
             System.out.println("1. 업적 확인하기       0. 메인 메뉴로");
             System.out.print("입력 >> ");
-            String inputValue = scanner.next();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input > 1 || input < 0) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             if (input == 0) {
@@ -534,18 +525,15 @@ public class Player extends Character {
                 System.out.println("       조건을 확인하고 싶은 업적의 번호를 입력해주세요.  (0. 이전으로)");
                 System.out.print("입력 >> ");
 
-                inputValue = scanner.next();
-                scanner.nextLine();
+                inputValue = MyHomeUtils.input(scanner);
                 if (!MyHomeUtils.isInteger(inputValue)) {
-                    MyHomeUtils.enterAgain();
-                    scanner.nextLine();
+                    MyHomeUtils.enterAgain(scanner);
                     continue;
                 }
 
                 input = MyHomeUtils.stringToInt(inputValue);
                 if (input < 0 || input > titleQty) {
-                    MyHomeUtils.enterAgain();
-                    scanner.nextLine();
+                    MyHomeUtils.enterAgain(scanner);
                     continue;
                 }
 
@@ -574,16 +562,14 @@ public class Player extends Character {
                 return;
             }
 
-            showInventory();
+            showInventoryForSale();
             System.out.println();
             System.out.println("판매하고 싶은 아이템의 번호를 입력하세요. (0. 이전으로)");
             System.out.println();
             System.out.print("입력 >> ");
-            String inputValue = scanner.next();
-            scanner.nextLine();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int input = Integer.parseInt(inputValue);
@@ -591,8 +577,7 @@ public class Player extends Character {
                 break;
             }
             if (input < 0 || input > inventory.getNumberOfItems()) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
 
@@ -604,11 +589,9 @@ public class Player extends Character {
                 System.out.println("  " + item.getItemName() + " 을(를) 몇 개 판매 하시겠습니까? (0. 이전으로)");
                 System.out.println();
                 System.out.print("입력 >> ");
-                inputValue = scanner.next();
-                scanner.nextLine();
+                inputValue = MyHomeUtils.input(scanner);
                 if (!MyHomeUtils.isInteger(inputValue)) {
-                    MyHomeUtils.enterAgain();
-                    scanner.nextLine();
+                    MyHomeUtils.enterAgain(scanner);
                     continue;
                 }
                 int salesQuantity = Integer.parseInt(inputValue);
@@ -616,8 +599,7 @@ public class Player extends Character {
                     return;
                 }
                 if (salesQuantity < 0 || item.getQuantity() < salesQuantity) {
-                    MyHomeUtils.enterAgain();
-                    scanner.nextLine();
+                    MyHomeUtils.enterAgain(scanner);
                     continue;
                 }
 
@@ -640,11 +622,9 @@ public class Player extends Character {
                 System.out.println("1. 예        0. 아니오(이전으로)");
                 System.out.println();
                 System.out.print("입력 >> ");
-                inputValue = scanner.next();
-                scanner.nextLine();
+                inputValue = MyHomeUtils.input(scanner);
                 if (!MyHomeUtils.isInteger(inputValue)) {
-                    MyHomeUtils.enterAgain();
-                    scanner.nextLine();
+                    MyHomeUtils.enterAgain(scanner);
                     continue;
                 }
                 input = Integer.parseInt(inputValue);
@@ -652,8 +632,7 @@ public class Player extends Character {
                     break;
                 }
                 if (input > 1 || input < 0) {
-                    MyHomeUtils.enterAgain();
-                    scanner.nextLine();
+                    MyHomeUtils.enterAgain(scanner);
                     continue;
                 }
 
@@ -679,22 +658,14 @@ public class Player extends Character {
         }
     }
 
-    public void showInventory() {
-        Scanner scanner = new Scanner(System.in);
-        if (inventory.isEmpty()) {
-            System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("                 인벤토리가 비었습니다.");
-            scanner.nextLine();
-            return;
-        }
+    private void showInventoryForSale() {
         System.out.println("┌──────────────────────────────────────────────────┐");
-        System.out.println("                  인벤토리 리스트");
+        System.out.println("                    인벤토리 리스트");
         System.out.println();
         List<ItemEntry> inventoryItems = inventory.getItems();
         for (int i = 0; i < inventory.getNumberOfItems(); i++) {
             ItemEntry item = inventoryItems.get(i);
-            System.out.print(i + 1 + ". ");
-            System.out.println(item.getItemName() + " (" + item.getItemSalePrice() + "골드)");
+            System.out.println((i + 1) + ". " + item.getItemName() + " (" + item.getItemSalePrice() + "G)");
             System.out.println("\t\t\t\t\t\t\t\t" + item.getQuantity() + "개");
         }
     }
@@ -711,31 +682,28 @@ public class Player extends Character {
             }
 
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("                   인벤토리 리스트");
+            System.out.println("                    인벤토리 리스트");
             System.out.println();
             List<ItemEntry> inventoryItems = inventory.getItems();
             for (int i = 0; i < inventory.getNumberOfItems(); i++) {
                 ItemEntry item = inventoryItems.get(i);
-                System.out.print(i + 1 + ". " + item.getItemName());
-                System.out.println();
+                System.out.println((i + 1) + ". " + item.getItemName());
                 System.out.println("\t\t\t\t\t\t" + item.getQuantity() + "개");
             }
 
             System.out.println();
             System.out.println();
-            System.out.println("확인하고 싶은 아이템의 번호를 입력하세요. (0. 이전으로)");
+            System.out.println("자세한 정보를 보고 싶은 아이템의 번호를 입력하세요. (0. 이전으로)");
             System.out.print("입력 >> ");
 
-            String inputValue = scanner.next();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input < 0 || input > inventory.getNumberOfItems()) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             if (input == 0) {
@@ -753,16 +721,14 @@ public class Player extends Character {
                     System.out.println("1. 사용        0. 이전으로");
                     System.out.print("입력 >> ");
 
-                    inputValue = scanner.next();
+                    inputValue = MyHomeUtils.input(scanner);
                     if (!MyHomeUtils.isInteger(inputValue)) {
-                        MyHomeUtils.enterAgain();
-                        scanner.nextLine();
+                        MyHomeUtils.enterAgain(scanner);
                         continue;
                     }
                     input = MyHomeUtils.stringToInt(inputValue);
                     if (input < 0 || input > 1) {
-                        MyHomeUtils.enterAgain();
-                        scanner.nextLine();
+                        MyHomeUtils.enterAgain(scanner);
                         continue;
                     }
                     if (input == 0) {
@@ -780,9 +746,9 @@ public class Player extends Character {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("        [ " + item.getItemName() + "] 아이템 정보");
             System.out.println();
-            System.out.println("  타입: " + item.getItemType().getName());
-            System.out.println("  생산아이템: " + item.getItem().getResource());
-            System.out.println("  생산구역: " + item.getItem().getProductionArea());
+            System.out.println("  - 타입: " + item.getItemType().getName());
+            System.out.println("  - 생산아이템: " + item.getItem().getResource());
+            System.out.println("  - 생산구역: " + item.getItem().getProductionArea());
             System.out.println();
             System.out.print("계속 하시려면 아무키나 입력하세요.");
             scanner.nextLine();

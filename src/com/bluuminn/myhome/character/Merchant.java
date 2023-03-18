@@ -21,8 +21,7 @@ public class Merchant extends NPC {
         return new Merchant(name, itemStorage);
     }
 
-    public void buyAndSell(Player player) {
-        Scanner scanner = new Scanner(System.in);
+    public void buyAndSell(Player player, Scanner scanner) {
         while (true) {
             MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -32,10 +31,9 @@ public class Merchant extends NPC {
             System.out.println("              2. 아이템 판매");
             System.out.println();
             System.out.print("입력 >> ");
-            String inputValue = scanner.next();
-            scanner.nextLine();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
+                MyHomeUtils.enterAgain(scanner);
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input == 0) {
@@ -63,11 +61,9 @@ public class Merchant extends NPC {
             System.out.println("구매하실 아이템의 번호를 입력하세요. (0. 이전으로)");
             System.out.println();
             System.out.print("입력 >> ");
-            String inputValue = scanner.next();
-            scanner.nextLine();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
@@ -75,8 +71,7 @@ public class Merchant extends NPC {
                 break;
             }
             if (input > onSaleItems.size()) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
 
@@ -97,11 +92,9 @@ public class Merchant extends NPC {
                     System.out.println("            1. 구입하기           0. 뒤로가기");
                     System.out.println();
                     System.out.print("입력 >> ");
-                    inputValue = scanner.next();
-                    scanner.nextLine();
+                    inputValue = MyHomeUtils.input(scanner);
                     if (!MyHomeUtils.isInteger(inputValue)) {
-                        MyHomeUtils.enterAgain();
-                        scanner.nextLine();
+                        MyHomeUtils.enterAgain(scanner);
                         break;
                     }
                     input = MyHomeUtils.stringToInt(inputValue);
@@ -109,8 +102,7 @@ public class Merchant extends NPC {
                         break;
                     }
                     if (input > 1 || input < 0) {
-                        MyHomeUtils.enterAgain();
-                        scanner.nextLine();
+                        MyHomeUtils.enterAgain(scanner);
                         continue;
                     }
                     int playerGold = player.getGold();
@@ -134,10 +126,9 @@ public class Merchant extends NPC {
             System.out.println("     (0. 이전으로)");
             System.out.println();
             System.out.print("입력 >> ");
-            inputValue = scanner.next();
-            scanner.nextLine();
+            inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
+                MyHomeUtils.enterAgain(scanner);
                 scanner.nextLine();
                 continue;
             }
@@ -154,10 +145,9 @@ public class Merchant extends NPC {
             System.out.println("1. 예        0. 아니오(이전으로 판매 아이템 목록 보기)");
             System.out.println();
             System.out.print("입력 >> ");
-            inputValue = scanner.next();
-            scanner.nextLine();
+            inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
+                MyHomeUtils.enterAgain(scanner);
                 scanner.nextLine();
                 continue;
             }

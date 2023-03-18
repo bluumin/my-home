@@ -121,7 +121,7 @@ public class MyHome {
             }
         } while (playerName == null || playerName.length() < 2 || playerName.length() > 8);
 
-        MyHomeUtils.printLineAsCount(10);
+        MyHomeUtils.printLineAsCount(100);
         Player player = Player.createPlayer(playerName);
         System.out.println("[ " + playerName + " ] 반가워요");
 
@@ -168,6 +168,9 @@ public class MyHome {
         System.out.println("                공방 운영에 도움이 될만한                  ");
         System.out.println("             초기 지원 자금 " + MyHomeConstants.INITIAL_SUPPORT_GOLD + "골드를 드릴게요.      ");
         System.out.println("└──────────────────────────────────────────────────┘");
+
+        System.out.println();
+        System.out.println("    Enter 를 눌러 계속합니다. ");
         scanner.nextLine();
         //  ================== 로딩 시나리오 끝================
 
@@ -184,9 +187,9 @@ public class MyHome {
         while (true) {
             showMenus(isResting);
 
-            String inputValue = scanner.next();
+            String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
-                MyHomeUtils.enterAgain();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
 
@@ -220,7 +223,7 @@ public class MyHome {
                         continue;
                     }
                     ProgressBar.loading();
-                    craftShop.craft(player);
+                    craftShop.craft(player, scanner);
                     break;
                 case 4:     // 퀘스트 리스트 확인
                     if (isResting) {
@@ -231,26 +234,25 @@ public class MyHome {
                         System.out.println(FATIGUE_IS_TOO_HIGH);
                         continue;
                     }
-                    player.showQuests();
+                    player.showQuests(scanner);
                     break;
                 case 5:     // 인벤토리 확인
-                    player.showInventory();
+                    player.showInventory(scanner);
                     break;
                 case 6:     // 상점
                     ProgressBar.loading();
-                    merchant.buyAndSell(player);
+                    merchant.buyAndSell(player, scanner);
                     break;
                 case 7:     // 휴식 취하기
                     ProgressBar.loading();
-                    player.willRest();
+                    player.willRest(scanner);
                     break;
                 case 8:     // 미니게임
                     ProgressBar.loading();
-                    arcade.showGames(player);
+                    arcade.showGames(player, scanner);
                     break;
                 default:
-                    MyHomeUtils.enterAgain();
-                    scanner.nextLine();
+                    MyHomeUtils.enterAgain(scanner);
             }
         }
     }
@@ -289,8 +291,8 @@ public class MyHome {
     public void printToRest() {
         System.out.println("┌──────────────────────────────────────────────────┐");
         System.out.println("                지금은 휴식 중이에요.");
-        MyHomeUtils.printLineAsCount(1);
-        scanner.nextLine(); // enter 눌러야 다음 진행
+        System.out.println();
+        scanner.nextLine();
     }
 
     private void showAreas(Player player) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
@@ -304,33 +306,26 @@ public class MyHome {
             System.out.println();
             System.out.print("입력 >> ");
 
-            String inputVal = input();
+            String inputVal = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputVal)) {
-                MyHomeUtils.enterAgain();
-                scanner.nextLine();
+                MyHomeUtils.enterAgain(scanner);
                 continue;
             }
 
             // TODO: inputVal enum 으로 변경하기. 각 case가 뭘 의미하는지 한눈에 파악하기 어려움.
             switch (MyHomeUtils.stringToInt(inputVal)) {
                 case 1:
-                    farm.cultivate(player);
+                    farm.cultivate(player, scanner);
                     break;
                 case 2:
-                    animalFarm.breed(player);
+                    animalFarm.breed(player, scanner);
                     break;
                 case 3:
-                    forest.growTrees(player);
+                    forest.growTrees(player, scanner);
                     break;
                 default:
                     return;
             }
         }
-    }
-
-    private String input() {
-        String input = scanner.next();
-        scanner.nextLine();
-        return input;
     }
 }
