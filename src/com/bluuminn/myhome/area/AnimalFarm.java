@@ -75,7 +75,7 @@ public class AnimalFarm extends Area {
                 if (!item.isPlantable(playerLevel)) {
                     printNotPlantable();
                     scanner.nextLine();
-                    continue;
+                    break;
                 }
                 // 아무것도 안한 상태면 재배시작하기
                 if (!item.isPlanted()) {
