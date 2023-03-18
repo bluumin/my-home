@@ -33,23 +33,15 @@ public class Inventory {
 
     public void add(ItemEntry entry) {
         int index = indexOf(entry);
-        if (index >= 0) {
-            ItemEntry item = items.get(index);
-            item.addQuantity(entry.getQuantity());
+        if (index < 0) {
+            items.add(entry);
             return;
         }
-        // 인벤토리에 아이템이 없으면 추가 등록
         if (isFull()) {
             throw new IllegalStateException("┌──────────────────────────────────────────────────┐\n         인벤토리가 가득 차서 더 이상 아이템을 담을 수 없어요.");
         }
-        // 빈 자리에 추가
-        for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++) {
-            if (items.get(i) != null) {
-                continue;
-            }
-            items.set(i, entry);
-            break;
-        }
+        ItemEntry item = items.get(index);
+        item.addQuantity(entry.getQuantity());
     }
 
     // 아이템 개수 감소(0이면 제거)
@@ -62,7 +54,10 @@ public class Inventory {
     }
 
     public int indexOf(ItemEntry entry) {
-        for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++) {
+        if (items == null || items.isEmpty()) {
+            return -1;
+        }
+        for (int i = 0; i < items.size(); i++) {
             ItemEntry item = items.get(i);
             if (item != null && item.getItemName().equals(entry.getItemName())) {
                 return i;

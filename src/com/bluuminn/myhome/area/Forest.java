@@ -32,18 +32,19 @@ public class Forest extends Area {
             int playerLevel = player.getLevel();
             for (int i = 0; i < items.size(); i++) {
                 GrowthItem item = items.get(i);
-                System.out.print((i + 1) + ". " + item.getName());
+                System.out.printf("%-8s", (i + 1) + ". " + item.getName());
+
 
                 // 아이템의 레벨이 플레이어 레벨과 같거나 작으면 => 재배가능
                 if (!item.isPlantable(playerLevel)) {
-                    System.out.println(" [ 🔒 ] LV." + item.getLevel() + " 이상)");
+                    System.out.println("     [ 🔒 ] LV." + item.getLevel() + " 이상");
                     continue;
                 }
                 if (!item.isPlanted()) {
-                    System.out.println(" (재배시간: " + item.getGrowingPeriod() + "초 / 비용: " + item.getCost() + "골드)");
+                    System.out.println(" (재배시간: " + item.getGrowingPeriod() + "초 / 비용: " + item.getCost() + " G)");
                     continue;
                 }
-                if (item.getGrowingPeriod() <= 0) {
+                if (item.isHarvestable()) {
                     System.out.println(" (수확 가능)");
                     continue;
                 }
@@ -77,6 +78,7 @@ public class Forest extends Area {
                 }
                 // 아무것도 안한 상태면 재배시작하기
                 if (!item.isPlanted()) {
+                    MyHomeUtils.printLineAsCount(100);
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("        자라고 있거나 수확 가능한 아이템이 없습니다.");
                     System.out.println();
@@ -95,6 +97,7 @@ public class Forest extends Area {
                         continue;
                     }
                     if (player.getGold() < item.getCost()) {
+                        MyHomeUtils.printLineAsCount(100);
                         System.out.println("┌──────────────────────────────────────────────────┐");
                         System.out.println("                   골드가 부족합니다.");
                         scanner.nextLine();
@@ -110,27 +113,31 @@ public class Forest extends Area {
                     player.updateGold(remainGold);
                     item.plant();
                     new Thread(new CultivateTimer(item)).start();
+                    MyHomeUtils.printLineAsCount(100);
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("                  " + item.getName() + " 을(를) 기릅니다.");
                     System.out.println("                다 자라면 알려드릴게요!");
                     System.out.println("└──────────────────────────────────────────────────┘");
+                    scanner.nextLine();
                     break;
                 }
 
                 // 기다리기
                 if (!item.isHarvestable()) {
-                    System.out.println();
+                    MyHomeUtils.printLineAsCount(100);
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("               아직 " + item.getName() + " 을(를) 기르는 중이에요.");
                     System.out.println("                다 자라면 알려드릴게요!");
                     System.out.println("└──────────────────────────────────────────────────┘");
+                    scanner.nextLine();
                     break;
                 }
                 // 수확가능 한 양을 모두 수확했을 때
                 if (item.getHarvestRemainQuantity() < 1) {
+                    MyHomeUtils.printLineAsCount(100);
                     item.initHarvestable();
                     System.out.println("┌──────────────────────────────────────────────────┐");
-                    System.out.println("          수확할 수 있는 양을 모두 수확했어요.");
+                    System.out.println("            수확할 수 있는 양을 모두 수확했어요.");
                     System.out.println("          " + item.getName() + " 획득량: " + item.getHarvestCount());
                     System.out.println();
                     System.out.println("               이전 메뉴로 돌아갑니다.");
@@ -144,18 +151,21 @@ public class Forest extends Area {
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("                수확 중 문제가 생겼어요.");
                     System.out.println("                이전 단계로 돌아갑니다.");
+                    scanner.nextLine();
                     break;
                 }
                 playSound();
                 System.out.println();
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("              " + item.getName() + " 1개 획득!");
+                scanner.nextLine();
+
                 player.saveItem(ItemEntry.of(item, 1));
                 item.decreaseHarvestRemainQuantityBy1();
                 int exp = player.getExp() + item.getExp();
                 player.updateExp(exp);
                 player.updateFatigability(player.getFatigability() + 15);
-                scanner.nextLine();
+
                 MyHomeUtils.printLineAsCount(100);
             }
         }

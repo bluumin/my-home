@@ -14,8 +14,16 @@ abstract class MiniGamePiece {
         return x;
     }
 
+    public void setX(int x) {
+        this.x = x;
+    }
+
     public int getY() {
         return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public int getDistance() {
@@ -26,7 +34,7 @@ abstract class MiniGamePiece {
         return this.x == p.getX() && this.y == p.getY();
     }
 
-    public abstract void move(String[][] board); // 이동한 후의 새로운 위치로 x, y 변경
+    public abstract boolean move(String[][] board); // 이동한 후의 새로운 위치로 x, y 변경
 
     public abstract String getShape(); // 객체의 모양을 나타내는 문자 리턴
 }

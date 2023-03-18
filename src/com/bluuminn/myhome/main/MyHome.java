@@ -281,8 +281,8 @@ public class MyHome {
             System.out.println("               7. 🚫 휴식 끝내기");
         }
         System.out.println("               8. 🎮 미니 게임");
-        System.out.println();
 //                    System.out.println("               9. ⚙️ 설정");
+        System.out.println();
         System.out.println("               0. 🔚 게임 종료               ");
         System.out.println();
         System.out.print("입력 >> ");

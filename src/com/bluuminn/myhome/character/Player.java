@@ -202,6 +202,10 @@ public class Player extends Character {
     }
 
     public void updateGold(int gold) {
+        if (gold < 0) {
+            this.gold = 0;
+            return;
+        }
         this.gold = gold;
     }
 
@@ -272,6 +276,7 @@ public class Player extends Character {
 
     public void showQuests(Scanner scanner) {
         while (true) {
+            MyHomeUtils.printLineAsCount(100);
             if (quests.isEmpty()) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("              진행 중인 퀘스트가 없습니다.");
@@ -303,7 +308,7 @@ public class Player extends Character {
             if (input == 0) {
                 break;
             }
-            Quest quest = quests.get(input);
+            Quest quest = quests.get(input - 1);
             showQuestInfo(quest, scanner);
         }
     }
@@ -441,9 +446,10 @@ public class Player extends Character {
     }
 
     public void craft(CraftItem craftItem, int craftCount) {
+        MyHomeUtils.printLineAsCount(100);
         String itemName = craftItem.getName();
         System.out.println("┌──────────────────────────────────────────────────┐");
-        System.out.println("            " + itemName + " 을(를) 제작합니다.");
+        System.out.println("              " + itemName + " 을(를) 제작합니다.");
 
         // TODO: 로딩 스레드
         // TODO: 제작 중 동영상 스레드
@@ -462,15 +468,18 @@ public class Player extends Character {
                 }
             }
 
-            inventory.add(ItemEntry.of(craftItem, craftCount));
-
             System.out.println();
             System.out.println();
             increaseCraftingCountBy1();
             updateFatigability(getFatigability() + 7);
             updateExp(getExp() + craftItem.getExp());
 
-            System.out.println(itemName + " 제작 완료!");
+            MyHomeUtils.delayAsMillis((int) (Math.random() * 2000 + 500));
+            MyHomeUtils.printLineAsCount(100);
+            System.out.println("┌──────────────────────────────────────────────────┐");
+            System.out.println("                " + itemName + " 제작 완료!");
+
+            inventory.add(ItemEntry.of(craftItem, craftCount));
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -483,11 +492,11 @@ public class Player extends Character {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("            플레이어 [ " + getName() + " ] 정보");
             System.out.println();
-            System.out.println("    레벨: " + getLevel());
-            System.out.println("    경험치: " + getExp() + " / " + getMaxExp());
-            System.out.println("    피로도: " + (isResting ? "회복 중.." : getFatigability()));
+            System.out.println("   - 레벨: " + getLevel());
+            System.out.println("   - 경험치: " + getExp() + " / " + getMaxExp());
+            System.out.println("   - 피로도: " + (isResting ? "회복 중.. 🛌" : getFatigability()));
             System.out.println();
-            System.out.println("    골드 : " + getGold());
+            System.out.println("   - 골드: " + getGold());
             System.out.println();
             System.out.println("1. 업적 확인하기       0. 메인 메뉴로");
             System.out.print("입력 >> ");
@@ -584,7 +593,7 @@ public class Player extends Character {
             // 선택한 번호가 범위 내에 있으면 (범위 : 인벤토리 1번 ~ 마지막번)
             while (true) {
                 List<ItemEntry> items = inventory.getItems();
-                ItemEntry item = items.get(input);
+                ItemEntry item = items.get(input - 1);
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("  " + item.getItemName() + " 을(를) 몇 개 판매 하시겠습니까? (0. 이전으로)");
                 System.out.println();
@@ -665,8 +674,8 @@ public class Player extends Character {
         List<ItemEntry> inventoryItems = inventory.getItems();
         for (int i = 0; i < inventory.getNumberOfItems(); i++) {
             ItemEntry item = inventoryItems.get(i);
-            System.out.println((i + 1) + ". " + item.getItemName() + " (" + item.getItemSalePrice() + "G)");
-            System.out.println("\t\t\t\t\t\t\t\t" + item.getQuantity() + "개");
+            System.out.println((i + 1) + ". " + item.getItemName() + " (" + item.getItemSalePrice() + " G)");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t\t" + item.getQuantity() + "개");
         }
     }
 
@@ -679,6 +688,7 @@ public class Player extends Character {
                 System.out.println("└──────────────────────────────────────────────────┘");
                 scanner.nextLine();
                 MyHomeUtils.printLineAsCount(100);
+                break;
             }
 
             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -688,7 +698,7 @@ public class Player extends Character {
             for (int i = 0; i < inventory.getNumberOfItems(); i++) {
                 ItemEntry item = inventoryItems.get(i);
                 System.out.println((i + 1) + ". " + item.getItemName());
-                System.out.println("\t\t\t\t\t\t" + item.getQuantity() + "개");
+                System.out.println("\t\t\t\t\t\t\t\t\t\t\t" + item.getQuantity() + "개");
             }
 
             System.out.println();
@@ -710,7 +720,7 @@ public class Player extends Character {
                 break;
             }
 
-            ItemEntry item = inventoryItems.get(input);
+            ItemEntry item = inventoryItems.get(input - 1);
             if (item.getItemType() == ItemType.CONSUMPTION) {
                 while (true) {
                     System.out.println();

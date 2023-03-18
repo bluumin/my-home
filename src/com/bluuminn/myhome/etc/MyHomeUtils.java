@@ -21,7 +21,7 @@ public class MyHomeUtils {
     }
 
     public static void enterAgain(Scanner scanner) {
-        System.out.println();
+        printLineAsCount(100);
         System.out.println("┌──────────────────────────────────────────────────┐");
         System.out.println("            잘못 입력했어요. 다시 입력해주세요.");
         scanner.nextLine();

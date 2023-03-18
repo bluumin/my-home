@@ -65,11 +65,12 @@ public class Item {
         this.exp = exp;
     }
 
-    public Item(String name, String resource, ItemType type, String productionArea, int price) {
+    public Item(String name, String resource, ItemType type, String productionArea, int level, int price) {
         this.name = name;
         this.resource = resource;
         this.type = type;
         this.productionArea = productionArea;
+        this.level = level;
         this.price = price;
     }
 }

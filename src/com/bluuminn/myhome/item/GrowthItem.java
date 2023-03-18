@@ -34,6 +34,7 @@ public class GrowthItem extends Item {
 
     public void initHarvestable() {
         this.isHarvestable = false;
+        this.isPlanted = false;
         this.harvestRemainQuantity = harvestCount;
     }
 

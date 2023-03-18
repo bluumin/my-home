@@ -65,7 +65,7 @@ public class BearCatchesFishGame {
         while (true) {
             MyHomeUtils.printLineAsCount(100);
             System.out.println("= = = = = = = = = = = = = = = = = = = = = = = = =");
-            System.out.println("        " + item.getName() + " 수확중 ...");
+            System.out.println("            " + item.getName() + " 수확중 ...");
             System.out.println();
             if (bear.collide(fish)) {
                 showWonBoard();
@@ -73,7 +73,10 @@ public class BearCatchesFishGame {
                 break;
             }
             showArray();
-            bear.move(board);
+            boolean moved = bear.move(board);
+            if (!moved) {
+                break;
+            }
         }
     }
 

@@ -5,12 +5,11 @@ import com.bluuminn.myhome.inventory.ItemEntry;
 import com.bluuminn.myhome.item.ItemStorage;
 import com.bluuminn.myhome.item.StoreItem;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Merchant extends NPC {
-    private List<StoreItem> onSaleItems = new ArrayList<>();
+    private List<StoreItem> onSaleItems;
 
     private Merchant(String name, ItemStorage itemStorage) {
         super(name);
@@ -27,15 +26,20 @@ public class Merchant extends NPC {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("        어서오세요. 무엇을 도와드릴까요? (0. 이전으로)");
             System.out.println();
-            System.out.println("              1. 아이템 구입");
-            System.out.println("              2. 아이템 판매");
+            System.out.println("                 1. 아이템 구입");
+            System.out.println("                 2. 아이템 판매");
             System.out.println();
             System.out.print("입력 >> ");
             String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
                 MyHomeUtils.enterAgain(scanner);
+                continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
+            if (input > 2 || input < 0) {
+                MyHomeUtils.enterAgain(scanner);
+                continue;
+            }
             if (input == 0) {
                 return;
             }
@@ -75,9 +79,10 @@ public class Merchant extends NPC {
                 continue;
             }
 
-            StoreItem item = onSaleItems.get(input);
+            StoreItem item = onSaleItems.get(input - 1);
             if (player.getLevel() < item.getLevel()) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
+                System.out.println("                  [ " + item.getName() + " ] ");
                 System.out.println("         아직 레벨이 충족되지 않아 구매할 수 없습니다.");
                 System.out.println();
                 scanner.nextLine();
@@ -87,8 +92,9 @@ public class Merchant extends NPC {
             String itemName = item.getName();
             if ("원목 작업대".equals(itemName) || "요리용 화덕".equals(itemName)) {
                 while (true) {
+                    MyHomeUtils.printLineAsCount(100);
                     System.out.println("┌──────────────────────────────────────────────────┐");
-                    System.out.println("    " + itemName + "을(를) 구매하시겠습니까?");
+                    System.out.println("             " + itemName + "을(를) 구매하시겠습니까?");
                     System.out.println("            1. 구입하기           0. 뒤로가기");
                     System.out.println();
                     System.out.print("입력 >> ");
@@ -108,6 +114,7 @@ public class Merchant extends NPC {
                     int playerGold = player.getGold();
                     int itemPrice = item.getPrice();
                     player.updateGold(playerGold - itemPrice);
+                    MyHomeUtils.printLineAsCount(100);
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("                " + itemName + "을(를) 구입했어요!");
                     if ("원목 작업대".equals(itemName)) {
@@ -116,13 +123,15 @@ public class Merchant extends NPC {
                     if ("요리용 화덕".equals(itemName)) {
                         player.ownCookingStove();
                     }
+                    scanner.nextLine();
                     break;
                 }
                 continue;
             }
 
+            MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("    " + itemName + " 을(를) 몇 개 구매하시겠습니까?");
+            System.out.println("     " + itemName + " 을(를) 몇 개 구매하시겠습니까?");
             System.out.println("     (0. 이전으로)");
             System.out.println();
             System.out.print("입력 >> ");
@@ -138,11 +147,12 @@ public class Merchant extends NPC {
             }
             int totalPrice = item.getPrice() * itemQuantity;
 
+            MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println(item.getName() + " " + itemQuantity + " 개를");
-            System.out.println(totalPrice + "골드에 구매 하시겠습니까?");
+            System.out.println("   " + item.getName() + " " + itemQuantity + "개를");
+            System.out.println("        " + totalPrice + " G에 구매 하시겠습니까?");
             System.out.println();
-            System.out.println("1. 예        0. 아니오(이전으로 판매 아이템 목록 보기)");
+            System.out.println("1. 구매하기        0. 이전으로");
             System.out.println();
             System.out.print("입력 >> ");
             inputValue = MyHomeUtils.input(scanner);
@@ -157,6 +167,7 @@ public class Merchant extends NPC {
             }
             int playerGold = player.getGold();
             if (totalPrice > playerGold) {
+                MyHomeUtils.printLineAsCount(100);
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("                  골드가 부족합니다.");
                 System.out.println();
@@ -179,6 +190,7 @@ public class Merchant extends NPC {
         // TODO: 타임세일 해보기
 //        Thread StoreTimer = new Thread(new StoreTimer(store));
 //        StoreTimer.start();
+        MyHomeUtils.printLineAsCount(100);
         System.out.println("┌──────────────────────────────────────────────────┐");
         System.out.println("                 판매 아이템 목록");
         System.out.println();
@@ -186,20 +198,21 @@ public class Merchant extends NPC {
         for (int i = 0; i < onSaleItems.size(); i++) {
             StoreItem item = onSaleItems.get(i);
             int itemLevel = item.getLevel();
-            System.out.print(i + 1 + ". " + item.getName());
-            if ("원목 작업대".equals(item.getName()) && player.hasWoodenWorkbench()) {
-                System.out.print(" (구입완료)");
-                continue;
-            }
-            if ("요리용 화덕".equals(item.getName()) && player.hasCookingStove()) {
-                System.out.print(" (구입완료)");
+            System.out.printf("%-15s", (i + 1) + ". " + item.getName());
+            if (("원목 작업대".equals(item.getName()) && player.hasWoodenWorkbench())
+                    || ("요리용 화덕".equals(item.getName()) && player.hasCookingStove())) {
+                System.out.print("\n\t\t\t\t\t\t\t\t\t");
+                System.out.println(" (구입완료)");
+                System.out.println();
                 continue;
             }
             if (player.getLevel() < itemLevel) {
-                System.out.print("(HOLD - LV." + itemLevel + "이상)");
+                System.out.print("     [ 🔒 ] LV." + itemLevel + " 이상");
             }
             System.out.print("\n\t\t\t\t\t\t\t\t\t");
-            System.out.printf("%5d" + " 골드", item.getPrice());
+            System.out.printf("%5d" + " G", item.getPrice());
+            System.out.println();
+            System.out.println();
         }
     }
 }

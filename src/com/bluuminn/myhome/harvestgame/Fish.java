@@ -6,11 +6,12 @@ class Fish extends MiniGamePiece {
     }
 
     @Override
-    public void move(String[][] board) {
+    public boolean move(String[][] board) {
+        return false;
     }
 
     @Override
     public String getShape() {
-        return "🐟";
+        return "∞";
     }
 }

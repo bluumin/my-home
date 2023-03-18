@@ -18,7 +18,7 @@ public class CraftShop extends Area {
     }
 
     public void craft(Player player, Scanner scanner) {
-//        Scanner scanner = new Scanner(System.in);
+        MyHomeUtils.printLineAsCount(100);
         if (!player.hasWoodenWorkbench()) {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("          감사제를 준비하려면 원목 작업대가 필요해요.");
@@ -46,8 +46,9 @@ public class CraftShop extends Area {
                 return;
             }
 
-            CraftItem item = items.get(input);
+            CraftItem item = items.get(input - 1);
             if (!item.isCraftable(playerLevel)) {
+                MyHomeUtils.printLineAsCount(100);
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("      플레이어의 레벨이 충족되지 않아 제작 할 수 없습니다.");
                 System.out.println("                이전 단계로 돌아갑니다.");
@@ -56,10 +57,10 @@ public class CraftShop extends Area {
             }
 
             while (true) {
+                MyHomeUtils.printLineAsCount(100);
                 String itemName = item.getName();
-
                 System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("              " + itemName + " 제작");
+                System.out.println("                 [ " + itemName + " ] 제작");
                 System.out.println();
                 System.out.println("  필요한 재료 아이템\t\t\t   보유 개수 / 필요 개수");
                 System.out.println();
@@ -83,6 +84,8 @@ public class CraftShop extends Area {
                 }
 
                 System.out.println();
+                System.out.println();
+                System.out.println();
                 System.out.println("1. 제작하기         0. 이전으로");
                 System.out.print("입력 >> ");
                 inputValue = MyHomeUtils.input(scanner);
@@ -100,14 +103,18 @@ public class CraftShop extends Area {
                 }
 
                 while (true) {
+                    MyHomeUtils.printLineAsCount(100);
                     if (craftableQuantity <= 0) {
                         System.out.println("┌──────────────────────────────────────────────────┐");
                         System.out.println("             아이템을 제작할 재료가 부족해요.");
                         scanner.nextLine();
                         break;
                     }
-                    System.out.println("몇 개 제작하시겠어요? (최대 제작 가능 개수: " + craftableQuantity + ")");
-                    System.out.println("숫자만 입력해주세요.          0. 이전으로");
+                    System.out.println("┌──────────────────────────────────────────────────┐");
+                    System.out.println("                 몇 개 제작하시겠어요? ");
+                    System.out.println(" (최대 제작 가능 개수: " + craftableQuantity + ")         0. 이전으로");
+                    System.out.println();
+                    System.out.println("숫자만 입력해주세요");
                     System.out.print("입력 >> ");
                     inputValue = MyHomeUtils.input(scanner);
                     if (!MyHomeUtils.isInteger(inputValue)) {
@@ -115,30 +122,38 @@ public class CraftShop extends Area {
                         continue;
                     }
                     int craftCount = MyHomeUtils.stringToInt(inputValue);
+                    if (craftCount < 0) {
+                        MyHomeUtils.enterAgain(scanner);
+                        continue;
+                    }
                     if (craftCount == 0) {
                         break;
                     }
                     if (craftCount > craftableQuantity) {
-                        System.out.println();
+                        MyHomeUtils.printLineAsCount(100);
                         System.out.println("┌──────────────────────────────────────────────────┐");
-                        System.out.println("  제작가능 한 최대 개수는 " + craftableQuantity + "개 입니다. 다시 입력해주세요.");
+                        System.out.println("         최대 제작 가능 개수는 [ " + craftableQuantity + " ]개 입니다.");
+                        System.out.println("                   다시 입력해주세요.");
+                        scanner.nextLine();
                         continue;
                     }
                     player.craft(item, craftCount);
                     scanner.nextLine();
+                    break;
                 }
             }
         }
     }
 
     private void showCraftMenus(int playerLevel) {
+        MyHomeUtils.printLineAsCount(100);
         System.out.println("┌──────────────────────────────────────────────────┐");
         System.out.println("         어떤 아이템을 제작할까요? (0. 메인 메뉴로)");
         System.out.println();
         for (int i = 0; i < items.size(); i++) {
             CraftItem item = items.get(i);
             String itemName = item.getName();
-            System.out.print(i + 1 + ". " + itemName);
+            System.out.printf("%-10s", (i + 1) + ". " + itemName);
             if (!item.isCraftable(playerLevel)) {
                 System.out.print(" [ 🔒 ] LV." + item.getLevel() + " 이상)");
             }
