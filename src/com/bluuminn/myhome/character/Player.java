@@ -225,7 +225,8 @@ public class Player extends Character {
         }
     }
 
-    public void willRest(Scanner scanner) {
+    public void willRest() {
+        Scanner scanner = new Scanner(System.in);
         while (true) {
             if (this.isResting) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
@@ -271,7 +272,8 @@ public class Player extends Character {
         }
     }
 
-    public void showQuests(Scanner scanner) {
+    public void showQuests() {
+        Scanner scanner = new Scanner(System.in);
         while (true) {
             if (quests.isEmpty()) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
@@ -311,7 +313,7 @@ public class Player extends Character {
         }
     }
 
-    public void showQuestInfo(Quest quest, Scanner scanner) {
+    private void showQuestInfo(Quest quest, Scanner scanner) {
         while (true) {
             System.out.println();
             System.out.println("┌──────────────────────────────────────────────────┐");
@@ -567,8 +569,8 @@ public class Player extends Character {
         while (true) {
             if (inventory.isEmpty()) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("            판매 할 수 있는 아이템이 없습니다.");
-                System.out.println("                이전 메뉴로 돌아갑니다.");
+                System.out.println("              판매 할 수 있는 아이템이 없습니다.");
+                System.out.println("                 이전 메뉴로 돌아갑니다.");
                 return;
             }
 
@@ -678,9 +680,11 @@ public class Player extends Character {
     }
 
     public void showInventory() {
+        Scanner scanner = new Scanner(System.in);
         if (inventory.isEmpty()) {
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("               인벤토리가 비었습니다.");
+            System.out.println("                 인벤토리가 비었습니다.");
+            scanner.nextLine();
             return;
         }
         System.out.println("┌──────────────────────────────────────────────────┐");

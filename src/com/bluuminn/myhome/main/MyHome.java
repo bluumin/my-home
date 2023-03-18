@@ -44,9 +44,9 @@ public class MyHome {
     public void start() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         ProgressBar.loading();
         soundPlayer.play("intro.wav", 1);
-
-        MyHomeUtils.printLineAsCount(100);
-        soundPlayer.stop();
+        while (!soundPlayer.isPlaybackCompleted()) {
+            MyHomeUtils.printLineAsCount(100);
+        }
         soundPlayer.play("mainMusic.wav", 0);
 
         System.out.println(
@@ -98,9 +98,9 @@ public class MyHome {
         System.out.println("그 마을의 가장 유명한 공방에");
         System.out.println("스승님 아래서 열심히 일하던 아이가 있었어요.");
 
-        MyHomeUtils.delayAsMillis(200);
+        MyHomeUtils.delayAsMillis(2000);
         MyHomeUtils.printLineAsCount(2);
-        MyHomeUtils.delayAsMillis(500);
+        MyHomeUtils.delayAsMillis(1000);
 
         ProgressBar.loading();
 
@@ -121,11 +121,9 @@ public class MyHome {
             }
         } while (playerName == null || playerName.length() < 2 || playerName.length() > 8);
 
-        MyHomeUtils.printLineAsCount(1);
+        MyHomeUtils.printLineAsCount(10);
         Player player = Player.createPlayer(playerName);
-        System.out.println("┌──────────────────────────────────────────────────┐");
-        System.out.println("            [ " + playerName + " ] 반가워요");
-        System.out.println("└──────────────────────────────────────────────────┘");
+        System.out.println("[ " + playerName + " ] 반가워요");
 
 
         // =================== 로딩 시나리오 ========================
@@ -222,7 +220,7 @@ public class MyHome {
                         continue;
                     }
                     ProgressBar.loading();
-                    craftShop.craft(player, scanner);
+                    craftShop.craft(player);
                     break;
                 case 4:     // 퀘스트 리스트 확인
                     if (isResting) {
@@ -233,22 +231,22 @@ public class MyHome {
                         System.out.println(FATIGUE_IS_TOO_HIGH);
                         continue;
                     }
-                    player.showQuests(scanner);
+                    player.showQuests();
                     break;
                 case 5:     // 인벤토리 확인
-                    player.showInventory(scanner);
+                    player.showInventory();
                     break;
                 case 6:     // 상점
                     ProgressBar.loading();
-                    merchant.buyAndSell(player, scanner);
+                    merchant.buyAndSell(player);
                     break;
                 case 7:     // 휴식 취하기
                     ProgressBar.loading();
-                    player.willRest(scanner);
+                    player.willRest();
                     break;
                 case 8:     // 미니게임
                     ProgressBar.loading();
-                    arcade.showGames(player, scanner);
+                    arcade.showGames(player);
                     break;
                 default:
                     MyHomeUtils.enterAgain();
@@ -316,13 +314,13 @@ public class MyHome {
             // TODO: inputVal enum 으로 변경하기. 각 case가 뭘 의미하는지 한눈에 파악하기 어려움.
             switch (MyHomeUtils.stringToInt(inputVal)) {
                 case 1:
-                    farm.cultivate(player, scanner);
+                    farm.cultivate(player);
                     break;
                 case 2:
-                    animalFarm.breed(player, scanner);
+                    animalFarm.breed(player);
                     break;
                 case 3:
-                    forest.growTrees(player, scanner);
+                    forest.growTrees(player);
                     break;
                 default:
                     return;

@@ -22,11 +22,12 @@ public class AnimalFarm extends Area {
         items = itemStorage.getAnimalFarmItems();
     }
 
-    public void breed(Player player, Scanner scanner) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+    public void breed(Player player) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        Scanner scanner = new Scanner(System.in);
         while (true) {
             MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("                   " + getName() + "에 도착했다.");
+            System.out.println("                   " + getName() + "에 도착했어요.");
             System.out.println();
 
             int playerLevel = player.getLevel();

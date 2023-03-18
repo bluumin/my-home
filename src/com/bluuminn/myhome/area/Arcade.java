@@ -10,7 +10,8 @@ public class Arcade extends Area {
         super("오락실");
     }
 
-    public void showGames(Player player, Scanner scanner) {
+    public void showGames(Player player) {
+        Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("                 🎮 미니 게임 리스트");
@@ -59,10 +60,10 @@ public class Arcade extends Area {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("                   ✌️ 가위 바위 보");
             System.out.println();
-            System.out.println("                    1. 게임 시작");
-            System.out.println("                    2. 설명 보기");
+            System.out.println("                     1. 게임 시작");
+            System.out.println("                     2. 설명 보기");
             System.out.println();
-            System.out.println("                    0. 이전으로");
+            System.out.println("                     0. 이전으로");
 
             String inputValue = scanner.next();
             if (!MyHomeUtils.isInteger(inputValue)) {
@@ -337,7 +338,7 @@ public class Arcade extends Area {
                 System.out.println("                ⚾ Round " + roundNumber);
                 strike = 0;
                 ball = 0;
-                List<Integer> tempUser = new ArrayList<>(user);
+                List<Integer> copiedUser = new ArrayList<>(user);
                 //유저 입력
                 int number = 1;
                 while (user.size() < numberOfDigit) {
@@ -363,10 +364,10 @@ public class Arcade extends Area {
                 }
 
                 // user - computer 했을 때
-                tempUser.removeAll(computer);
+                copiedUser.removeAll(computer);
 
                 // user.size == 0: 일단 숫자는 다 맞음
-                if (tempUser.size() == 0) {
+                if (copiedUser.size() == 0) {
                     // 자리까지 다 맞는지 확인
                     for (int i = 0; i < computer.size(); i++) {
                         Integer computerNumber = computer.get(i);
@@ -392,7 +393,7 @@ public class Arcade extends Area {
                 }
 
                 // user 개수가 그대로라면 out
-                if (tempUser.size() == user.size()) {
+                if (copiedUser.size() == user.size()) {
                     System.out.println();
                     System.out.println(" 🚫 OUT!!");
                     System.out.println();

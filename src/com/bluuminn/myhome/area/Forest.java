@@ -22,11 +22,13 @@ public class Forest extends Area {
         items = itemStorage.getForestItems();
     }
 
-    public void growTrees(Player player, Scanner scanner) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+    public void growTrees(Player player) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        Scanner scanner = new Scanner(System.in);
         while (true) {
             MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("                   " + getName() + "에 도착했다.\n");
+            System.out.println("                   " + getName() + "에 도착했어요.");
+            System.out.println();
 
             int playerLevel = player.getLevel();
             for (int i = 0; i < items.size(); i++) {

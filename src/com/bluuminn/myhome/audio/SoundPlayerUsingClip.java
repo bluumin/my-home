@@ -6,22 +6,25 @@ import java.io.InputStream;
 
 public class SoundPlayerUsingClip implements LineListener {
 
-    //    private boolean isPlaybackCompleted;
+    private boolean isPlaybackCompleted;
     private AudioInputStream audioStream;
     private Clip audioClip;
     private Long clipTime;
 
+    public boolean isPlaybackCompleted() {
+        return isPlaybackCompleted;
+    }
+
     @Override
     public void update(LineEvent event) {
-        /*
         if (LineEvent.Type.START == event.getType()) {
-            System.out.println("Playback started.");
+//            System.out.println("Playback started.");
+            isPlaybackCompleted = false;
         }
         if (LineEvent.Type.STOP == event.getType()) {
             isPlaybackCompleted = true;
-            System.out.println("Playback completed.");
+//            System.out.println("Playback completed.");
         }
-         */
     }
 
     public void play(String audioFilePath, int count) throws UnsupportedAudioFileException, IOException, LineUnavailableException {

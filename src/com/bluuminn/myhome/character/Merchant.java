@@ -21,7 +21,8 @@ public class Merchant extends NPC {
         return new Merchant(name, itemStorage);
     }
 
-    public void buyAndSell(Player player, Scanner scanner) {
+    public void buyAndSell(Player player) {
+        Scanner scanner = new Scanner(System.in);
         while (true) {
             MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");

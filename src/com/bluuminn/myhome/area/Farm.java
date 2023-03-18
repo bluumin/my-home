@@ -22,7 +22,8 @@ public class Farm extends Area {
         items = itemStorage.getFarmItems();
     }
 
-    public void cultivate(Player player, Scanner scanner) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+    public void cultivate(Player player) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        Scanner scanner = new Scanner(System.in);
         while (true) {
             MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");

@@ -17,7 +17,8 @@ public class CraftShop extends Area {
         items = itemStorage.getCraftItems();
     }
 
-    public void craft(Player player, Scanner scanner) {
+    public void craft(Player player) {
+        Scanner scanner = new Scanner(System.in);
         if (!player.hasWoodenWorkbench()) {
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("          감사제를 준비하려면 원목 작업대가 필요해요.");
