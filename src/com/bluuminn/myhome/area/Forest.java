@@ -57,6 +57,7 @@ public class Forest extends Area {
             String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
                 MyHomeUtils.enterAgain(scanner);
+                continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input == 0) {
@@ -64,7 +65,6 @@ public class Forest extends Area {
             }
             if (input >= items.size() || input < 0) {
                 MyHomeUtils.enterAgain(scanner);
-                scanner.nextLine();
                 continue;
             }
 
@@ -148,23 +148,20 @@ public class Forest extends Area {
                 BearCatchesFishGame game = new BearCatchesFishGame();
                 game.start(item);
                 if (!game.haveWon()) {
-                    System.out.println("┌──────────────────────────────────────────────────┐");
-                    System.out.println("                수확 중 문제가 생겼어요.");
-                    System.out.println("                이전 단계로 돌아갑니다.");
-                    scanner.nextLine();
+                    MyHomeUtils.printLineAsCount(100);
                     break;
                 }
                 playSound();
-                System.out.println();
-                System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("              " + item.getName() + " 1개 획득!");
-                scanner.nextLine();
-
                 player.saveItem(ItemEntry.of(item, 1));
                 item.decreaseHarvestRemainQuantityBy1();
                 int exp = player.getExp() + item.getExp();
                 player.updateExp(exp);
                 player.updateFatigability(player.getFatigability() + 15);
+
+                System.out.println();
+                System.out.println("┌──────────────────────────────────────────────────┐");
+                System.out.println("              " + item.getName() + " 1개 획득!");
+                scanner.nextLine();
 
                 MyHomeUtils.printLineAsCount(100);
             }

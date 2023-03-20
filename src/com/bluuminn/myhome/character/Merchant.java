@@ -60,6 +60,7 @@ public class Merchant extends NPC {
 
     public void userPurchases(Player player, Scanner scanner) {
         while (true) {
+            MyHomeUtils.printLineAsCount(100);
             showItems(player);
             System.out.println();
             System.out.println("구매하실 아이템의 번호를 입력하세요. (0. 이전으로)");
@@ -138,7 +139,6 @@ public class Merchant extends NPC {
             inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
                 MyHomeUtils.enterAgain(scanner);
-                scanner.nextLine();
                 continue;
             }
             int itemQuantity = MyHomeUtils.stringToInt(inputValue);
@@ -158,7 +158,6 @@ public class Merchant extends NPC {
             inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
                 MyHomeUtils.enterAgain(scanner);
-                scanner.nextLine();
                 continue;
             }
             input = MyHomeUtils.stringToInt(inputValue);

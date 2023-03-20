@@ -1,6 +1,7 @@
 package com.bluuminn.myhome.quest;
 
 import com.bluuminn.myhome.character.Player;
+import com.bluuminn.myhome.etc.MyHomeUtils;
 
 import java.util.List;
 
@@ -18,9 +19,20 @@ public class QuestThread implements Runnable {
         int questQuantity = storage.getQuestQuantity();
         List<QuestInfo> quests = storage.getQuestInfos();
         while (player.getQuests().size() <= questQuantity) {
+            MyHomeUtils.delayAsMillis(1000);
             if (player.getLevel() <= 3) {
                 continue;
             }
+            int level = (int) (Math.random() * 10);
+            if (player.getLevel() != level) {
+                continue;
+            }
+
+            MyHomeUtils.delayAsMillis((int) (Math.random() * 100_000) + 10_000);
+            if (player.getLevel() != level) {
+                continue;
+            }
+
             int randomNumber = (int) (Math.random() * questQuantity);
             QuestInfo questInfo = quests.get(randomNumber);
             if (player.hasQuest(questInfo)) {

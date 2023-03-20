@@ -56,6 +56,7 @@ public class Farm extends Area {
             String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
                 MyHomeUtils.enterAgain(scanner);
+                continue;
             }
             int input = MyHomeUtils.stringToInt(inputValue);
             if (input == 0) {
@@ -63,11 +64,11 @@ public class Farm extends Area {
             }
             if (input >= items.size() || input < 0) {
                 MyHomeUtils.enterAgain(scanner);
-                scanner.nextLine();
                 continue;
             }
 
             while (true) {
+                MyHomeUtils.printLineAsCount(100);
                 GrowthItem item = items.get(input - 1);
                 // 레벨이 안되면 아무것도 못한다고 알려주기
                 if (!item.isPlantable(playerLevel)) {
@@ -145,10 +146,6 @@ public class Farm extends Area {
                 game.start(item);
                 if (!game.haveWon()) {
                     MyHomeUtils.printLineAsCount(100);
-//                    System.out.println("┌──────────────────────────────────────────────────┐");
-//                    System.out.println("                수확 중 문제가 생겼어요.");
-//                    System.out.println("                이전 단계로 돌아갑니다.");
-//                    scanner.nextLine();
                     break;
                 }
 

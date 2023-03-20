@@ -12,12 +12,14 @@ public class Arcade extends Area {
 
     public void showGames(Player player, Scanner scanner) {
         while (true) {
+            MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("                 🎮 미니 게임 리스트");
             System.out.println("└──────────────────────────────────────────────────┘");
             System.out.println();
             System.out.println("                  1. ⚾ 숫자야구");
             System.out.println("                  2. ✌️ 가위바위보");
+            System.out.println();
             System.out.println("                  0. 돌아가기");
 //                System.out.println("                  3. 🔢 홀 짝 (Coming Soon)");
             System.out.println();
@@ -46,7 +48,6 @@ public class Arcade extends Area {
                 default:
                     return;
             }
-            break;
         }
     }
 
@@ -245,6 +246,8 @@ public class Arcade extends Area {
         System.out.println("  입력 >> 가위가위   ❌");
         System.out.println("  입력 >> 2222     ❌");
         System.out.println("  입력 >> 보보      ❌");
+        System.out.println();
+        System.out.println();
         System.out.println("  아무 키나 입력하면 이전 단계로 돌아갑니다.");
     }
 
@@ -270,8 +273,7 @@ public class Arcade extends Area {
                 break;
             }
             if (input == 2) {
-                descNumberBaseball();
-                scanner.nextLine();
+                descNumberBaseball(scanner);
                 continue;
             }
             if (input > 2 || input < 0) {
@@ -280,14 +282,18 @@ public class Arcade extends Area {
             }
 
             int roundNumber = playNumberBaseball(scanner);
+
+            MyHomeUtils.printLineAsCount(100);
             player.updateFatigability(player.getFatigability() - (100 / roundNumber));
             player.resetRestCount();
             System.out.println("휴식 가능한 횟수가 초기화 되었습니다.");
+            scanner.nextLine();
         }
     }
 
     private int playNumberBaseball(Scanner scanner) {
         while (true) {
+            MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("                    ⚾ 숫자 야구");
             System.out.println();
@@ -310,26 +316,50 @@ public class Arcade extends Area {
             }
              */
             int numberOfDigit = 3;
-            Set<Integer> computerSet = new HashSet<>();
-            for (int i = 0; computerSet.size() < numberOfDigit; i++) {
+            Set<Integer> computerNumberSet = new HashSet<>();
+            while (computerNumberSet.size() < numberOfDigit) {
                 int num = (int) (Math.random() * 9) + 1;
-                computerSet.add(num);
+                computerNumberSet.add(num);
             }
 
-            List<Integer> computer = new ArrayList<>(computerSet);
-            List<Integer> user = new ArrayList<>(numberOfDigit);
+            List<Integer> computerNumbers = getShuffledComputerNumbers(computerNumberSet);
+            List<Integer> userNumbers = new ArrayList<>(numberOfDigit);
 
             int strike = 0, ball;
             int roundNumber = 0;
             while (strike < numberOfDigit) {
+                MyHomeUtils.printLineAsCount(100);
                 roundNumber++;
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("                ⚾ Round " + roundNumber);
+                System.out.println();
+                System.out.println();
                 strike = 0;
                 ball = 0;
-                List<Integer> copiedUser = new ArrayList<>(user);
                 //유저 입력
-                int number = 1;
+                while (true) {
+                    userNumbers.clear();
+                    System.out.print("숫자 입력 >> ");
+                    String userInputValue = scanner.nextLine();
+                    String[] numbers = userInputValue.split(" ");
+                    if (numbers.length != 3) {
+                        MyHomeUtils.enterAgain(scanner);
+                        continue;
+                    }
+
+                    for (String s : numbers) {
+                        if (!MyHomeUtils.isInteger(s)) {
+                            continue;
+                        }
+                        userNumbers.add(MyHomeUtils.stringToInt(s));
+                    }
+                    if (userNumbers.size() != 3) {
+                        MyHomeUtils.enterAgain(scanner);
+                        continue;
+                    }
+                    break;
+                }
+                /*
                 while (user.size() < numberOfDigit) {
                     System.out.println();
                     System.out.print(number + "번째 수: ");
@@ -351,16 +381,18 @@ public class Arcade extends Area {
                     user.add(userInput);
                     number++;
                 }
+                 */
 
                 // user - computer 했을 때
-                copiedUser.removeAll(computer);
+                List<Integer> copiedUserNumbers = new ArrayList<>(userNumbers);
+                copiedUserNumbers.removeAll(computerNumbers);
 
                 // user.size == 0: 일단 숫자는 다 맞음
-                if (copiedUser.size() == 0) {
+                if (copiedUserNumbers.size() == 0) {
                     // 자리까지 다 맞는지 확인
-                    for (int i = 0; i < computer.size(); i++) {
-                        Integer computerNumber = computer.get(i);
-                        Integer userNumber = user.get(i);
+                    for (int i = 0; i < computerNumbers.size(); i++) {
+                        Integer computerNumber = computerNumbers.get(i);
+                        Integer userNumber = userNumbers.get(i);
                         if (Objects.equals(computerNumber, userNumber)) {
                             strike++;
                         } else {
@@ -371,28 +403,34 @@ public class Arcade extends Area {
                         System.out.println();
                         System.out.println("게임에서 승리했습니다. (턴 수: " + roundNumber + ")");
                         System.out.println();
+                        System.out.println("Enter를 입력하면 이전 메뉴로 돌아갑니다.");
+                        scanner.nextLine();
                         return roundNumber;
                     }
                     if (strike < numberOfDigit) {
                         System.out.println();
                         System.out.println(strike + " Strike  /  " + ball + " Ball");
                         System.out.println();
+                        System.out.println("계속 하시려면 Enter");
+                        scanner.nextLine();
                         continue;
                     }
                 }
 
                 // user 개수가 그대로라면 out
-                if (copiedUser.size() == user.size()) {
+                if (copiedUserNumbers.size() == userNumbers.size()) {
                     System.out.println();
                     System.out.println(" 🚫 OUT!!");
                     System.out.println();
+                    System.out.println("계속 하시려면 Enter");
+                    scanner.nextLine();
                     continue;
                 }
 
                 // 숫자가 일부만 포함되어 있다면
-                for (int i = 0; i < user.size(); i++) {
-                    Integer userNumber = user.get(i);
-                    int computerIndex = computer.indexOf(userNumber);
+                for (int i = 0; i < userNumbers.size(); i++) {
+                    Integer userNumber = userNumbers.get(i);
+                    int computerIndex = computerNumbers.indexOf(userNumber);
                     if (computerIndex < 0) {
                         continue;
                     }
@@ -402,33 +440,54 @@ public class Arcade extends Area {
                     } else {
                         ball++;
                     }
-                    System.out.println();
-                    System.out.println(strike + " Strike  /  " + ball + " Ball");
-                    System.out.println();
                 }
+                System.out.println();
+                System.out.println(strike + " Strike  /  " + ball + " Ball");
+                System.out.println();
+                System.out.println("계속 하시려면 Enter");
+                scanner.nextLine();
             }
         }
     }
 
-    private void descNumberBaseball() {
+    private List<Integer> getShuffledComputerNumbers(Set<Integer> numberSet) {
+        Integer[] numbers = new Integer[numberSet.size()];
+        Iterator<Integer> iterator = numberSet.iterator();
+        while (iterator.hasNext()) {
+            int i = (int) (Math.random() * numberSet.size());
+            if (numbers[i] != null) {
+                continue;
+            }
+            numbers[i] = iterator.next();
+        }
+        return Arrays.asList(numbers);
+    }
+
+    private void descNumberBaseball(Scanner scanner) {
+        MyHomeUtils.printLineAsCount(100);
         System.out.println("┌──────────────────────────────────────────────────┐");
         System.out.println("                    ⚾ 숫자 야구");
         System.out.println();
-        System.out.println("1. 컴퓨터가 랜덤으로 3자리 숫자를 설정함 (각 자리 숫자는 1~9사이, 겹치지 않음)");
-        System.out.println("2. 사용자가 값을 입력하여 그 숫자를 맞춘다");
+        System.out.println("1. 컴퓨터가 랜덤으로 3자리 숫자를 설정합니다. (각 자리 숫자는 1~9사이, 겹치지 않음)");
+        System.out.println("2. 사용자가 값을 입력하여 숫자를 맞춥니다. 입력은 다음 예시와 같이 공백을 포함하여 한번에 입력합니다.");
+        System.out.println("  입력 예시 1)");
+        System.out.println("    숫자 입력 >> 3 6 7");
+        System.out.println("  입력 예시 2)");
+        System.out.println("    숫자 입력 >> 8 2 1");
         System.out.println("3. 입력 숫자와 자리가 맞을 경우 Strike");
         System.out.println("4. 입력 숫자가 포함되지만 자리 위치는 틀렸을 경우 Ball");
         System.out.println("5. 입력 숫자, 자리가 모두 틀리면 OUT");
-        System.out.println("6. 사용자가 맞출때까지 진행 (중간 종료 가능)");
-        System.out.println("7. 턴 횟수에 따라 피로도가 회복 됩니다.");
+        System.out.println("6. 사용자가 맞출때까지 진행합니다.");
+        System.out.println("7. 턴 횟수에 따라 피로도가 회복됩니다.");
         System.out.println();
         System.out.println("ex. COM : 5 7 8");
         System.out.println("    User: 1 2 5   => OUT");
         System.out.println("    User: 1 7 2   => 1 Strike");
-        System.out.println("    User: 1 2 7   => 1 Ball");
-        System.out.println("    User: 5 2 7   => 1 Strike 1 Ball");
+        System.out.println("    User: 8 5 7   => 3 Ball");
+        System.out.println("    User: 5 8 7   => 1 Strike 2 Ball");
         System.out.println("    User: 5 7 8   => 1 Strike 1 Ball");
         System.out.println();
         System.out.println("  아무 키나 입력하면 이전 단계로 돌아갑니다.");
+        scanner.nextLine();
     }
 }

@@ -181,19 +181,22 @@ public class Player extends Character {
         this.level += 1;
         payGold();
         increaseMaxExp();
-        System.out.println("\n" +
+        System.out.println();
+        System.out.println();
+        System.out.println("" +
                 "\t\t    __    _______    __________       __  ______     __\n" +
                 "\t\t   / /   / ____/ |  / / ____/ /      / / / / __ \\   / /\n" +
                 "\t\t  / /   / __/  | | / / __/ / /      / / / / /_/ /  / / \n" +
                 "\t\t / /___/ /___  | |/ / /___/ /___   / /_/ / ____/  /_/  \n" +
                 "\t\t/_____/_____/  |___/_____/_____/   \\____/_/      (_)   \n" +
                 "\t\t                                                       \n");
-
+        System.out.println();
+        System.out.println();
     }
 
     private void payGold() {
-        if (this.level <= 5) {
-            this.updateGold(this.level + 3000);
+        if (getLevel() <= 5) {
+            this.updateGold(getGold() + 3000);
         }
     }
 
@@ -231,6 +234,8 @@ public class Player extends Character {
 
     public void willRest(Scanner scanner) {
         while (true) {
+            MyHomeUtils.printLineAsCount(100);
+
             if (this.isResting) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("                  휴식 모드를 종료합니다.");
@@ -264,11 +269,12 @@ public class Player extends Character {
                 MyHomeUtils.enterAgain(scanner);
                 continue;
             }
+            rest();
+            updateGold(getGold() - 1000);
+            reduceRestCountBy1();
+
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("                휴식 모드로 전환합니다.");
-            rest();
-            updateGold(this.gold - 1000);
-            reduceRestCountBy1();
             scanner.nextLine();
             break;
         }
@@ -290,7 +296,7 @@ public class Player extends Character {
 
             for (int i = 0; i < quests.size(); i++) {
                 Quest quest = quests.get(i);
-                System.out.println(i + 1 + ". " + quest.getQuestName());
+                System.out.println(i + 1 + ". " + quest.getQuestName() + (quest.isCompleted() ? " (완료)" : ""));
             }
             System.out.println();
             System.out.println("퀘스트 번호를 입력하면 자세한 정보를 확인할 수 있습니다. (0. 이전으로)");
@@ -315,6 +321,7 @@ public class Player extends Character {
 
     private void showQuestInfo(Quest quest, Scanner scanner) {
         while (true) {
+            MyHomeUtils.printLineAsCount(100);
             System.out.println();
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("                   퀘스트 상세 정보");
@@ -372,6 +379,7 @@ public class Player extends Character {
             System.out.println();
             System.out.println();
             System.out.println("1. 퀘스트 완료하기       0. 이전으로");
+            System.out.print("입력 >> ");
             String inputValue = MyHomeUtils.input(scanner);
             if (!MyHomeUtils.isInteger(inputValue)) {
                 MyHomeUtils.enterAgain(scanner);
@@ -409,12 +417,16 @@ public class Player extends Character {
                 MyHomeUtils.delayAsMillis((int) (Math.random() * 80) + 40);
             }
 
+            increaseQuestCompletedCountBy1();
+
             System.out.println();
             System.out.println();
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("        [ " + info.getName() + " ] 퀘스트 완료!");
-            increaseQuestCompletedCountBy1();
+            System.out.println("└──────────────────────────────────────────────────┘");
+            System.out.println();
             scanner.nextLine();
+            break;
         }
     }
 
@@ -489,6 +501,7 @@ public class Player extends Character {
 
     public void showInfo(Scanner scanner) {
         while (true) {
+            MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
             System.out.println("            플레이어 [ " + getName() + " ] 정보");
             System.out.println();
@@ -517,6 +530,7 @@ public class Player extends Character {
             // 업적 보기
             int titleQty = this.titles.size();
             while (true) {
+                MyHomeUtils.printLineAsCount(100);
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("                    업적 리스트");
                 System.out.println();
@@ -529,9 +543,12 @@ public class Player extends Character {
                 }
 
                 System.out.println();
-                System.out.println("┌──────────────────────────────────────────────────┐");
-                System.out.println("                   업적 달성 조건 보기");
-                System.out.println("       조건을 확인하고 싶은 업적의 번호를 입력해주세요.  (0. 이전으로)");
+                System.out.println();
+                System.out.println();
+                System.out.println(" ============ 업적 달성 조건 보기 ============");
+                System.out.println("  조건을 확인하고 싶은 업적의 번호를 입력해주세요.");
+                System.out.println("  (0. 이전으로)");
+                System.out.println();
                 System.out.print("입력 >> ");
 
                 inputValue = MyHomeUtils.input(scanner);
@@ -547,17 +564,24 @@ public class Player extends Character {
                 }
 
                 if (input == 0) {
-                    System.out.println();
+                    MyHomeUtils.printLineAsCount(100);
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("                플레이어 정보로 돌아갑니다.");
                     scanner.nextLine();
                     break;
                 }
 
+                Title title = this.titles.get(input - 1);
                 System.out.println();
-                System.out.println(input + ". " + this.titles.get(input - 1).getInfo().getName());
+                System.out.println("┌──────────────────────────────────────────────────┐");
+                System.out.println("             [ " + title.getInfo().getName() + " ]");
                 System.out.println();
-                System.out.println("업적달성조건 : " + this.titles.get(input - 1).getInfo().getCondition());
+                System.out.println(" - 업적달성조건: " + title.getInfo().getCondition());
+                System.out.println();
+                System.out.println();
+                System.out.println();
+                System.out.println("    Enter를 누르면 업적 리스트로 돌아갑니다.");
+                scanner.nextLine();
             }
         }
     }
@@ -681,6 +705,7 @@ public class Player extends Character {
 
     public void showInventory(Scanner scanner) {
         while (true) {
+            MyHomeUtils.printLineAsCount(100);
             if (inventory.isEmpty()) {
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("                  인벤토리가 비어있어요.");
@@ -723,9 +748,10 @@ public class Player extends Character {
             ItemEntry item = inventoryItems.get(input - 1);
             if (item.getItemType() == ItemType.CONSUMPTION) {
                 while (true) {
+                    MyHomeUtils.printLineAsCount(100);
                     System.out.println();
                     System.out.println("┌──────────────────────────────────────────────────┐");
-                    System.out.print("        [ " + item.getItemName() + " ] 을(를) ");
+                    System.out.println("        [ " + item.getItemName() + " ] 을(를) ");
                     System.out.println("                 사용하시겠습니까?");
                     System.out.println();
                     System.out.println("1. 사용        0. 이전으로");
@@ -748,24 +774,28 @@ public class Player extends Character {
                     drink(item);
                     if (item.getQuantity() <= 0) {
                         inventory.remove(item);
-                        break;
                     }
+                    scanner.nextLine();
+                    break;
                 }
                 continue;
             }
+            MyHomeUtils.printLineAsCount(100);
             System.out.println("┌──────────────────────────────────────────────────┐");
-            System.out.println("        [ " + item.getItemName() + "] 아이템 정보");
+            System.out.println("             [ " + item.getItemName() + " ] 아이템 정보");
             System.out.println();
             System.out.println("  - 타입: " + item.getItemType().getName());
             System.out.println("  - 생산아이템: " + item.getItem().getResource());
             System.out.println("  - 생산구역: " + item.getItem().getProductionArea());
             System.out.println();
             System.out.print("계속 하시려면 아무키나 입력하세요.");
+            System.out.println();
             scanner.nextLine();
         }
     }
 
     private void drink(ItemEntry item) {
+        // TODO: 피로도가 0이면 사용하지 않도록 수정
         if (item.getItemType() != ItemType.CONSUMPTION) {
             return;
         }
@@ -773,7 +803,10 @@ public class Player extends Character {
         Potion potion = (Potion) item.getItem();
         int recovery = potion.getRecovery();
         updateFatigability(getFatigability() - recovery);
-        System.out.println(getName() + " 아이템을 사용해서 피로도가 " + recovery + " 만큼 감소했어요!");
+
+        MyHomeUtils.printLineAsCount(100);
+        System.out.println("┌──────────────────────────────────────────────────┐");
+        System.out.println(potion.getName() + " 아이템을 사용해서 피로도가 " + recovery + " 만큼 감소했어요!");
     }
 
     public void saveItem(ItemEntry item) {

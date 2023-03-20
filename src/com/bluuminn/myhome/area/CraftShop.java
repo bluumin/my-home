@@ -29,6 +29,7 @@ public class CraftShop extends Area {
         }
         int playerLevel = player.getLevel();
         while (true) {
+            MyHomeUtils.printLineAsCount(100);
             showCraftMenus(playerLevel);
             System.out.println();
             System.out.print("입력 >> ");
@@ -155,7 +156,7 @@ public class CraftShop extends Area {
             String itemName = item.getName();
             System.out.printf("%-10s", (i + 1) + ". " + itemName);
             if (!item.isCraftable(playerLevel)) {
-                System.out.print(" [ 🔒 ] LV." + item.getLevel() + " 이상)");
+                System.out.print("\t\t [ 🔒 ] LV." + item.getLevel() + " 이상");
             }
             System.out.println();
         }
